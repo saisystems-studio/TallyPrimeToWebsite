@@ -1,0 +1,27 @@
+# Visual Studio
+.vs/
+**/.vs/
+bin/
+**/bin/
+obj/
+**/obj/
+
+# Node / React
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.vite/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE / OS
+.vscode/
+*.user
+*.suo
+*.log
+.DS_Store
+Thumbs.db

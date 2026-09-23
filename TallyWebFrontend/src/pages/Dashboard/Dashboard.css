@@ -1,0 +1,281 @@
+/* COMPANY BAR */
+
+.companyBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding: 20px 22px;
+    border-radius: 12px;
+    background: linear-gradient(120deg, #a56c26, #dcb45b);
+    color: white;
+    box-shadow: 0 8px 22px rgba(89, 105, 232, 0.18);
+}
+
+.companyLabel {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    opacity: 0.75;
+}
+
+.companyBar h2 {
+    margin: 6px 0 3px;
+    font-size: 20px;
+}
+
+.companyBar p {
+    margin: 0;
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+.tallyStatus {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 14px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.statusDot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: white;
+}
+
+.tallyStatus strong,
+.tallyStatus small {
+    display: block;
+}
+
+.tallyStatus strong {
+    font-size: 11px;
+}
+
+.tallyStatus small {
+    margin-top: 3px;
+    font-size: 9px;
+    opacity: 0.75;
+}
+
+/* STAT CARDS */
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.statCard {
+    min-width: 0;
+    padding: 17px;
+    border: 1px solid #eaebf1;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 3px 12px rgba(28, 36, 61, 0.035);
+}
+
+.statTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.statTop>span {
+    color: #9299a9;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.statIcon {
+    width: 31px;
+    height: 31px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: #fff7ee;
+    color: #a76f28;
+    font-size: 11px;
+    font-weight: 800;
+    border: 1px solid #a76f28;
+}
+
+.statCard h3 {
+    margin: 13px 0 4px;
+    overflow: hidden;
+    color: #353b4e;
+    font-size: 18px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.statCard p {
+    margin: 0;
+    color: #a2a7b5;
+    font-size: 10px;
+}
+
+/* PANELS */
+
+.dashboardGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(260px, 0.9fr);
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.bottomGrid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.panel {
+    padding: 19px;
+    border: 1px solid #eaebf1;
+    border-radius: 10px;
+    background: white;
+    box-shadow: 0 3px 12px rgba(28, 36, 61, 0.035);
+}
+
+.panelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.panelHeader h3 {
+    margin: 0;
+    color: #3d4355;
+    font-size: 13px;
+}
+
+.panelHeader p {
+    margin: 4px 0 0;
+    color: #a4a9b6;
+    font-size: 9px;
+}
+
+.panelHeader select {
+    padding: 7px 9px;
+    border: 1px solid #e4e6ed;
+    border-radius: 6px;
+    outline: none;
+    background: white;
+    color: #747b8c;
+    font-size: 9px;
+}
+
+.chartPlaceholder {
+    position: relative;
+    height: 220px;
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 7px;
+    background:
+        linear-gradient(#f1f2f6 1px, transparent 1px);
+    background-size: 100% 52px;
+}
+
+.chartPlaceholder p {
+    position: relative;
+    z-index: 2;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: white;
+    color: #a1a6b4;
+    font-size: 10px;
+}
+
+.connectionPanel {
+    background: linear-gradient(145deg, #a66d27, #c8ae51);
+    color: white;
+}
+
+.connectionGraphic {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.14);
+    font-size: 23px;
+    font-weight: 800;
+}
+
+.connectionPanel h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.connectionPanel>p {
+    margin: 7px 0 20px;
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 10px;
+    line-height: 1.6;
+}
+
+.connectionRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 10px;
+}
+
+.connectionRow span {
+    opacity: 0.7;
+}
+
+.connectedText {
+    color: white;
+}
+
+.viewButton {
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 6px;
+    background: #eef0ff;
+    color: #e8bc59;
+    font-size: 9px;
+    cursor: pointer;
+}
+
+.emptyState {
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 14px;
+    border: 1px dashed #e1e4eb;
+    border-radius: 7px;
+    color: #a2a7b5;
+    font-size: 10px;
+}
+
+.outstandingRows {
+    margin-top: 15px;
+}
+
+.outstandingRows>div {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-top: 1px solid #eff0f4;
+    color: #777e8f;
+    font-size: 10px;
+}
+
+.outstandingRows strong {
+    color: #3d4355;
+}

@@ -1,0 +1,153 @@
+:root {
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  color: #1f2937;
+  background: #f6f7fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+
+/* APP */
+
+.appShell {
+  display: flex;
+  min-height: 100vh;
+  background: #f6f7fb;
+}
+
+
+
+/* MAIN */
+
+.mainContent {
+  width: calc(100% - 225px);
+  margin-left: 225px;
+  padding: 25px 30px 40px;
+}
+
+/* HEADER */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.topbar h1 {
+  margin: 0;
+  color: #252a3c;
+  font-size: 23px;
+}
+
+.topbar p {
+  margin: 5px 0 0;
+  color: #9aa0af;
+  font-size: 12px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.notificationButton {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #e5e7ee;
+  border-radius: 50%;
+  background: white;
+  color: #a9712a;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.avatar {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #eef0ff;
+  color: #af7930;
+  font-weight: 700;
+  border: 1px solid #af7930;
+}
+
+.userInfo strong,
+.userInfo span {
+  display: block;
+}
+
+.userInfo strong {
+  color: #41475a;
+  font-size: 11px;
+}
+
+.userInfo span {
+  margin-top: 2px;
+  color: #a1a6b4;
+  font-size: 9px;
+}
+
+.logoutButton {
+  padding: 8px 12px;
+  border: 1px solid #e4e6ed;
+  border-radius: 7px;
+  background: white;
+  color: #6b7280;
+  font-size: 11px;
+  cursor: pointer;
+  border: 1px solid #a9712a;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 1050px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboardGrid,
+  .bottomGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .sidebar {
+    width: 185px;
+  }
+
+  .mainContent {
+    width: calc(100% - 185px);
+    margin-left: 185px;
+    padding: 20px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .companyBar,
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 15px;
+  }
+}

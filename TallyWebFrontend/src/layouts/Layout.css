@@ -1,0 +1,81 @@
+.appShell {
+    display: flex;
+    min-height: 100vh;
+    background: #f6f7fb;
+}
+
+.mainContent {
+    width: calc(100% - 225px);
+    margin-left: 225px;
+    padding: 25px 30px 40px;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.topbar h1 {
+    margin: 0;
+    color: #252a3c;
+    font-size: 23px;
+}
+
+.topbar p {
+    margin: 5px 0 0;
+    color: #9aa0af;
+    font-size: 12px;
+}
+
+.headerRight {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #eef0ff;
+    color: #af7930;
+    font-weight: 700;
+    border: 1px solid #af7930;
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.userInfo strong,
+.userInfo span {
+    display: block;
+}
+
+.userInfo strong {
+    color: #41475a;
+    font-size: 11px;
+}
+
+.userInfo span {
+    margin-top: 2px;
+    color: #a1a6b4;
+    font-size: 9px;
+}
+
+.logoutButton {
+    padding: 8px 12px;
+    border: 1px solid #a9712a;
+    border-radius: 7px;
+    background: white;
+    color: #6b7280;
+    font-size: 11px;
+    cursor: pointer;
+}

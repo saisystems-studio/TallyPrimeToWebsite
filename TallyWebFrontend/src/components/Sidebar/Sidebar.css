@@ -1,0 +1,90 @@
+/* SIDEBAR */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 225px;
+    padding: 21px 14px;
+    overflow-y: auto;
+    background: white;
+    border-right: 1px solid #e8eaf1;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 0 8px 24px;
+}
+
+.brandIcon {
+    width: 39px;
+    height: 39px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #d1882e;
+    color: white;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.brand h2 {
+    margin: 0;
+    color: #242a3d;
+    font-size: 17px;
+}
+
+.brand span {
+    display: block;
+    margin-top: 2px;
+    color: #a0a6b5;
+    font-size: 10px;
+}
+
+.menuSection {
+    margin-bottom: 18px;
+}
+
+.menuTitle {
+    margin: 0 10px 7px;
+    color: #adb2c0;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.menuItem {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    margin: 2px 0;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #737b8e;
+    text-align: left;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.menuItem:hover {
+    background: #f3f4ff;
+    color: #5969e8;
+}
+
+.menuItem.active {
+    background: #eef0ff;
+    color: #e8a859;
+    font-weight: 600;
+}
+
+.menuIcon {
+    width: 17px;
+    text-align: center;
+}
