@@ -5,16 +5,16 @@
 }
 
 .mainContent {
-    width: calc(100% - 225px);
-    margin-left: 225px;
-    padding: 25px 30px 40px;
+    width: calc(100% - 232px);
+    margin-left: 232px;
+    padding: 18px 22px 24px;
 }
 
 .topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 }
 
 .topbar h1 {

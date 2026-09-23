@@ -19,6 +19,7 @@
         // Financial Details
         public string StartingFrom { get; set; } = "";
         public string BooksFrom { get; set; } = "";
+        public string FinancialYearEnd { get; set; } = "";
 
         public string CurrencySymbol { get; set; } = "";
         public string CurrencyFormalName { get; set; } = "";

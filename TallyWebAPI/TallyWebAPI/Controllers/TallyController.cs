@@ -235,5 +235,25 @@ namespace TallyWebAPI.Controllers
                 });
             }
         }
+
+        [HttpGet("current-period-raw")]
+        public async Task<IActionResult> GetCurrentPeriodRaw()
+        {
+            try
+            {
+                var result = await _tallyService.GetCurrentPeriodRawAsync();
+
+                return Content(result, "application/xml");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    connected = false,
+                    message = "Unable to fetch current Tally period.",
+                    error = ex.Message
+                });
+            }
+        }
     }
 }

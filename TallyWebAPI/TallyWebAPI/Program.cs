@@ -7,6 +7,9 @@ using TallyWebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 // Controllers
 builder.Services.AddControllers();
 
@@ -35,6 +38,7 @@ builder.Services.AddHttpClient<TallyService>(client =>
     client.Timeout = TimeSpan.FromSeconds(10);
 });
 
+builder.Services.AddHttpClient<VoucherService>();
 
 // ==========================================
 // CORS - REACT FRONTEND
@@ -95,6 +99,14 @@ builder.Services.AddAuthorization();
 
 
 var app = builder.Build();
+
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 
 using (var scope = app.Services.CreateScope())
 {

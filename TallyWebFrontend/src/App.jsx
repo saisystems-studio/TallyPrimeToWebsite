@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import DashboardLayout from "./layouts/DashboardLayout";
 import Ledgers from "./pages/Ledgers/Ledgers";
 import StockItems from "./pages/StockItems/StockItems";
+import Vouchers from "./pages/Vouchers/Vouchers";
 
 function Placeholder({ title }) {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/receipt" element={<Placeholder title="Receipt" />} />
           <Route path="/payment" element={<Placeholder title="Payment" />} />
           <Route path="/journal" element={<Placeholder title="Journal" />} />
+          <Route path="vouchers" element={<Vouchers />} />
           <Route
             path="/outstanding"
             element={<Placeholder title="Outstanding" />}

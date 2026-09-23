@@ -38,6 +38,87 @@ namespace TallyWebAPI.Services
             return result;
         }
 
+        public async Task<string> GetCurrentPeriodRawAsync()
+        {
+            var xmlRequest = """
+    <ENVELOPE>
+        <HEADER>
+            <VERSION>1</VERSION>
+            <TALLYREQUEST>Export</TALLYREQUEST>
+            <TYPE>Data</TYPE>
+            <ID>Current Period Test</ID>
+        </HEADER>
+
+        <BODY>
+            <DESC>
+                <STATICVARIABLES>
+                    <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
+                </STATICVARIABLES>
+
+                <TDL>
+                    <TDLMESSAGE>
+
+                        <REPORT NAME="Current Period Test">
+                            <FORMS>Current Period Form</FORMS>
+                        </REPORT>
+
+                        <FORM NAME="Current Period Form">
+                            <PARTS>Current Period Part</PARTS>
+                            <XMLTAG>PERIOD</XMLTAG>
+                        </FORM>
+
+                        <PART NAME="Current Period Part">
+                            <LINES>Current Period Line</LINES>
+                        </PART>
+
+                        <LINE NAME="Current Period Line">
+                            <FIELDS>
+                                Current Company Field,
+                                Current From Date Field,
+                                Current To Date Field
+                            </FIELDS>
+                        </LINE>
+
+                        <FIELD NAME="Current Company Field">
+                            <SET>$$CurrentCompany</SET>
+                            <XMLTAG>COMPANY</XMLTAG>
+                        </FIELD>
+
+                        <FIELD NAME="Current From Date Field">
+                            <SET>##SVFromDate</SET>
+                            <XMLTAG>FROMDATE</XMLTAG>
+                        </FIELD>
+
+                        <FIELD NAME="Current To Date Field">
+                            <SET>##SVToDate</SET>
+                            <XMLTAG>TODATE</XMLTAG>
+                        </FIELD>
+
+                    </TDLMESSAGE>
+                </TDL>
+            </DESC>
+        </BODY>
+    </ENVELOPE>
+    """;
+
+            using var content = new StringContent(
+                xmlRequest,
+                Encoding.UTF8,
+                "text/xml"
+            );
+
+            var response = await _httpClient.PostAsync(
+                "http://127.0.0.1:9000",
+                content
+            );
+
+            var result = await response.Content.ReadAsStringAsync();
+
+            response.EnsureSuccessStatusCode();
+
+            return result;
+        }
+
 
         // =========================================================
         // GST REGISTRATION RAW DATA
@@ -439,6 +520,9 @@ namespace TallyWebAPI.Services
 
                 StartingFrom =
                     GetValue(company, "STARTINGFROM"),
+
+                FinancialYearEnd = 
+                    GetValue(company, "ENDINGAT"),
 
                 BooksFrom =
                     GetValue(company, "BOOKSFROM"),
