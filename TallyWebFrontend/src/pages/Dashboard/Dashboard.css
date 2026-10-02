@@ -1,49 +1,160 @@
-/* COMPANY BAR */
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+.dashboard-page {
+    width: 100%;
+    min-width: 0;
+    color: #26344c;
+}
+
+
+/* =========================================================
+   TOP COMPANY BAR
+   ========================================================= */
 
 .companyBar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 18px;
-    padding: 20px 22px;
-    border-radius: 12px;
-    background: linear-gradient(120deg, #a56c26, #dcb45b);
-    color: white;
-    box-shadow: 0 8px 22px rgba(89, 105, 232, 0.18);
+    gap: 20px;
+
+    min-height: 82px;
+    margin-bottom: 12px;
+    padding: 13px 16px;
+
+    border: 1px solid #e4e8ef;
+    border-left: 3px solid #b97824;
+    border-radius: 9px;
+
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(28, 36, 61, 0.035);
+}
+
+.dashboard-company-info {
+    min-width: 0;
 }
 
 .companyLabel {
+    display: block;
+    margin-bottom: 3px;
+
+    color: #a66d27;
+
     font-size: 9px;
     font-weight: 700;
-    letter-spacing: 1px;
-    opacity: 0.75;
+    letter-spacing: 0.08em;
 }
 
 .companyBar h2 {
-    margin: 6px 0 3px;
-    font-size: 20px;
+    margin: 0;
+
+    color: #26344c;
+
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.25;
 }
 
 .companyBar p {
-    margin: 0;
-    font-size: 11px;
-    opacity: 0.8;
+    margin: 3px 0 0;
+
+    color: #8995a8;
+
+    font-size: 10px;
 }
+
+
+/* =========================================================
+   TOP RIGHT
+   ========================================================= */
+
+.dashboard-top-actions {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.dashboard-company-select {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    min-width: 0;
+    width: 190px;
+}
+
+.dashboard-company-select label {
+    color: #69758a;
+
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.dashboard-company-select select {
+    width: 100%;
+    height: 34px;
+
+    padding: 0 30px 0 10px;
+
+    border: 1px solid #dfe4ec;
+    border-radius: 6px;
+    outline: none;
+
+    background: #ffffff;
+    color: #26344c;
+
+    font-size: 11px;
+    cursor: pointer;
+
+    transition:
+        border-color 140ms ease,
+        box-shadow 140ms ease;
+}
+
+.dashboard-company-select select:hover {
+    border-color: #cdb28a;
+}
+
+.dashboard-company-select select:focus {
+    border-color: #b97824;
+    box-shadow: 0 0 0 2px rgba(185, 120, 36, 0.08);
+}
+
+
+/* =========================================================
+   AUTO SYNC STATUS
+   ========================================================= */
 
 .tallyStatus {
+    min-width: 140px;
+    height: 34px;
+
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 11px 14px;
-    border-radius: 9px;
-    background: rgba(255, 255, 255, 0.14);
+    gap: 8px;
+
+    padding: 6px 10px;
+
+    border: 1px solid #e1ebe5;
+    border-radius: 7px;
+
+    background: #f6faf7;
 }
 
-.statusDot {
-    width: 9px;
-    height: 9px;
+.tallyStatus .statusDot {
+    width: 8px;
+    height: 8px;
+
+    flex: 0 0 8px;
+
     border-radius: 50%;
-    background: white;
+
+    background: #39a878;
+
+    box-shadow: 0 0 0 3px #e2f2e9;
 }
 
 .tallyStatus strong,
@@ -52,230 +163,601 @@
 }
 
 .tallyStatus strong {
-    font-size: 11px;
-}
+    color: #385747;
 
-.tallyStatus small {
-    margin-top: 3px;
-    font-size: 9px;
-    opacity: 0.75;
-}
-
-/* STAT CARDS */
-
-.statsGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-}
-
-.statCard {
-    min-width: 0;
-    padding: 17px;
-    border: 1px solid #eaebf1;
-    border-radius: 10px;
-    background: white;
-    box-shadow: 0 3px 12px rgba(28, 36, 61, 0.035);
-}
-
-.statTop {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.statTop>span {
-    color: #9299a9;
     font-size: 9px;
     font-weight: 700;
 }
 
-.statIcon {
-    width: 31px;
-    height: 31px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.tallyStatus small {
+    margin-top: 1px;
+
+    color: #8995a8;
+
+    font-size: 8px;
+}
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
+
+.dashboard-error {
+    margin-bottom: 12px;
+    padding: 9px 12px;
+
+    border: 1px solid #f1d0d0;
+    border-radius: 7px;
+
+    background: #fff6f6;
+    color: #b14c4c;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   PRIMARY STAT CARDS
+   ========================================================= */
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+
+    margin-bottom: 10px;
+}
+
+.statCard {
+    min-width: 0;
+
+    padding: 12px 14px;
+
+    border: 1px solid #e4e8ef;
     border-radius: 8px;
-    background: #fff7ee;
-    color: #a76f28;
-    font-size: 11px;
-    font-weight: 800;
-    border: 1px solid #a76f28;
+
+    background: #ffffff;
+
+    box-shadow: 0 2px 7px rgba(28, 36, 61, 0.025);
+
+    transition:
+        transform 140ms ease,
+        border-color 140ms ease,
+        box-shadow 140ms ease;
+}
+
+.statCard:hover {
+    transform: translateY(-1px);
+
+    border-color: #d9c29f;
+
+    box-shadow: 0 4px 12px rgba(28, 36, 61, 0.055);
+}
+
+.statCard>span {
+    display: block;
+
+    color: #778399;
+
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.045em;
 }
 
 .statCard h3 {
-    margin: 13px 0 4px;
+    margin: 8px 0 2px;
+
     overflow: hidden;
-    color: #353b4e;
+
+    color: #26344c;
+
     font-size: 18px;
+    font-weight: 700;
+    line-height: 1.2;
+
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .statCard p {
     margin: 0;
-    color: #a2a7b5;
-    font-size: 10px;
-}
 
-/* PANELS */
+    color: #8995a8;
 
-.dashboardGrid {
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(260px, 0.9fr);
-    gap: 14px;
-    margin-top: 14px;
-}
-
-.bottomGrid {
-    display: grid;
-    grid-template-columns: 1.4fr 1fr;
-    gap: 14px;
-    margin-top: 14px;
-}
-
-.panel {
-    padding: 19px;
-    border: 1px solid #eaebf1;
-    border-radius: 10px;
-    background: white;
-    box-shadow: 0 3px 12px rgba(28, 36, 61, 0.035);
-}
-
-.panelHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.panelHeader h3 {
-    margin: 0;
-    color: #3d4355;
-    font-size: 13px;
-}
-
-.panelHeader p {
-    margin: 4px 0 0;
-    color: #a4a9b6;
     font-size: 9px;
 }
 
-.panelHeader select {
-    padding: 7px 9px;
-    border: 1px solid #e4e6ed;
-    border-radius: 6px;
-    outline: none;
-    background: white;
-    color: #747b8c;
-    font-size: 9px;
+
+/* =========================================================
+   FINANCE / OUTSTANDING CARDS
+   ========================================================= */
+
+.dashboard-finance-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+
+    margin-bottom: 12px;
 }
 
-.chartPlaceholder {
+.finance-card {
     position: relative;
-    height: 220px;
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     overflow: hidden;
-    border-radius: 7px;
-    background:
-        linear-gradient(#f1f2f6 1px, transparent 1px);
-    background-size: 100% 52px;
+
+    min-width: 0;
+
+    padding: 14px 15px;
+
+    border: 1px solid #e4e8ef;
+    border-radius: 8px;
+
+    background: #ffffff;
+
+    box-shadow: 0 2px 7px rgba(28, 36, 61, 0.025);
+
+    transition:
+        transform 140ms ease,
+        border-color 140ms ease,
+        box-shadow 140ms ease;
 }
 
-.chartPlaceholder p {
-    position: relative;
-    z-index: 2;
-    padding: 8px 12px;
-    border-radius: 6px;
-    background: white;
-    color: #a1a6b4;
-    font-size: 10px;
+.finance-card::before {
+    content: "";
+
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 3px;
+    height: 100%;
+
+    background: #b97824;
 }
 
-.connectionPanel {
-    background: linear-gradient(145deg, #a66d27, #c8ae51);
-    color: white;
+.finance-card:hover {
+    transform: translateY(-1px);
+
+    border-color: #d9c29f;
+
+    box-shadow: 0 4px 12px rgba(28, 36, 61, 0.05);
 }
 
-.connectionGraphic {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 16px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.14);
-    font-size: 23px;
-    font-weight: 800;
-}
+.finance-card span {
+    display: block;
 
-.connectionPanel h3 {
-    margin: 0;
-    font-size: 16px;
-}
+    color: #778399;
 
-.connectionPanel>p {
-    margin: 7px 0 20px;
-    color: rgba(255, 255, 255, 0.72);
-    font-size: 10px;
-    line-height: 1.6;
-}
-
-.connectionRow {
-    display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    font-size: 10px;
-}
-
-.connectionRow span {
-    opacity: 0.7;
-}
-
-.connectedText {
-    color: white;
-}
-
-.viewButton {
-    padding: 6px 10px;
-    border: 0;
-    border-radius: 6px;
-    background: #eef0ff;
-    color: #e8bc59;
     font-size: 9px;
-    cursor: pointer;
+    font-weight: 700;
+    letter-spacing: 0.045em;
 }
 
-.emptyState {
-    min-height: 100px;
+.finance-card h3 {
+    margin: 7px 0 0;
+
+    color: #26344c;
+
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.finance-card p {
+    margin: 5px 0 0;
+
+    color: #8995a8;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   LOWER CONTENT
+   ========================================================= */
+
+.dashboard-content-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.45fr) minmax(340px, 1fr);
+
+    gap: 12px;
+
+    align-items: start;
+}
+
+
+/* =========================================================
+   PANELS
+   ========================================================= */
+
+.dashboard-panel {
+    min-width: 0;
+
+    overflow: hidden;
+
+    border: 1px solid #e4e8ef;
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    box-shadow: 0 2px 8px rgba(28, 36, 61, 0.03);
+}
+
+.dashboard-panel-header {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-top: 14px;
-    border: 1px dashed #e1e4eb;
-    border-radius: 7px;
-    color: #a2a7b5;
-    font-size: 10px;
-}
-
-.outstandingRows {
-    margin-top: 15px;
-}
-
-.outstandingRows>div {
-    display: flex;
     justify-content: space-between;
-    padding: 12px 0;
-    border-top: 1px solid #eff0f4;
-    color: #777e8f;
-    font-size: 10px;
+
+    min-height: 57px;
+
+    padding: 11px 14px;
+
+    border-bottom: 1px solid #edf0f4;
 }
 
-.outstandingRows strong {
-    color: #3d4355;
+.dashboard-panel-header h3 {
+    margin: 0;
+
+    color: #26344c;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.dashboard-panel-header p {
+    margin: 3px 0 0;
+
+    color: #929cad;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+
+.dashboard-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.dashboard-table {
+    width: 100%;
+    min-width: 540px;
+
+    border-collapse: collapse;
+    table-layout: auto;
+
+    background: #ffffff;
+}
+
+.dashboard-table th {
+    padding: 9px 11px;
+
+    border-bottom: 1px solid #e9edf2;
+
+    background: #fafbfc;
+    color: #647086;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 0.035em;
+
+    text-align: left;
+    text-transform: uppercase;
+
+    white-space: nowrap;
+}
+
+.dashboard-table td {
+    padding: 9px 11px;
+
+    border-bottom: 1px solid #f0f2f5;
+
+    color: #4d586c;
+
+    font-size: 9.5px;
+    line-height: 1.35;
+
+    vertical-align: middle;
+}
+
+.dashboard-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.dashboard-table tbody tr {
+    transition: background 120ms ease;
+}
+
+.dashboard-table tbody tr:hover {
+    background: #fcfaf7;
+}
+
+.dashboard-table td:first-child {
+    white-space: nowrap;
+}
+
+.dashboard-company-name {
+    color: #26344c !important;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   AMOUNT / COUNT
+   ========================================================= */
+
+.dashboard-table th.dashboard-amount,
+.dashboard-table td.dashboard-amount {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.dashboard-table th.dashboard-count,
+.dashboard-table td.dashboard-count {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.receivable-value {
+    color: #297858 !important;
+    font-weight: 600;
+}
+
+.payable-value {
+    color: #a85a50 !important;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.dashboard-empty {
+    height: 80px;
+
+    color: #9aa3b2 !important;
+
+    text-align: center !important;
+
+    font-size: 10px !important;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+.dashboard-table-wrapper::-webkit-scrollbar {
+    height: 5px;
+}
+
+.dashboard-table-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dashboard-table-wrapper::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: #d8dde5;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1150px) {
+
+    .dashboard-content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+@media (max-width: 1000px) {
+
+    .statsGrid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-finance-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 800px) {
+
+    .companyBar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .dashboard-top-actions {
+        width: 100%;
+
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .dashboard-company-select {
+        width: 100%;
+    }
+
+    .tallyStatus {
+        width: 100%;
+    }
+
+    .dashboard-finance-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* Mobile and tablet typography is sized for reading at native scale. */
+@media (max-width: 1024px) {
+    .dashboard-page {
+        line-height: 1.5;
+    }
+
+    .companyBar {
+        padding: 18px;
+        gap: 18px;
+        margin-bottom: 16px;
+        border-radius: 14px;
+    }
+
+    .companyLabel,
+    .dashboard-company-select label {
+        font-size: 11px;
+    }
+
+    .companyBar h2 {
+        margin-top: 4px;
+        font-size: 24px;
+        letter-spacing: -0.035em;
+        overflow-wrap: anywhere;
+    }
+
+    .companyBar p {
+        margin-top: 6px;
+        color: #657287;
+        font-size: 13px;
+    }
+
+    .dashboard-company-select {
+        gap: 6px;
+    }
+
+    .tallyStatus {
+        height: auto;
+        min-height: 40px;
+        padding: 8px 12px;
+        border-radius: 8px;
+    }
+
+    .tallyStatus strong {
+        font-size: 12px;
+    }
+
+    .tallyStatus small {
+        font-size: 11px;
+        color: #657287;
+    }
+
+    .statsGrid,
+    .dashboard-finance-grid {
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .statCard,
+    .finance-card {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .statCard > span,
+    .finance-card span {
+        color: #59677b;
+        font-size: 11px;
+        letter-spacing: 0.025em;
+    }
+
+    .statCard h3 {
+        margin: 8px 0 4px;
+        font-size: 28px;
+        letter-spacing: -0.035em;
+        font-variant-numeric: tabular-nums;
+    }
+
+    .statCard p,
+    .finance-card p {
+        color: #657287;
+        font-size: 12px;
+    }
+
+    .finance-card h3 {
+        font-size: 24px;
+        letter-spacing: -0.025em;
+        font-variant-numeric: tabular-nums;
+        overflow-wrap: anywhere;
+    }
+
+    .dashboard-finance-grid .finance-card:first-child {
+        background: #f5faf7;
+        border-color: #dcebe2;
+    }
+
+    .dashboard-finance-grid .finance-card:first-child::before {
+        background: #297858;
+    }
+
+    .dashboard-finance-grid .finance-card:first-child h3 {
+        color: #226344;
+    }
+
+    .dashboard-content-grid {
+        gap: 16px;
+    }
+
+    .dashboard-panel {
+        border-radius: 12px;
+    }
+
+    .dashboard-panel-header {
+        padding: 16px;
+    }
+
+    .dashboard-panel-header h3 {
+        font-size: 16px;
+    }
+
+    .dashboard-panel-header p {
+        font-size: 12px;
+        color: #657287;
+    }
+
+    .dashboard-table th {
+        padding: 12px 14px;
+        font-size: 11px;
+    }
+
+    .dashboard-table td {
+        padding: 14px;
+        font-size: 13px;
+    }
+
+    .dashboard-table-wrapper {
+        overscroll-behavior-x: contain;
+    }
+
+    .dashboard-error {
+        font-size: 13px;
+        padding: 12px;
+    }
+}
+
+@media (max-width: 600px) {
+    .statsGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .tallyStatus > div {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        column-gap: 10px;
+    }
+
+    .tallyStatus small {
+        margin: 0;
+    }
 }

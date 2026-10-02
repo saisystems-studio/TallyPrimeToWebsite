@@ -6,6 +6,13 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import Ledgers from "./pages/Ledgers/Ledgers";
 import StockItems from "./pages/StockItems/StockItems";
 import Vouchers from "./pages/Vouchers/Vouchers";
+import SalesReport from "./pages/Reports/SalesReport/SalesReport";
+import LedgerReport from "./pages/Reports/LedgerReport/LedgerReport";
+import StockSummary from "./pages/Reports/StockSummary/StockSummary";
+import Company from "./pages/Company/Company";
+import Outstanding from "./pages/Outstanding/Outstanding";
+import DayBook from "./pages/DayBook/DayBook";
+import PayablesReceivables from "./pages/Reports/PayablesReceivables/PayablesReceivables";
 
 function Placeholder({ title }) {
   return (
@@ -24,19 +31,28 @@ function App() {
 
         <Route element={<DashboardLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/company" element={<Placeholder title="Company" />} />
-          <Route path="ledgers" element={<Ledgers />} />
-          <Route path="stock-items" element={<StockItems />} />
+          <Route path="/company" element={<Company />} />
+          <Route path="/ledgers" element={<Ledgers />} />
+          <Route path="/stock-items" element={<StockItems />} />
+
           <Route path="/sales" element={<Placeholder title="Sales" />} />
           <Route path="/purchase" element={<Placeholder title="Purchase" />} />
           <Route path="/receipt" element={<Placeholder title="Receipt" />} />
           <Route path="/payment" element={<Placeholder title="Payment" />} />
           <Route path="/journal" element={<Placeholder title="Journal" />} />
-          <Route path="vouchers" element={<Vouchers />} />
+
+          <Route path="/vouchers" element={<Vouchers />} />
+          <Route path="/day-book" element={<DayBook />} />
+
+          <Route path="/reports/sales" element={<SalesReport />} />
+          <Route path="/reports/ledger" element={<LedgerReport />} />
+          <Route path="/reports/stock-summary" element={<StockSummary />} />
           <Route
-            path="/outstanding"
-            element={<Placeholder title="Outstanding" />}
+            path="/payables-receivables"
+            element={<PayablesReceivables />}
           />
+
+          <Route path="/outstanding" element={<Outstanding />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/login" replace />} />

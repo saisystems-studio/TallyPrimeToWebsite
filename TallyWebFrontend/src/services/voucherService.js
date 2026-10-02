@@ -1,7 +1,17 @@
 import { apiRequest } from "./api";
 
-export async function getVouchersRaw() {
-  const response = await apiRequest("/voucher/vouchers-raw");
+export async function getVouchersRaw(
+  fromDate,
+  toDate,
+  companyName
+) {
+  const response = await apiRequest(
+    `/voucher/vouchers-raw?fromDate=${encodeURIComponent(
+      fromDate
+    )}&toDate=${encodeURIComponent(
+      toDate
+    )}&companyName=${encodeURIComponent(companyName)}`
+  );
 
   if (!response.ok) {
     throw new Error("Unable to fetch vouchers from Tally.");
@@ -10,9 +20,17 @@ export async function getVouchersRaw() {
   return await response.text();
 }
 
-export async function getVouchers(fromDate, toDate) {
+export async function getVouchers(
+  fromDate,
+  toDate,
+  companyName
+) {
   const response = await apiRequest(
-    `/voucher/vouchers?fromDate=${fromDate}&toDate=${toDate}`
+    `/voucher/vouchers?fromDate=${encodeURIComponent(
+      fromDate
+    )}&toDate=${encodeURIComponent(
+      toDate
+    )}&companyName=${encodeURIComponent(companyName)}`
   );
 
   if (!response.ok) {
@@ -22,13 +40,20 @@ export async function getVouchers(fromDate, toDate) {
   return await response.json();
 }
 
-export async function getVoucherDetail(guid, fromDate, toDate) {
+export async function getVoucherDetail(
+  guid,
+  fromDate,
+  toDate,
+  companyName
+) {
   const response = await apiRequest(
     `/voucher/voucher-detail?guid=${encodeURIComponent(
       guid
     )}&fromDate=${encodeURIComponent(
       fromDate
-    )}&toDate=${encodeURIComponent(toDate)}`
+    )}&toDate=${encodeURIComponent(
+      toDate
+    )}&companyName=${encodeURIComponent(companyName)}`
   );
 
   if (!response.ok) {

@@ -14,8 +14,11 @@ namespace TallyWebAPI.Services
             _httpClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
-   public async Task<string> GetVouchersAsync(string fromDate,string toDate)  
+        public async Task<string> GetVouchersAsync(string fromDate, string toDate, string companyName)
         {
+
+            var safeCompanyName = System.Security.SecurityElement.Escape(companyName) ?? "";
+
             var xmlRequest = $"""
     <ENVELOPE>
         <HEADER>
@@ -28,13 +31,15 @@ namespace TallyWebAPI.Services
         <BODY>
             <DESC>
 
-        <STATICVARIABLES>
-            <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
-    <SVENCODINGTYPE>UTF-8</SVENCODINGTYPE>
+    <STATICVARIABLES>
+        <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
+        <SVENCODINGTYPE>UTF-8</SVENCODINGTYPE>
 
-           <SVFROMDATE TYPE="Date">{fromDate}</SVFROMDATE>
-    <SVTODATE TYPE="Date">{toDate}</SVTODATE>
-        </STATICVARIABLES>
+        <SVCURRENTCOMPANY>{safeCompanyName}</SVCURRENTCOMPANY>
+
+        <SVFROMDATE TYPE="Date">{fromDate}</SVFROMDATE>
+        <SVTODATE TYPE="Date">{toDate}</SVTODATE>
+    </STATICVARIABLES>
                 <TDL>
                     <TDLMESSAGE>
 
@@ -66,29 +71,15 @@ namespace TallyWebAPI.Services
     </ENVELOPE>
     """;
 
-            using var content = new StringContent(
-                xmlRequest,
-                Encoding.UTF8,
-                "text/xml"
-            );
-
-            var response = await _httpClient.PostAsync(
-                "http://127.0.0.1:9000",
-                content
-            );
-
-            var result = await response.Content.ReadAsStringAsync();
-
-            response.EnsureSuccessStatusCode();
-
-            return result;
+            return await TallyXmlTransport.PostAsync(_httpClient, xmlRequest);
         }
 
 
 
         public async Task<List<VoucherDto>> GetVoucherListAsync(
             string fromDate,
-            string toDate)
+            string toDate,
+            string companyName)
         {
             if (!DateTime.TryParseExact(
                     fromDate,
@@ -148,7 +139,8 @@ namespace TallyWebAPI.Services
                 // Fetch only one month from Tally
                 var xml = await GetVouchersAsync(
                     batchFromDate,
-                    batchToDate
+                    batchToDate,
+                    companyName
                 );
 
                 // Remove invalid XML 1.0 character references
@@ -280,31 +272,17 @@ namespace TallyWebAPI.Services
     </ENVELOPE>
     """;
 
-            using var content = new StringContent(
-                xmlRequest,
-                Encoding.UTF8,
-                "text/xml"
-            );
-
-            var response = await _httpClient.PostAsync(
-                "http://127.0.0.1:9000",
-                content
-            );
-
-            var bytes = await response.Content.ReadAsByteArrayAsync();
-
-            response.EnsureSuccessStatusCode();
-
-            return Encoding.UTF8.GetString(bytes);
+            return await TallyXmlTransport.PostAsync(_httpClient, xmlRequest);
         }
 
 
         public async Task<VoucherDetailDto?> GetVoucherDetailAsync(
-    string guid,
-    string fromDate,
-    string toDate)
+            string guid,
+            string fromDate,
+            string toDate,
+            string companyName)
         {
-            var xml = await GetVouchersAsync(fromDate, toDate);
+            var xml = await GetVouchersAsync(fromDate, toDate, companyName);
 
             xml = System.Text.RegularExpressions.Regex.Replace(
                 xml,
@@ -493,11 +471,9 @@ namespace TallyWebAPI.Services
                 ?.Value
                 ?.Trim() ?? "";
         }
-
-
         public async Task<string> GetTamilVoucherTestAsync(
-    string fromDate,
-    string toDate)
+            string fromDate,
+            string toDate)
         {
             var xmlRequest = $"""
     <ENVELOPE>
@@ -512,8 +488,10 @@ namespace TallyWebAPI.Services
             <DESC>
                 <STATICVARIABLES>
                     <SVCURRENTCOMPANY>JAYA JOTHI MALIGAI</SVCURRENTCOMPANY>
+
                     <SVFROMDATE TYPE="Date">{fromDate}</SVFROMDATE>
                     <SVTODATE TYPE="Date">{toDate}</SVTODATE>
+
                     <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
                 </STATICVARIABLES>
 
@@ -541,13 +519,17 @@ namespace TallyWebAPI.Services
     </ENVELOPE>
     """;
 
-            using var content = new StringContent(
-                xmlRequest,
-                Encoding.UTF8,
-                "text/xml"
-            );
+            // IMPORTANT: send request to Tally as UTF-16
+            var utf16 = Encoding.Unicode;
 
-            content.Headers.ContentType!.CharSet = "utf-8";
+            var bytes = utf16.GetBytes(xmlRequest);
+
+            using var content = new ByteArrayContent(bytes);
+
+            content.Headers.ContentType =
+                new System.Net.Http.Headers.MediaTypeHeaderValue("text/xml");
+
+            content.Headers.ContentType.CharSet = "utf-16";
 
             using var request = new HttpRequestMessage(
                 HttpMethod.Post,
@@ -563,16 +545,38 @@ namespace TallyWebAPI.Services
 
             request.Headers.TryAddWithoutValidation(
                 "Accept-Charset",
-                "utf-8"
+                "utf-16"
             );
 
             var response = await _httpClient.SendAsync(request);
 
-            var bytes = await response.Content.ReadAsByteArrayAsync();
+            var responseBytes =
+                await response.Content.ReadAsByteArrayAsync();
 
             response.EnsureSuccessStatusCode();
 
-            return Encoding.UTF8.GetString(bytes);
+            // Detect UTF-16 response
+            if (responseBytes.Length >= 2)
+            {
+                // UTF-16 LE BOM
+                if (responseBytes[0] == 0xFF &&
+                    responseBytes[1] == 0xFE)
+                {
+                    return Encoding.Unicode.GetString(responseBytes);
+                }
+
+                // UTF-16 BE BOM
+                if (responseBytes[0] == 0xFE &&
+                    responseBytes[1] == 0xFF)
+                {
+                    return Encoding.BigEndianUnicode.GetString(responseBytes);
+                }
+            }
+
+            // Otherwise Tally returned UTF-8
+            return Encoding.UTF8.GetString(responseBytes);
         }
+
+
     }
 }

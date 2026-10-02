@@ -12,8 +12,8 @@
 }
 
 .loginCard {
-    width: 410px;
-    padding: 42px;
+    width: min(410px, 100%);
+    padding: clamp(20px, 5vw, 42px);
     background: white;
     border-radius: 16px;
     box-shadow: 0 25px 70px rgba(31, 41, 55, 0.22);

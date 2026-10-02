@@ -495,6 +495,14 @@
 }
 
 @media (max-width: 640px) {
+    .voucher-detail-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .voucher-table {
+        min-width: 760px;
+    }
+
     .vouchers-header h2 {
         font-size: 22px;
     }

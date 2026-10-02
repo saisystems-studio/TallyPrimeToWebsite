@@ -20,22 +20,7 @@ namespace TallyWebAPI.Services
         {
             var xmlRequest = BuildCompanyRequest();
 
-            using var content = new StringContent(
-                xmlRequest,
-                Encoding.UTF8,
-                "text/xml"
-            );
-
-            var response = await _httpClient.PostAsync(
-                "http://127.0.0.1:9000",
-                content
-            );
-
-            var result = await response.Content.ReadAsStringAsync();
-
-            response.EnsureSuccessStatusCode();
-
-            return result;
+            return await TallyXmlTransport.PostAsync(_httpClient, xmlRequest);
         }
 
         public async Task<string> GetCurrentPeriodRawAsync()
@@ -101,22 +86,7 @@ namespace TallyWebAPI.Services
     </ENVELOPE>
     """;
 
-            using var content = new StringContent(
-                xmlRequest,
-                Encoding.UTF8,
-                "text/xml"
-            );
-
-            var response = await _httpClient.PostAsync(
-                "http://127.0.0.1:9000",
-                content
-            );
-
-            var result = await response.Content.ReadAsStringAsync();
-
-            response.EnsureSuccessStatusCode();
-
-            return result;
+            return await TallyXmlTransport.PostAsync(_httpClient, xmlRequest);
         }
 
 
@@ -124,128 +94,114 @@ namespace TallyWebAPI.Services
         // GST REGISTRATION RAW DATA
         // Temporary method - keep for now
         // =========================================================
-        public async Task<string> GetGstRegistrationsAsync()
+        public async Task<string> GetGstRegistrationsAsync(string companyName)
         {
-            var xmlRequest = """
-            <ENVELOPE>
-                <HEADER>
-                    <VERSION>1</VERSION>
-                    <TALLYREQUEST>Export</TALLYREQUEST>
-                    <TYPE>Collection</TYPE>
-                    <ID>GSTRegistrationCollection</ID>
-                </HEADER>
+            var safeCompanyName =
+                System.Security.SecurityElement.Escape(companyName) ?? "";
 
-                <BODY>
-                    <DESC>
-                        <STATICVARIABLES>
-                            <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
-                            <SVCURRENTCOMPANY>PMP Rice Mill</SVCURRENTCOMPANY>
-                        </STATICVARIABLES>
+            var xmlRequest = $"""
+        <ENVELOPE>
+            <HEADER>
+                <VERSION>1</VERSION>
+                <TALLYREQUEST>Export</TALLYREQUEST>
+                <TYPE>Collection</TYPE>
+                <ID>GSTRegistrationCollection</ID>
+            </HEADER>
 
-                        <TDL>
-                            <TDLMESSAGE>
-                                <COLLECTION NAME="GSTRegistrationCollection">
-                                    <TYPE>TaxUnit</TYPE>
-                                    <FETCH>*</FETCH>
-                                </COLLECTION>
-                            </TDLMESSAGE>
-                        </TDL>
-                    </DESC>
-                </BODY>
-            </ENVELOPE>
-            """;
+            <BODY>
+                <DESC>
+                    <STATICVARIABLES>
+                        <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
+                        <SVCURRENTCOMPANY>{safeCompanyName}</SVCURRENTCOMPANY>
+                    </STATICVARIABLES>
 
-            using var content = new StringContent(
-                xmlRequest,
-                Encoding.UTF8,
-                "text/xml"
+                    <TDL>
+                        <TDLMESSAGE>
+                            <COLLECTION NAME="GSTRegistrationCollection">
+                                <TYPE>TaxUnit</TYPE>
+                                <FETCH>*</FETCH>
+                            </COLLECTION>
+                        </TDLMESSAGE>
+                    </TDL>
+                </DESC>
+            </BODY>
+        </ENVELOPE>
+        """;
+
+            return await TallyXmlTransport.PostAsync(
+                _httpClient,
+                xmlRequest
             );
-
-            var response = await _httpClient.PostAsync(
-                "http://127.0.0.1:9000",
-                content
-            );
-
-            var result = await response.Content.ReadAsStringAsync();
-
-            response.EnsureSuccessStatusCode();
-
-            return result;
         }
 
 
         // =========================================================
         // LEDGERS RAW DATA
         // =========================================================
-        public async Task<string> GetLedgersAsync()
+        public async Task<string> GetLedgersAsync(string companyName)
         {
-            var xmlRequest = """
-            <ENVELOPE>
-                <HEADER>
-                    <VERSION>1</VERSION>
-                    <TALLYREQUEST>Export</TALLYREQUEST>
-                    <TYPE>Collection</TYPE>
-                    <ID>LedgerCollection</ID>
-                </HEADER>
+            var safeCompanyName =
+                System.Security.SecurityElement.Escape(companyName) ?? "";
 
-                <BODY>
-                    <DESC>
-                        <STATICVARIABLES>
-                            <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
-                        </STATICVARIABLES>
+            var xmlRequest = $"""
+    <ENVELOPE>
+        <HEADER>
+            <VERSION>1</VERSION>
+            <TALLYREQUEST>Export</TALLYREQUEST>
+            <TYPE>Collection</TYPE>
+            <ID>LedgerCollection</ID>
+        </HEADER>
 
-                        <TDL>
-                            <TDLMESSAGE>
-                                <COLLECTION NAME="LedgerCollection">
-                                    <TYPE>Ledger</TYPE>
+        <BODY>
+            <DESC>
+                <STATICVARIABLES>
+                    <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
+                    <SVCURRENTCOMPANY>{safeCompanyName}</SVCURRENTCOMPANY>
+                </STATICVARIABLES>
 
-                                    <FETCH>Name</FETCH>
-                                    <FETCH>Parent</FETCH>
-                                    <FETCH>Alias</FETCH>
+                <TDL>
+                    <TDLMESSAGE>
+                        <COLLECTION NAME="LedgerCollection">
+                            <TYPE>Ledger</TYPE>
 
-                                    <FETCH>MailingName</FETCH>
-                                    <FETCH>Address</FETCH>
-                                    <FETCH>StateName</FETCH>
-                                    <FETCH>CountryName</FETCH>
-                                    <FETCH>PinCode</FETCH>
+                            <FETCH>Name</FETCH>
+                            <FETCH>Parent</FETCH>
+                            <FETCH>Alias</FETCH>
 
-                                    <FETCH>LedgerStateName</FETCH>
-                                    <FETCH>LEDGSTREGDETAILS.*</FETCH>
-                                    <FETCH>LEDMAILINGDETAILS.*</FETCH>
-                                    <FETCH>IncomeTaxNumber</FETCH>
-                                    <FETCH>PartyIncomeTaxNumber</FETCH>
+                            <FETCH>GUID</FETCH>
+                            <FETCH>MasterID</FETCH>
+                            <FETCH>AlterID</FETCH>
 
-                                    <FETCH>IsBillWiseOn</FETCH>
-                                    <FETCH>BillCreditPeriod</FETCH>
+                            <FETCH>MailingName</FETCH>
+                            <FETCH>Address</FETCH>
+                            <FETCH>StateName</FETCH>
+                            <FETCH>CountryName</FETCH>
+                            <FETCH>PinCode</FETCH>
 
-                                    <FETCH>OpeningBalance</FETCH>
-                                    <FETCH>ClosingBalance</FETCH>
-                                </COLLECTION>
-                            </TDLMESSAGE>
-                        </TDL>
-                    </DESC>
-                </BODY>
-            </ENVELOPE>
-            """;
+                            <FETCH>LedgerStateName</FETCH>
+                            <FETCH>LEDGSTREGDETAILS.*</FETCH>
+                            <FETCH>LEDMAILINGDETAILS.*</FETCH>
+                            <FETCH>IncomeTaxNumber</FETCH>
+                            <FETCH>PartyIncomeTaxNumber</FETCH>
 
-            using var content = new StringContent(
-                xmlRequest,
-                Encoding.UTF8,
-                "text/xml"
+                            <FETCH>IsBillWiseOn</FETCH>
+                            <FETCH>BillCreditPeriod</FETCH>
+
+                            <FETCH>OpeningBalance</FETCH>
+                            <FETCH>ClosingBalance</FETCH>
+                        </COLLECTION>
+                    </TDLMESSAGE>
+                </TDL>
+            </DESC>
+        </BODY>
+    </ENVELOPE>
+    """;
+
+            return await TallyXmlTransport.PostAsync(
+                _httpClient,
+                xmlRequest
             );
-
-            var response = await _httpClient.PostAsync(
-                "http://127.0.0.1:9000",
-                content
-            );
-
-            var result = await response.Content.ReadAsStringAsync();
-
-            response.EnsureSuccessStatusCode();
-
-            return result;
         }
-
         // =========================================================
         // STOCK ITEMS RAW DATA
         // =========================================================
@@ -279,28 +235,13 @@ namespace TallyWebAPI.Services
     </ENVELOPE>
     """;
 
-            using var content = new StringContent(
-                xmlRequest,
-                Encoding.UTF8,
-                "text/xml"
-            );
-
-            var response = await _httpClient.PostAsync(
-                "http://127.0.0.1:9000",
-                content
-            );
-
-            var result = await response.Content.ReadAsStringAsync();
-
-            response.EnsureSuccessStatusCode();
-
-            return result;
+            return await TallyXmlTransport.PostAsync(_httpClient, xmlRequest);
         }
 
 
-        public async Task<List<LedgerDto>> GetLedgerListAsync()
+        public async Task<List<LedgerDto>> GetLedgerListAsync(string companyName)
         {
-            var xml = await GetLedgersAsync();
+            var xml = await GetLedgersAsync(companyName);
 
             var ledgers = new List<LedgerDto>();
 
@@ -332,6 +273,23 @@ namespace TallyWebAPI.Services
             {
                 ledgers.Add(new LedgerDto
                 {
+                    TallyGuid =
+                        GetValue(ledger, "GUID"),
+
+                                        MasterId =
+                        long.TryParse(
+                            GetValue(ledger, "MASTERID"),
+                            out var masterId)
+                            ? masterId
+                            : null,
+
+                    AlterId =
+                        long.TryParse(
+                            GetValue(ledger, "ALTERID"),
+                            out var alterId)
+                            ? alterId
+                            : null,
+
                     Name =
                         ledger.Attribute("NAME")?.Value?.Trim()
                         ?? GetValue(ledger, "NAME"),
@@ -445,22 +403,7 @@ namespace TallyWebAPI.Services
             </ENVELOPE>
             """;
 
-            using var content = new StringContent(
-                xmlRequest,
-                Encoding.UTF8,
-                "text/xml"
-            );
-
-            var response = await _httpClient.PostAsync(
-                "http://127.0.0.1:9000",
-                content
-            );
-
-            var result = await response.Content.ReadAsStringAsync();
-
-            response.EnsureSuccessStatusCode();
-
-            return result;
+            return await TallyXmlTransport.PostAsync(_httpClient, xmlRequest);
         }
 
         // =========================================================

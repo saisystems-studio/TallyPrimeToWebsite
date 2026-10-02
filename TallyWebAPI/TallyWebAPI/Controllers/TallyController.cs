@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TallyWebAPI.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
+using TallyWebAPI.Data;
 
 namespace TallyWebAPI.Controllers
 {
@@ -10,10 +12,12 @@ namespace TallyWebAPI.Controllers
     public class TallyController : ControllerBase
     {
         private readonly TallyService _tallyService;
+        private readonly AppDbContext _dbContext;
 
-        public TallyController(TallyService tallyService)
+        public TallyController(TallyService tallyService,  AppDbContext dbContext)
         {
             _tallyService = tallyService;
+            _dbContext = dbContext;
         }
 
         [HttpGet("companies")]
@@ -69,13 +73,13 @@ namespace TallyWebAPI.Controllers
             }
         }
 
-
         [HttpGet("ledgers-raw")]
-        public async Task<IActionResult> GetLedgersRaw()
+        public async Task<IActionResult> GetLedgersRaw([FromQuery] string companyName)
         {
             try
             {
-                var xml = await _tallyService.GetLedgersAsync();
+                var xml = await _tallyService
+                    .GetLedgersAsync(companyName);
 
                 return Content(xml, "application/xml");
             }
@@ -111,11 +115,12 @@ namespace TallyWebAPI.Controllers
         }
 
         [HttpGet("gst-registrations-raw")]
-        public async Task<IActionResult> GetGstRegistrationsRaw()
+        public async Task<IActionResult> GetGstRegistrationsRaw([FromQuery] string companyName)
         {
             try
             {
-                var xml = await _tallyService.GetGstRegistrationsAsync();
+                var xml = await _tallyService
+                    .GetGstRegistrationsAsync(companyName);
 
                 return Content(xml, "application/xml");
             }
@@ -131,11 +136,12 @@ namespace TallyWebAPI.Controllers
         }
 
         [HttpGet("ledgers")]
-        public async Task<IActionResult> GetLedgers()
+        public async Task<IActionResult> GetLedgers([FromQuery] string companyName)
         {
             try
             {
-                var ledgers = await _tallyService.GetLedgerListAsync();
+                var ledgers =
+                    await _tallyService.GetLedgerListAsync(companyName);
 
                 return Ok(new
                 {
@@ -146,16 +152,11 @@ namespace TallyWebAPI.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("===== LEDGER ERROR =====");
-                Console.WriteLine(ex.ToString());
-                Console.WriteLine("========================");
-
                 return StatusCode(500, new
                 {
                     connected = false,
-                    message = "Unable to fetch ledger details from Tally.",
-                    error = ex.Message,
-                    details = ex.ToString()
+                    message = "Unable to fetch ledgers from Tally.",
+                    error = ex.Message
                 });
             }
         }
@@ -251,6 +252,38 @@ namespace TallyWebAPI.Controllers
                 {
                     connected = false,
                     message = "Unable to fetch current Tally period.",
+                    error = ex.Message
+                });
+            }
+        }
+
+        // =========================================================
+        // LEDGERS FROM DATABASE - COMPANY WISE
+        // =========================================================
+        [HttpGet("db/ledgers")]
+        public async Task<IActionResult> GetDbLedgers(
+            [FromQuery] int companyId)
+        {
+            try
+            {
+                var ledgers = await _dbContext.Ledgers
+                    .AsNoTracking()
+                    .Where(x => x.CompanyId == companyId)
+                    .OrderBy(x => x.Name)
+                    .ToListAsync();
+
+                return Ok(new
+                {
+                    companyId,
+                    count = ledgers.Count,
+                    ledgers
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Unable to fetch ledgers from database.",
                     error = ex.Message
                 });
             }
