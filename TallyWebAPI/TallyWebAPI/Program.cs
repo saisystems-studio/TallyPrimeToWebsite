@@ -39,6 +39,21 @@ builder.Services.AddHttpClient<TallyService>(client =>
 });
 
 builder.Services.AddHttpClient<VoucherService>();
+builder.Services.AddHttpClient<SalesReportService>();
+builder.Services.AddHttpClient<LedgerReportService>();
+builder.Services.AddHttpClient<StockSummaryService>();
+builder.Services.AddHttpClient<OutstandingService>();
+builder.Services.AddScoped<StockItemSyncService>();
+builder.Services.AddScoped<CompanySyncService>();
+builder.Services.AddScoped<LedgerSyncService>();
+builder.Services.AddScoped<VoucherSyncService>();
+builder.Services.AddHostedService<TallyAutoSyncService>();
+
+
+builder.Services.AddScoped<OutstandingSyncService>();
+
+
+
 
 // ==========================================
 // CORS - REACT FRONTEND

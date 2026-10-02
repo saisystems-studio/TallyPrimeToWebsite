@@ -1,21 +1,61 @@
 import { useEffect, useState } from "react";
-import { getStockItems } from "../../services/tallyService";
+import { getDbStockItems } from "../../services/stockItemDbService";
+import { getDbCompanies } from "../../services/companyService";
 import "./StockItems.css";
 
 function StockItems() {
+  const [companies, setCompanies] = useState([]);
+  const [selectedCompanyId, setSelectedCompanyId] = useState("");
   const [stockItems, setStockItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+  const [loadingCompanies, setLoadingCompanies] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // Load companies from database
   useEffect(() => {
-    getStockItems()
-      .then((data) => setStockItems(data.stockItems || []))
-      .catch((err) => {
-        console.error("STOCK ITEMS ERROR:", err);
-        setError("Unable to load stock items from Tally.");
+    getDbCompanies()
+      .then((data) => {
+        const companyList = data.companies || [];
+
+        setCompanies(companyList);
+
+        if (companyList.length > 0) {
+          setSelectedCompanyId(String(companyList[0].id));
+        }
       })
-      .finally(() => setLoading(false));
+      .catch((err) => {
+        console.error("COMPANY DB ERROR:", err);
+        setError("Unable to load companies from database.");
+      })
+      .finally(() => {
+        setLoadingCompanies(false);
+      });
   }, []);
+
+  // Load Stock Items for selected company
+  useEffect(() => {
+    if (!selectedCompanyId) {
+      setStockItems([]);
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    getDbStockItems(selectedCompanyId)
+      .then((data) => {
+        setStockItems(data.stockItems || []);
+      })
+      .catch((err) => {
+        console.error("STOCK ITEMS DB ERROR:", err);
+        setError("Unable to load stock items from database.");
+        setStockItems([]);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [selectedCompanyId]);
 
   const showValue = (value) => {
     if (value === null || value === undefined || String(value).trim() === "") {
@@ -25,13 +65,38 @@ function StockItems() {
     return value;
   };
 
+  const showQuantity = (value, unit) => {
+    if (value === null || value === undefined) {
+      return "--";
+    }
+
+    const number = Number(value);
+
+    if (Number.isNaN(number)) {
+      return showValue(value);
+    }
+
+    const formatted = number.toLocaleString("en-IN", {
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3,
+    });
+
+    if (!unit || unit === "Not Applicable") {
+      return formatted;
+    }
+
+    return `${formatted} ${unit}`;
+  };
+
   return (
     <div className="stock-items-page">
       <div className="stock-items-header">
         <div>
           <span className="stock-items-eyebrow">Inventory master</span>
+
           <h1>Stock Items</h1>
-          <p>View stock items and stock group details from Tally</p>
+
+          <p>View synchronized stock items from database</p>
         </div>
 
         <div className="stock-items-count">
@@ -40,22 +105,43 @@ function StockItems() {
         </div>
       </div>
 
+      {/* Company Filter */}
+      <div className="stock-company-filter">
+        <label>Company</label>
+
+        <select
+          value={selectedCompanyId}
+          onChange={(e) => setSelectedCompanyId(e.target.value)}
+          disabled={loadingCompanies || companies.length === 0}
+        >
+          {companies.length === 0 && (
+            <option value="">No companies found</option>
+          )}
+
+          {companies.map((company) => (
+            <option key={company.id} value={company.id}>
+              {company.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <div className="stock-items-card">
-        {loading && (
+        {(loadingCompanies || loading) && (
+          <div className="stock-items-message">Loading stock items...</div>
+        )}
+
+        {!loadingCompanies && !loading && error && (
+          <div className="stock-items-error">{error}</div>
+        )}
+
+        {!loadingCompanies && !loading && !error && stockItems.length === 0 && (
           <div className="stock-items-message">
-            Loading stock items from Tally...
+            No synchronized stock items found for this company.
           </div>
         )}
 
-        {!loading && error && <div className="stock-items-error">{error}</div>}
-
-        {!loading && !error && stockItems.length === 0 && (
-          <div className="stock-items-message">
-            No stock items found in Tally.
-          </div>
-        )}
-
-        {!loading && !error && stockItems.length > 0 && (
+        {!loadingCompanies && !loading && !error && stockItems.length > 0 && (
           <div className="stock-items-table-wrapper">
             <table className="stock-items-table">
               <thead>
@@ -64,19 +150,15 @@ function StockItems() {
                   <th>Stock Item</th>
                   <th>Stock Group</th>
                   <th>Unit</th>
-                  <th>HSN / SAC</th>
-                  <th>GST Applicable</th>
-                  <th>Type of Supply</th>
-                  <th>GST Source</th>
                   <th>Opening Balance</th>
-                  <th>Opening Rate</th>
-                  <th>Opening Value</th>
+                  <th>Closing Balance</th>
+                  <th>Last Synced</th>
                 </tr>
               </thead>
 
               <tbody>
                 {stockItems.map((item, index) => (
-                  <tr key={`${item.name}-${index}`}>
+                  <tr key={item.tallyGuid || item.id}>
                     <td>{index + 1}</td>
 
                     <td className="stock-item-name">{showValue(item.name)}</td>
@@ -85,24 +167,18 @@ function StockItems() {
 
                     <td>{showValue(item.unit)}</td>
 
-                    <td>{showValue(item.hsnCode)}</td>
-
-                    <td>{showValue(item.gstApplicable)}</td>
-
-                    <td>{showValue(item.typeOfSupply)}</td>
-
-                    <td>{showValue(item.gstSource)}</td>
-
                     <td className="stock-items-number">
-                      {showValue(item.openingBalance)}
+                      {showQuantity(item.openingQuantity, item.unit)}
                     </td>
 
                     <td className="stock-items-number">
-                      {showValue(item.openingRate)}
+                      {showQuantity(item.closingQuantity, item.unit)}
                     </td>
 
-                    <td className="stock-items-number">
-                      {showValue(item.openingValue)}
+                    <td>
+                      {item.lastSyncedAt
+                        ? new Date(item.lastSyncedAt).toLocaleString("en-IN")
+                        : "--"}
                     </td>
                   </tr>
                 ))}

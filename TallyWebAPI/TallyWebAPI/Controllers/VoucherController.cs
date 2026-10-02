@@ -20,13 +20,17 @@ namespace TallyWebAPI.Controllers
         // RAW VOUCHERS FROM TALLY
         // ==========================================
         [HttpGet("vouchers-raw")]
-        public async Task<IActionResult> GetVouchersRaw()
+        public async Task<IActionResult> GetVouchersRaw(
+            [FromQuery] string fromDate,
+            [FromQuery] string toDate,
+            [FromQuery] string companyName)
         {
             try
             {
                 var result = await _voucherService.GetVouchersAsync(
-                 "20240401",
-                 "20240430"
+                    fromDate,
+                    toDate,
+                    companyName
                 );
 
                 return Content(result, "application/xml");
@@ -47,8 +51,9 @@ namespace TallyWebAPI.Controllers
         // ==========================================
         [HttpGet("vouchers")]
         public async Task<IActionResult> GetVouchers(
-            [FromQuery] string fromDate,
-            [FromQuery] string toDate)
+    [FromQuery] string fromDate,
+    [FromQuery] string toDate,
+    [FromQuery] string companyName)
         {
             try
             {
@@ -62,10 +67,7 @@ namespace TallyWebAPI.Controllers
                     });
                 }
 
-                var vouchers = await _voucherService.GetVoucherListAsync(
-                    fromDate,
-                    toDate
-                );
+     var vouchers = await _voucherService.GetVoucherListAsync(fromDate, toDate, companyName);
 
                 return Ok(new
                 {
@@ -92,7 +94,8 @@ namespace TallyWebAPI.Controllers
         public async Task<IActionResult> GetVoucherDetail(
     [FromQuery] string guid,
     [FromQuery] string fromDate,
-    [FromQuery] string toDate)
+    [FromQuery] string toDate,
+    [FromQuery] string companyName)
         {
             try
             {
@@ -110,7 +113,8 @@ namespace TallyWebAPI.Controllers
                 var voucher = await _voucherService.GetVoucherDetailAsync(
                     guid,
                     fromDate,
-                    toDate
+                    toDate,
+                    companyName
                 );
 
                 if (voucher == null)
@@ -139,7 +143,6 @@ namespace TallyWebAPI.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpGet("voucher-export-raw")]
         public async Task<IActionResult> GetVoucherExportRaw(
     [FromQuery] string voucherNumber,
@@ -175,7 +178,6 @@ namespace TallyWebAPI.Controllers
 
 
         [HttpGet("tamil-voucher-test")]
-        [AllowAnonymous]
         public async Task<IActionResult> TamilVoucherTest(
     [FromQuery] string fromDate,
     [FromQuery] string toDate)

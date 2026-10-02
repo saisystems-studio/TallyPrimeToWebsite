@@ -1,40 +1,66 @@
 import { useEffect, useState } from "react";
-import { getLedgers, getLedgersRaw } from "../../services/tallyService";
+import { getDbLedgers } from "../../services/tallyService";
+import { getDbCompanies } from "../../services/companyService";
 import "./Ledgers.css";
 
 function Ledgers() {
+  const [companies, setCompanies] = useState([]);
+  const [selectedCompanyId, setSelectedCompanyId] = useState("");
   const [ledgers, setLedgers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Load companies from database
   useEffect(() => {
-    getLedgers()
-      .then((data) => setLedgers(data.ledgers || []))
-      .catch((err) => {
-        console.error("Ledger Error:", err);
-        setError(err.message || "Unable to load ledgers.");
-      })
-      .finally(() => setLoading(false));
+    const loadCompanies = async () => {
+      try {
+        setLoading(true);
+        setError("");
 
-    getLedgersRaw()
-      .then((xml) => {
-        const ledgerName = "Ilakkiya Mariyappan";
+        const data = await getDbCompanies();
+        const companyList = data.companies || [];
 
-        const position = xml.indexOf(ledgerName);
+        setCompanies(companyList);
 
-        if (position !== -1) {
-          console.log("===== ILAKKIYA LEDGER RAW XML =====");
-          console.log(
-            xml.substring(Math.max(0, position - 500), position + 5000),
-          );
+        if (companyList.length > 0) {
+          setSelectedCompanyId(companyList[0].id);
         } else {
-          console.log("Ilakkiya Mariyappan not found in raw XML");
+          setLoading(false);
         }
-      })
-      .catch((error) => {
-        console.error("LEDGER RAW ERROR:", error);
-      });
+      } catch (err) {
+        console.error("Company Error:", err);
+        setError(err.message || "Unable to load companies.");
+        setLoading(false);
+      }
+    };
+
+    loadCompanies();
   }, []);
+
+  // Load ledgers for selected company
+  useEffect(() => {
+    if (!selectedCompanyId) {
+      return;
+    }
+
+    const loadLedgers = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const data = await getDbLedgers(selectedCompanyId);
+        setLedgers(data.ledgers || []);
+      } catch (err) {
+        console.error("Ledger Error:", err);
+        setLedgers([]);
+        setError(err.message || "Unable to load ledgers.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadLedgers();
+  }, [selectedCompanyId]);
 
   return (
     <div className="ledgers-page">
@@ -42,7 +68,7 @@ function Ledgers() {
         <div>
           <span className="ledgers-eyebrow">Accounts master</span>
           <h1>Ledgers</h1>
-          <p>View account masters and balances from Tally</p>
+          <p>View company-wise account masters and balances</p>
         </div>
 
         <div className="ledger-count">
@@ -51,9 +77,28 @@ function Ledgers() {
         </div>
       </div>
 
-      {loading && (
-        <div className="ledger-message">Loading ledgers from Tally...</div>
-      )}
+      <div className="ledger-company-filter">
+        <label htmlFor="companySelect">Company</label>
+
+        <select
+          id="companySelect"
+          value={selectedCompanyId}
+          onChange={(e) => setSelectedCompanyId(Number(e.target.value))}
+          disabled={companies.length === 0}
+        >
+          {companies.length === 0 ? (
+            <option value="">No companies available</option>
+          ) : (
+            companies.map((company) => (
+              <option key={company.id} value={company.id}>
+                {company.name}
+              </option>
+            ))
+          )}
+        </select>
+      </div>
+
+      {loading && <div className="ledger-message">Loading ledgers...</div>}
 
       {error && <div className="ledger-error">{error}</div>}
 
@@ -84,12 +129,12 @@ function Ledgers() {
               {ledgers.length === 0 ? (
                 <tr>
                   <td colSpan="15" className="no-ledgers">
-                    No ledgers found in Tally.
+                    No ledgers found for this company.
                   </td>
                 </tr>
               ) : (
                 ledgers.map((ledger, index) => (
-                  <tr key={`${ledger.name}-${index}`}>
+                  <tr key={ledger.id || `${ledger.name}-${index}`}>
                     <td>{index + 1}</td>
                     <td className="ledger-name">{ledger.name || "--"}</td>
                     <td>{ledger.parent || "--"}</td>
@@ -103,8 +148,12 @@ function Ledgers() {
                     <td>{ledger.registrationType || "--"}</td>
                     <td>{ledger.billByBill || "--"}</td>
                     <td>{ledger.creditPeriod || "--"}</td>
-                    <td className="ledger-number">{ledger.openingBalance || "0"}</td>
-                    <td className="ledger-number">{ledger.closingBalance || "0"}</td>
+                    <td className="ledger-number">
+                      {ledger.openingBalance || "0"}
+                    </td>
+                    <td className="ledger-number">
+                      {ledger.closingBalance || "0"}
+                    </td>
                   </tr>
                 ))
               )}

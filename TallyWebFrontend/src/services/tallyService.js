@@ -89,3 +89,15 @@ export async function getStockItems() {
 
   return await response.json();
 }
+
+export async function getDbLedgers(companyId) {
+  const response = await apiRequest(
+    `/tally/db/ledgers?companyId=${companyId}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Unable to fetch ledgers from database.");
+  }
+
+  return await response.json();
+}

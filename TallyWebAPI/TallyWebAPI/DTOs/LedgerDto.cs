@@ -2,6 +2,11 @@
 {
     public class LedgerDto
     {
+        public string TallyGuid { get; set; } = "";
+
+        public long? MasterId { get; set; }
+
+        public long? AlterId { get; set; }
         public string Name { get; set; } = "";
         public string Alias { get; set; } = "";
         public string Parent { get; set; } = "";
