@@ -11,6 +11,7 @@ builder.Services.AddHttpClient("Tally", client =>
         TimeSpan.FromSeconds(10);
 });
 
+builder.Services.AddSingleton<LedgerSyncWorker>();
 builder.Services.AddHostedService<Worker>();
 
 var host = builder.Build();

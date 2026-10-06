@@ -166,5 +166,236 @@ namespace TallyWebAPI.Controllers
                 skipped
             });
         }
+
+
+        [HttpPost("ledgers")]
+        public async Task<IActionResult> SyncLedgers(
+    [FromBody] AgentLedgerSyncRequest request)
+        {
+            var expectedKey =
+                _configuration["AgentSync:ApiKey"];
+
+            var receivedKey =
+                Request.Headers["X-Agent-Key"]
+                    .FirstOrDefault();
+
+            if (string.IsNullOrWhiteSpace(expectedKey) ||
+                string.IsNullOrWhiteSpace(receivedKey) ||
+                !string.Equals(
+                    expectedKey,
+                    receivedKey,
+                    StringComparison.Ordinal))
+            {
+                return Unauthorized(new
+                {
+                    message = "Invalid sync agent key."
+                });
+            }
+
+            if (request?.Ledgers == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Ledger data is required."
+                });
+            }
+
+            int fetched = request.Ledgers.Count;
+            int inserted = 0;
+            int updated = 0;
+            int skipped = 0;
+            int rejected = 0;
+
+            var companyGuids = request.Ledgers
+                .Where(x =>
+                    !string.IsNullOrWhiteSpace(
+                        x.CompanyTallyGuid))
+                .Select(x => x.CompanyTallyGuid.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            var companies =
+                await _dbContext.Companies
+                    .Where(x =>
+                        companyGuids.Contains(x.TallyGuid))
+                    .ToListAsync();
+
+            var companyByGuid = companies
+                .Where(x =>
+                    !string.IsNullOrWhiteSpace(
+                        x.TallyGuid))
+                .ToDictionary(
+                    x => x.TallyGuid,
+                    x => x,
+                    StringComparer.OrdinalIgnoreCase);
+
+            foreach (var companyGroup in request.Ledgers
+                .GroupBy(
+                    x => x.CompanyTallyGuid?.Trim() ?? "",
+                    StringComparer.OrdinalIgnoreCase))
+            {
+                if (string.IsNullOrWhiteSpace(
+                        companyGroup.Key) ||
+                    !companyByGuid.TryGetValue(
+                        companyGroup.Key,
+                        out var company))
+                {
+                    rejected += companyGroup.Count();
+                    continue;
+                }
+
+                var existingLedgers =
+                    await _dbContext.Ledgers
+                        .Where(x =>
+                            x.CompanyId == company.Id)
+                        .ToListAsync();
+
+                var existingByGuid =
+                    existingLedgers
+                        .Where(x =>
+                            !string.IsNullOrWhiteSpace(
+                                x.TallyGuid))
+                        .GroupBy(
+                            x => x.TallyGuid!,
+                            StringComparer.OrdinalIgnoreCase)
+                        .ToDictionary(
+                            x => x.Key,
+                            x => x.First(),
+                            StringComparer.OrdinalIgnoreCase);
+
+                foreach (var tally in companyGroup)
+                {
+                    if (string.IsNullOrWhiteSpace(
+                            tally.TallyGuid) ||
+                        string.IsNullOrWhiteSpace(
+                            tally.Name))
+                    {
+                        rejected++;
+                        continue;
+                    }
+
+                    var tallyGuid =
+                        tally.TallyGuid.Trim();
+
+                    if (!existingByGuid.TryGetValue(
+                            tallyGuid,
+                            out var ledger))
+                    {
+                        ledger = new LedgerEntity
+                        {
+                            CompanyId = company.Id,
+
+                            TallyGuid = tallyGuid,
+                            MasterId = tally.MasterId,
+                            AlterId = tally.AlterId,
+
+                            Name = tally.Name,
+                            Parent = tally.Parent,
+                            Alias = tally.Alias,
+                            MailingName = tally.MailingName,
+                            Address = tally.Address,
+                            State = tally.State,
+                            Country = tally.Country,
+                            Pincode = tally.Pincode,
+                            Pan = tally.Pan,
+                            Gstin = tally.Gstin,
+                            RegistrationType =
+                                tally.RegistrationType,
+                            CreditPeriod =
+                                tally.CreditPeriod,
+                            BillByBill =
+                                tally.BillByBill,
+                            OpeningBalance =
+                                tally.OpeningBalance,
+                            ClosingBalance =
+                                tally.ClosingBalance,
+
+                            LastSyncedAt =
+                                DateTime.UtcNow
+                        };
+
+                        _dbContext.Ledgers.Add(ledger);
+
+                        existingByGuid[tallyGuid] =
+                            ledger;
+
+                        inserted++;
+                        continue;
+                    }
+
+                    bool changed =
+                        ledger.MasterId != tally.MasterId ||
+                        ledger.AlterId != tally.AlterId ||
+                        ledger.Name != tally.Name ||
+                        ledger.Parent != tally.Parent ||
+                        ledger.Alias != tally.Alias ||
+                        ledger.MailingName !=
+                            tally.MailingName ||
+                        ledger.Address != tally.Address ||
+                        ledger.State != tally.State ||
+                        ledger.Country != tally.Country ||
+                        ledger.Pincode != tally.Pincode ||
+                        ledger.Pan != tally.Pan ||
+                        ledger.Gstin != tally.Gstin ||
+                        ledger.RegistrationType !=
+                            tally.RegistrationType ||
+                        ledger.CreditPeriod !=
+                            tally.CreditPeriod ||
+                        ledger.BillByBill !=
+                            tally.BillByBill ||
+                        ledger.OpeningBalance !=
+                            tally.OpeningBalance ||
+                        ledger.ClosingBalance !=
+                            tally.ClosingBalance;
+
+                    if (!changed)
+                    {
+                        skipped++;
+                        continue;
+                    }
+
+                    ledger.MasterId = tally.MasterId;
+                    ledger.AlterId = tally.AlterId;
+
+                    ledger.Name = tally.Name;
+                    ledger.Parent = tally.Parent;
+                    ledger.Alias = tally.Alias;
+                    ledger.MailingName =
+                        tally.MailingName;
+                    ledger.Address = tally.Address;
+                    ledger.State = tally.State;
+                    ledger.Country = tally.Country;
+                    ledger.Pincode = tally.Pincode;
+                    ledger.Pan = tally.Pan;
+                    ledger.Gstin = tally.Gstin;
+                    ledger.RegistrationType =
+                        tally.RegistrationType;
+                    ledger.CreditPeriod =
+                        tally.CreditPeriod;
+                    ledger.BillByBill =
+                        tally.BillByBill;
+                    ledger.OpeningBalance =
+                        tally.OpeningBalance;
+                    ledger.ClosingBalance =
+                        tally.ClosingBalance;
+
+                    ledger.LastSyncedAt =
+                        DateTime.UtcNow;
+
+                    updated++;
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new
+            {
+                fetched,
+                inserted,
+                updated,
+                skipped,
+                rejected
+            });
+        }
     }
 }
