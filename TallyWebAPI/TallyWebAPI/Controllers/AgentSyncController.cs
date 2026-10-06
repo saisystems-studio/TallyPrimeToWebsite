@@ -638,5 +638,264 @@ namespace TallyWebAPI.Controllers
                 rejected
             });
         }
+
+        [HttpPost("vouchers")]
+        public async Task<IActionResult> SyncVouchers(
+    [FromBody] AgentVoucherSyncRequest request)
+        {
+            // ---------------------------------------------
+            // AGENT AUTHENTICATION
+            // ---------------------------------------------
+            var expectedKey =
+                _configuration["AgentSync:ApiKey"];
+
+            var receivedKey =
+                Request.Headers["X-Agent-Key"]
+                    .FirstOrDefault();
+
+            if (string.IsNullOrWhiteSpace(expectedKey) ||
+                string.IsNullOrWhiteSpace(receivedKey) ||
+                !string.Equals(
+                    expectedKey,
+                    receivedKey,
+                    StringComparison.Ordinal))
+            {
+                return Unauthorized(new
+                {
+                    message = "Invalid sync agent key."
+                });
+            }
+
+            if (request?.Vouchers == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Voucher data is required."
+                });
+            }
+
+            int fetched = request.Vouchers.Count;
+            int inserted = 0;
+            int updated = 0;
+            int skipped = 0;
+            int rejected = 0;
+
+            // ---------------------------------------------
+            // FIND COMPANIES USING TALLY GUID
+            // ---------------------------------------------
+            var companyGuids = request.Vouchers
+                .Where(x =>
+                    !string.IsNullOrWhiteSpace(
+                        x.CompanyTallyGuid))
+                .Select(x =>
+                    x.CompanyTallyGuid.Trim())
+                .Distinct(
+                    StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            var companies =
+                await _dbContext.Companies
+                    .Where(x =>
+                        companyGuids.Contains(
+                            x.TallyGuid))
+                    .ToListAsync();
+
+            var companyByGuid = companies
+                .Where(x =>
+                    !string.IsNullOrWhiteSpace(
+                        x.TallyGuid))
+                .ToDictionary(
+                    x => x.TallyGuid,
+                    x => x,
+                    StringComparer.OrdinalIgnoreCase);
+
+            // ---------------------------------------------
+            // PROCESS COMPANY-WISE
+            // ---------------------------------------------
+            foreach (var companyGroup in
+                request.Vouchers.GroupBy(
+                    x =>
+                        x.CompanyTallyGuid?.Trim() ?? "",
+                    StringComparer.OrdinalIgnoreCase))
+            {
+                if (string.IsNullOrWhiteSpace(
+                        companyGroup.Key) ||
+                    !companyByGuid.TryGetValue(
+                        companyGroup.Key,
+                        out var company))
+                {
+                    rejected += companyGroup.Count();
+                    continue;
+                }
+
+                var existingVouchers =
+                    await _dbContext.Vouchers
+                        .Where(x =>
+                            x.CompanyId == company.Id)
+                        .ToListAsync();
+
+                var existingByGuid =
+                    existingVouchers
+                        .Where(x =>
+                            !string.IsNullOrWhiteSpace(
+                                x.TallyGuid))
+                        .GroupBy(
+                            x => x.TallyGuid,
+                            StringComparer.OrdinalIgnoreCase)
+                        .ToDictionary(
+                            x => x.Key,
+                            x => x.First(),
+                            StringComparer.OrdinalIgnoreCase);
+
+                foreach (var tally in companyGroup)
+                {
+                    if (string.IsNullOrWhiteSpace(
+                            tally.TallyGuid))
+                    {
+                        rejected++;
+                        continue;
+                    }
+
+                    var tallyGuid =
+                        tally.TallyGuid.Trim();
+
+                    // -------------------------------------
+                    // INSERT
+                    // -------------------------------------
+                    if (!existingByGuid.TryGetValue(
+                            tallyGuid,
+                            out var voucher))
+                    {
+                        voucher = new VoucherEntity
+                        {
+                            CompanyId = company.Id,
+                            TallyGuid = tallyGuid,
+
+                            VoucherNumber =
+                                tally.VoucherNumber,
+
+                            VoucherType =
+                                tally.VoucherType,
+
+                            VoucherDate =
+                                tally.VoucherDate,
+
+                            PartyName =
+                                tally.PartyName,
+
+                            PartyGstin =
+                                tally.PartyGstin,
+
+                            State =
+                                tally.State,
+
+                            PlaceOfSupply =
+                                tally.PlaceOfSupply,
+
+                            Amount =
+                                tally.Amount,
+
+                            Narration =
+                                tally.Narration,
+
+                            LastSyncedAt =
+                                DateTime.UtcNow
+                        };
+
+                        _dbContext.Vouchers.Add(
+                            voucher);
+
+                        existingByGuid[tallyGuid] =
+                            voucher;
+
+                        inserted++;
+                        continue;
+                    }
+
+                    // -------------------------------------
+                    // CHECK CHANGES
+                    // -------------------------------------
+                    bool changed =
+                        voucher.VoucherNumber !=
+                            tally.VoucherNumber ||
+
+                        voucher.VoucherType !=
+                            tally.VoucherType ||
+
+                        voucher.VoucherDate !=
+                            tally.VoucherDate ||
+
+                        voucher.PartyName !=
+                            tally.PartyName ||
+
+                        voucher.PartyGstin !=
+                            tally.PartyGstin ||
+
+                        voucher.State !=
+                            tally.State ||
+
+                        voucher.PlaceOfSupply !=
+                            tally.PlaceOfSupply ||
+
+                        voucher.Amount !=
+                            tally.Amount ||
+
+                        voucher.Narration !=
+                            tally.Narration;
+
+                    if (!changed)
+                    {
+                        skipped++;
+                        continue;
+                    }
+
+                    // -------------------------------------
+                    // UPDATE
+                    // -------------------------------------
+                    voucher.VoucherNumber =
+                        tally.VoucherNumber;
+
+                    voucher.VoucherType =
+                        tally.VoucherType;
+
+                    voucher.VoucherDate =
+                        tally.VoucherDate;
+
+                    voucher.PartyName =
+                        tally.PartyName;
+
+                    voucher.PartyGstin =
+                        tally.PartyGstin;
+
+                    voucher.State =
+                        tally.State;
+
+                    voucher.PlaceOfSupply =
+                        tally.PlaceOfSupply;
+
+                    voucher.Amount =
+                        tally.Amount;
+
+                    voucher.Narration =
+                        tally.Narration;
+
+                    voucher.LastSyncedAt =
+                        DateTime.UtcNow;
+
+                    updated++;
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new
+            {
+                fetched,
+                inserted,
+                updated,
+                skipped,
+                rejected
+            });
+        }
     }
 }

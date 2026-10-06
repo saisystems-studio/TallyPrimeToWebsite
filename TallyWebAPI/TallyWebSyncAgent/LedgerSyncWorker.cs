@@ -328,23 +328,33 @@ public class LedgerSyncWorker
         string xmlRequest,
         CancellationToken cancellationToken)
     {
-        var tallyClient =
-            _httpClientFactory.CreateClient("Tally");
+        var client =
+            _httpClientFactory
+                .CreateClient("Tally");
+
+        var requestBytes =
+            Encoding.Unicode.GetBytes(xmlRequest);
 
         using var content =
-            new StringContent(
-                xmlRequest,
-                Encoding.UTF8,
-                "application/xml");
+            new ByteArrayContent(requestBytes);
+
+        content.Headers.ContentType =
+            new System.Net.Http.Headers.MediaTypeHeaderValue(
+                "text/xml");
+
+        content.Headers.ContentType.CharSet = "utf-16";
 
         using var response =
-            await tallyClient.PostAsync(
+            await client.PostAsync(
                 "",
                 content,
                 cancellationToken);
 
         response.EnsureSuccessStatusCode();
 
+        // IMPORTANT:
+        // Let HttpClient decode Tally's response
+        // using the response charset/BOM.
         return await response.Content
             .ReadAsStringAsync(cancellationToken);
     }

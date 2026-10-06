@@ -9,14 +9,14 @@ using Microsoft.Extensions.Logging;
 
 namespace TallyWebSyncAgent
 {
-    public class StockItemSyncWorker
+    public class VoucherSyncWorker
     {
-        private readonly ILogger<StockItemSyncWorker> _logger;
+        private readonly ILogger<VoucherSyncWorker> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IConfiguration _configuration;
 
-        public StockItemSyncWorker(
-            ILogger<StockItemSyncWorker> logger,
+        public VoucherSyncWorker(
+            ILogger<VoucherSyncWorker> logger,
             IHttpClientFactory httpClientFactory,
             IConfiguration configuration)
         {
@@ -28,7 +28,7 @@ namespace TallyWebSyncAgent
         public async Task SyncAsync(
             CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Stock Item sync started.");
+            _logger.LogInformation("Voucher sync started.");
 
             var companies =
                 await GetCompaniesAsync(cancellationToken);
@@ -36,13 +36,13 @@ namespace TallyWebSyncAgent
             if (companies.Count == 0)
             {
                 _logger.LogWarning(
-                    "No companies found in Tally for Stock Item sync.");
+                    "No companies found in Tally for Voucher sync.");
 
                 return;
             }
 
-            var allStockItems =
-                new List<AgentStockItemDto>();
+            var allVouchers =
+                new List<AgentVoucherDto>();
 
             foreach (var company in companies)
             {
@@ -73,47 +73,56 @@ namespace TallyWebSyncAgent
                         .AddYears(1)
                         .AddDays(-1);
 
-                var fromDate =
-                    financialYearStart.ToString("yyyyMMdd");
-
-                var toDate =
-                    financialYearEnd.ToString("yyyyMMdd");
-
                 try
                 {
-                    var stockItems =
-                        await GetStockItemsAsync(
+                    var vouchers =
+                        await GetVouchersAsync(
                             company,
-                            fromDate,
-                            toDate,
+                            financialYearStart,
+                            financialYearEnd,
                             cancellationToken);
 
-                    allStockItems.AddRange(stockItems);
+                    allVouchers.AddRange(vouchers);
 
                     _logger.LogInformation(
-                        "Fetched {Count} stock item(s) from Tally company {CompanyName}.",
-                        stockItems.Count,
+                        "Fetched {Count} voucher(s) from Tally company {CompanyName}.",
+                        vouchers.Count,
                         company.Name);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(
                         ex,
-                        "Stock Item fetch failed for company {CompanyName}.",
+                        "Voucher fetch failed for company {CompanyName}.",
                         company.Name);
                 }
             }
 
-            if (allStockItems.Count == 0)
+            if (allVouchers.Count == 0)
             {
                 _logger.LogInformation(
-                    "No Stock Items found to push.");
+                    "No Vouchers found to push.");
 
                 return;
             }
 
+            // Safety: remove duplicate voucher GUIDs
+            // within the same company before sending.
+            allVouchers =
+                allVouchers
+                    .Where(x =>
+                        !string.IsNullOrWhiteSpace(
+                            x.CompanyTallyGuid) &&
+                        !string.IsNullOrWhiteSpace(
+                            x.TallyGuid))
+                    .GroupBy(
+                        x => $"{x.CompanyTallyGuid}|{x.TallyGuid}",
+                        StringComparer.OrdinalIgnoreCase)
+                    .Select(x => x.First())
+                    .ToList();
+
             await PushToServerAsync(
-                allStockItems,
+                allVouchers,
                 cancellationToken);
         }
 
@@ -223,11 +232,85 @@ namespace TallyWebSyncAgent
         }
 
         // =========================================================
-        // GET STOCK ITEMS FROM TALLY
+        // GET VOUCHERS - MONTH BY MONTH
         // =========================================================
 
-        private async Task<List<AgentStockItemDto>>
-            GetStockItemsAsync(
+        private async Task<List<AgentVoucherDto>>
+            GetVouchersAsync(
+                TallyCompanyInfo company,
+                DateTime startDate,
+                DateTime endDate,
+                CancellationToken cancellationToken)
+        {
+            var result =
+                new List<AgentVoucherDto>();
+
+            var currentStart = startDate;
+
+            while (currentStart <= endDate)
+            {
+                var currentEnd =
+                    new DateTime(
+                        currentStart.Year,
+                        currentStart.Month,
+                        DateTime.DaysInMonth(
+                            currentStart.Year,
+                            currentStart.Month));
+
+                if (currentEnd > endDate)
+                {
+                    currentEnd = endDate;
+                }
+
+                var fromDate =
+                    currentStart.ToString(
+                        "yyyyMMdd",
+                        CultureInfo.InvariantCulture);
+
+                var toDate =
+                    currentEnd.ToString(
+                        "yyyyMMdd",
+                        CultureInfo.InvariantCulture);
+
+                var monthlyVouchers =
+                    await GetVoucherMonthAsync(
+                        company,
+                        fromDate,
+                        toDate,
+                        cancellationToken);
+
+                result.AddRange(monthlyVouchers);
+
+                _logger.LogInformation(
+                    "Voucher batch {CompanyName}: {FromDate} - {ToDate}, {Count} voucher(s).",
+                    company.Name,
+                    fromDate,
+                    toDate,
+                    monthlyVouchers.Count);
+
+                currentStart =
+                    currentEnd.AddDays(1);
+            }
+
+            return result
+                .Where(x =>
+                    !string.IsNullOrWhiteSpace(
+                        x.TallyGuid))
+                .GroupBy(
+                    x => x.TallyGuid,
+                    StringComparer.OrdinalIgnoreCase)
+                .Select(x => x.First())
+                .OrderBy(x => x.VoucherDate)
+                .ThenBy(x => x.VoucherNumber)
+                .ToList();
+        }
+
+        // =========================================================
+        // GET ONE MONTH OF VOUCHERS
+        // =========================================================
+
+        private async Task<List<AgentVoucherDto>>
+            GetVoucherMonthAsync(
                 TallyCompanyInfo company,
                 string fromDate,
                 string toDate,
@@ -243,7 +326,7 @@ namespace TallyWebSyncAgent
                         <VERSION>1</VERSION>
                         <TALLYREQUEST>Export</TALLYREQUEST>
                         <TYPE>Collection</TYPE>
-                        <ID>StockSummaryCollection</ID>
+                        <ID>VoucherCollection</ID>
                     </HEADER>
 
                     <BODY>
@@ -257,22 +340,24 @@ namespace TallyWebSyncAgent
 
                             <TDL>
                                 <TDLMESSAGE>
-                                    <COLLECTION NAME="StockSummaryCollection">
-                                        <TYPE>StockItem</TYPE>
+                                    <COLLECTION NAME="VoucherCollection">
+                                        <TYPE>Voucher</TYPE>
 
-                                        <FETCH>Name</FETCH>
-                                        <FETCH>Parent</FETCH>
-                                        <FETCH>BaseUnits</FETCH>
+                                        <FETCH>Date</FETCH>
+                                        <FETCH>VoucherNumber</FETCH>
+                                        <FETCH>VoucherTypeName</FETCH>
 
-                                        <FETCH>OpeningBalance</FETCH>
-                                        <FETCH>ClosingBalance</FETCH>
+                                        <FETCH>PartyLedgerName</FETCH>
+                                        <FETCH>PartyGSTIN</FETCH>
 
+                                        <FETCH>StateName</FETCH>
+                                        <FETCH>PlaceOfSupply</FETCH>
+
+                                        <FETCH>Narration</FETCH>
                                         <FETCH>GUID</FETCH>
-                                        <FETCH>MasterID</FETCH>
-                                        <FETCH>AlterID</FETCH>
 
-                                        <FETCH>OpeningValue</FETCH>
-                                        <FETCH>ClosingValue</FETCH>
+                                        <FETCH>AllLedgerEntries.*</FETCH>
+                                        <FETCH>LedgerEntries.*</FETCH>
                                     </COLLECTION>
                                 </TDLMESSAGE>
                             </TDL>
@@ -288,10 +373,8 @@ namespace TallyWebSyncAgent
 
             if (string.IsNullOrWhiteSpace(xml))
             {
-                return new List<AgentStockItemDto>();
+                return new List<AgentVoucherDto>();
             }
-
-
 
             xml = CleanXml(xml);
 
@@ -299,96 +382,98 @@ namespace TallyWebSyncAgent
                 XDocument.Parse(xml);
 
             var result =
-                new List<AgentStockItemDto>();
+                new List<AgentVoucherDto>();
 
-            var tallyItems =
+            var vouchers =
                 document
                     .Descendants()
                     .Where(x =>
                         x.Name.LocalName.Equals(
-                            "STOCKITEM",
+                            "VOUCHER",
                             StringComparison.OrdinalIgnoreCase));
 
-            foreach (var tallyItem in tallyItems)
+            foreach (var voucher in vouchers)
             {
-                var name =
-                    tallyItem.Attribute("NAME")
-                        ?.Value
-                        ?.Trim();
-
-                if (string.IsNullOrWhiteSpace(name))
-                {
-                    name =
-                        GetValue(
-                            tallyItem,
-                            "NAME");
-                }
-
-                var guid =
+                var date =
                     GetValue(
-                        tallyItem,
-                        "GUID");
+                        voucher,
+                        "DATE");
 
-                if (string.IsNullOrWhiteSpace(name) ||
-                    string.IsNullOrWhiteSpace(guid))
+                var voucherNumber =
+                    GetValue(
+                        voucher,
+                        "VOUCHERNUMBER");
+
+                var voucherType =
+                    GetValue(
+                        voucher,
+                        "VOUCHERTYPENAME");
+
+                // Ignore placeholder/non-voucher rows.
+                if (string.IsNullOrWhiteSpace(date) &&
+                    string.IsNullOrWhiteSpace(voucherNumber) &&
+                    string.IsNullOrWhiteSpace(voucherType))
                 {
                     continue;
                 }
 
-                var stockGroup =
+                var guid =
                     GetValue(
-                        tallyItem,
-                        "PARENT");
+                        voucher,
+                        "GUID");
 
-                var unit =
-                    GetValue(
-                        tallyItem,
-                        "BASEUNITS");
-
-                var openingQuantity =
-                    ParseQuantity(
-                        GetValue(
-                            tallyItem,
-                            "OPENINGBALANCE"));
-
-                var closingQuantity =
-                    ParseQuantity(
-                        GetValue(
-                            tallyItem,
-                            "CLOSINGBALANCE"));
-
-                var masterId =
-                    ParseLong(
-                        GetValue(
-                            tallyItem,
-                            "MASTERID"));
-
-                var alterId =
-                    ParseLong(
-                        GetValue(
-                            tallyItem,
-                            "ALTERID"));
+                // Server duplicate protection requires GUID.
+                if (string.IsNullOrWhiteSpace(guid))
+                {
+                    continue;
+                }
 
                 result.Add(
-                    new AgentStockItemDto
+                    new AgentVoucherDto
                     {
                         CompanyTallyGuid =
                             company.TallyGuid,
 
-                        TallyGuid = guid,
+                        TallyGuid =
+                            guid,
 
-                        MasterId = masterId,
-                        AlterId = alterId,
+                        VoucherNumber =
+                            voucherNumber,
 
-                        Name = name,
-                        StockGroup = stockGroup,
-                        Unit = unit,
+                        VoucherType =
+                            voucherType,
 
-                        OpeningQuantity =
-                            openingQuantity,
+                        VoucherDate =
+                            date,
 
-                        ClosingQuantity =
-                            closingQuantity
+                        PartyName =
+                            GetValue(
+                                voucher,
+                                "PARTYLEDGERNAME"),
+
+                        PartyGstin =
+                            GetValue(
+                                voucher,
+                                "PARTYGSTIN"),
+
+                        State =
+                            GetValue(
+                                voucher,
+                                "STATENAME"),
+
+                        PlaceOfSupply =
+                            GetValue(
+                                voucher,
+                                "PLACEOFSUPPLY"),
+
+                        Amount =
+                            GetVoucherAmount(
+                                voucher),
+
+                        Narration =
+                            GetValue(
+                                voucher,
+                                "NARRATION")
                     });
             }
 
@@ -396,11 +481,135 @@ namespace TallyWebSyncAgent
         }
 
         // =========================================================
+        // VOUCHER AMOUNT
+        // =========================================================
+
+        private static decimal?
+            GetVoucherAmount(
+                XElement voucher)
+        {
+            var partyLedgerName =
+                GetValue(
+                    voucher,
+                    "PARTYLEDGERNAME");
+
+            var ledgerEntries =
+                voucher
+                    .Descendants()
+                    .Where(x =>
+                        x.Name.LocalName.Equals(
+                            "ALLLEDGERENTRIES.LIST",
+                            StringComparison.OrdinalIgnoreCase)
+                        ||
+                        x.Name.LocalName.Equals(
+                            "LEDGERENTRIES.LIST",
+                            StringComparison.OrdinalIgnoreCase));
+
+            // First preference:
+            // amount belonging to PARTYLEDGERNAME.
+            foreach (var entry in ledgerEntries)
+            {
+                var ledgerName =
+                    GetValue(
+                        entry,
+                        "LEDGERNAME");
+
+                if (!string.IsNullOrWhiteSpace(
+                        partyLedgerName) &&
+                    ledgerName.Equals(
+                        partyLedgerName,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    var amount =
+                        ParseAmount(
+                            GetValue(
+                                entry,
+                                "AMOUNT"));
+
+                    if (amount.HasValue)
+                    {
+                        return Math.Abs(
+                            amount.Value);
+                    }
+                }
+            }
+
+            // Fallback:
+            // first available ledger amount.
+            foreach (var entry in ledgerEntries)
+            {
+                var amount =
+                    ParseAmount(
+                        GetValue(
+                            entry,
+                            "AMOUNT"));
+
+                if (amount.HasValue)
+                {
+                    return Math.Abs(
+                        amount.Value);
+                }
+            }
+
+            return null;
+        }
+
+        private static decimal?
+            ParseAmount(
+                string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return null;
+            }
+
+            var text =
+                value
+                    .Trim()
+                    .Replace(",", "");
+
+            var negative =
+                text.Contains("(-)") ||
+                text.StartsWith("-");
+
+            text =
+                text.Replace(
+                    "(-)",
+                    "");
+
+            var match =
+                Regex.Match(
+                    text,
+                    @"[-+]?\d+(?:\.\d+)?");
+
+            if (!match.Success)
+            {
+                return null;
+            }
+
+            if (!decimal.TryParse(
+                    match.Value,
+                    NumberStyles.Any,
+                    CultureInfo.InvariantCulture,
+                    out var amount))
+            {
+                return null;
+            }
+
+            amount =
+                Math.Abs(amount);
+
+            return negative
+                ? -amount
+                : amount;
+        }
+
+        // =========================================================
         // PUSH TO LIVE SERVER
         // =========================================================
 
         private async Task PushToServerAsync(
-            List<AgentStockItemDto> stockItems,
+            List<AgentVoucherDto> vouchers,
             CancellationToken cancellationToken)
         {
             var baseUrl =
@@ -424,13 +633,13 @@ namespace TallyWebSyncAgent
             }
 
             var endpoint =
-                $"{baseUrl.TrimEnd('/')}/agent-sync/stock-items";
+                $"{baseUrl.TrimEnd('/')}/agent-sync/vouchers";
 
             using var client =
                 new HttpClient
                 {
                     Timeout =
-                        TimeSpan.FromSeconds(60)
+                        TimeSpan.FromMinutes(3)
                 };
 
             using var request =
@@ -444,10 +653,10 @@ namespace TallyWebSyncAgent
 
             request.Content =
                 JsonContent.Create(
-                    new AgentStockItemSyncRequest
+                    new AgentVoucherSyncRequest
                     {
-                        StockItems =
-                            stockItems
+                        Vouchers =
+                            vouchers
                     });
 
             using var response =
@@ -463,11 +672,11 @@ namespace TallyWebSyncAgent
             if (!response.IsSuccessStatusCode)
             {
                 throw new InvalidOperationException(
-                    $"Stock Item server sync failed. HTTP {(int)response.StatusCode}: {responseText}");
+                    $"Voucher server sync failed. HTTP {(int)response.StatusCode}: {responseText}");
             }
 
             _logger.LogInformation(
-                "Stock Item sync completed. Server response: {Response}",
+                "Voucher sync completed. Server response: {Response}",
                 responseText);
         }
 
@@ -483,18 +692,20 @@ namespace TallyWebSyncAgent
                 _httpClientFactory
                     .CreateClient("Tally");
 
-            // IMPORTANT:
-            // Tally multilingual/Tamil master names require
-            // the XML request to be sent as UTF-16.
+            // Tamil/multilingual Tally data:
+            // send request as UTF-16.
             var requestBytes =
-                Encoding.Unicode.GetBytes(xmlRequest);
+                Encoding.Unicode.GetBytes(
+                    xmlRequest);
 
             using var content =
-                new ByteArrayContent(requestBytes);
+                new ByteArrayContent(
+                    requestBytes);
 
             content.Headers.ContentType =
-                new System.Net.Http.Headers.MediaTypeHeaderValue(
-                    "text/xml");
+                new System.Net.Http.Headers
+                    .MediaTypeHeaderValue(
+                        "text/xml");
 
             content.Headers.ContentType.CharSet =
                 "utf-16";
@@ -507,8 +718,6 @@ namespace TallyWebSyncAgent
 
             response.EnsureSuccessStatusCode();
 
-            // Let HttpClient use the response charset/BOM
-            // while decoding Tally's XML response.
             return await response.Content
                 .ReadAsStringAsync(
                     cancellationToken);
@@ -535,70 +744,6 @@ namespace TallyWebSyncAgent
                         StringComparison.OrdinalIgnoreCase))
                 ?.Value
                 ?.Trim() ?? "";
-        }
-
-        private static long? ParseLong(
-            string value)
-        {
-            if (long.TryParse(
-                    value,
-                    NumberStyles.Any,
-                    CultureInfo.InvariantCulture,
-                    out var result))
-            {
-                return result;
-            }
-
-            return null;
-        }
-
-        private static decimal ParseQuantity(
-            string value)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                return 0;
-            }
-
-            var text =
-                value
-                    .Trim()
-                    .Replace(",", "");
-
-            var negative =
-                text.Contains("(-)") ||
-                text.StartsWith("-");
-
-            text =
-                text.Replace(
-                    "(-)",
-                    "");
-
-            var match =
-                Regex.Match(
-                    text,
-                    @"[-+]?\d+(?:\.\d+)?");
-
-            if (!match.Success)
-            {
-                return 0;
-            }
-
-            if (!decimal.TryParse(
-                    match.Value,
-                    NumberStyles.Any,
-                    CultureInfo.InvariantCulture,
-                    out var quantity))
-            {
-                return 0;
-            }
-
-            quantity =
-                Math.Abs(quantity);
-
-            return negative
-                ? -quantity
-                : quantity;
         }
 
         private static string CleanXml(
@@ -632,16 +777,16 @@ namespace TallyWebSyncAgent
             public string StartingFrom { get; set; } = "";
         }
 
-        private class AgentStockItemSyncRequest
+        private class AgentVoucherSyncRequest
         {
-            public List<AgentStockItemDto> StockItems
+            public List<AgentVoucherDto> Vouchers
             {
                 get;
                 set;
             } = new();
         }
 
-        private class AgentStockItemDto
+        private class AgentVoucherDto
         {
             public string CompanyTallyGuid
             {
@@ -655,43 +800,55 @@ namespace TallyWebSyncAgent
                 set;
             } = "";
 
-            public long? MasterId
+            public string? VoucherNumber
             {
                 get;
                 set;
             }
 
-            public long? AlterId
+            public string? VoucherType
             {
                 get;
                 set;
             }
 
-            public string Name
-            {
-                get;
-                set;
-            } = "";
-
-            public string StockGroup
-            {
-                get;
-                set;
-            } = "";
-
-            public string Unit
-            {
-                get;
-                set;
-            } = "";
-
-            public decimal OpeningQuantity
+            public string? VoucherDate
             {
                 get;
                 set;
             }
 
-            public decimal ClosingQuantity
+            public string? PartyName
+            {
+                get;
+                set;
+            }
+
+            public string? PartyGstin
+            {
+                get;
+                set;
+            }
+
+            public string? State
+            {
+                get;
+                set;
+            }
+
+            public string? PlaceOfSupply
+            {
+                get;
+                set;
+            }
+
+            public decimal? Amount
+            {
+                get;
+                set;
+            }
+
+            public string? Narration
             {
                 get;
                 set;
