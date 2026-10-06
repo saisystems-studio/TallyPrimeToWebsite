@@ -397,5 +397,246 @@ namespace TallyWebAPI.Controllers
                 rejected
             });
         }
+
+
+        [HttpPost("stock-items")]
+        public async Task<IActionResult> SyncStockItems(
+    [FromBody] AgentStockItemSyncRequest request)
+        {
+            // ---------------------------------------------
+            // AGENT AUTHENTICATION
+            // ---------------------------------------------
+            var expectedKey =
+                _configuration["AgentSync:ApiKey"];
+
+            var receivedKey =
+                Request.Headers["X-Agent-Key"]
+                    .FirstOrDefault();
+
+            if (string.IsNullOrWhiteSpace(expectedKey) ||
+                string.IsNullOrWhiteSpace(receivedKey) ||
+                !string.Equals(
+                    expectedKey,
+                    receivedKey,
+                    StringComparison.Ordinal))
+            {
+                return Unauthorized(new
+                {
+                    message = "Invalid sync agent key."
+                });
+            }
+
+            if (request?.StockItems == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Stock item data is required."
+                });
+            }
+
+            int fetched = request.StockItems.Count;
+            int inserted = 0;
+            int updated = 0;
+            int skipped = 0;
+            int rejected = 0;
+
+            // ---------------------------------------------
+            // FIND COMPANIES USING TALLY GUID
+            // ---------------------------------------------
+            var companyGuids = request.StockItems
+                .Where(x =>
+                    !string.IsNullOrWhiteSpace(
+                        x.CompanyTallyGuid))
+                .Select(x =>
+                    x.CompanyTallyGuid.Trim())
+                .Distinct(
+                    StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            var companies =
+                await _dbContext.Companies
+                    .Where(x =>
+                        companyGuids.Contains(
+                            x.TallyGuid))
+                    .ToListAsync();
+
+            var companyByGuid = companies
+                .Where(x =>
+                    !string.IsNullOrWhiteSpace(
+                        x.TallyGuid))
+                .ToDictionary(
+                    x => x.TallyGuid,
+                    x => x,
+                    StringComparer.OrdinalIgnoreCase);
+
+            // ---------------------------------------------
+            // PROCESS COMPANY-WISE
+            // ---------------------------------------------
+            foreach (var companyGroup in
+                request.StockItems.GroupBy(
+                    x =>
+                        x.CompanyTallyGuid?.Trim() ?? "",
+                    StringComparer.OrdinalIgnoreCase))
+            {
+                if (string.IsNullOrWhiteSpace(
+                        companyGroup.Key) ||
+                    !companyByGuid.TryGetValue(
+                        companyGroup.Key,
+                        out var company))
+                {
+                    rejected += companyGroup.Count();
+                    continue;
+                }
+
+                var existingItems =
+                    await _dbContext.StockItems
+                        .Where(x =>
+                            x.CompanyId == company.Id)
+                        .ToListAsync();
+
+                var existingByGuid =
+                    existingItems
+                        .Where(x =>
+                            !string.IsNullOrWhiteSpace(
+                                x.TallyGuid))
+                        .GroupBy(
+                            x => x.TallyGuid!,
+                            StringComparer.OrdinalIgnoreCase)
+                        .ToDictionary(
+                            x => x.Key,
+                            x => x.First(),
+                            StringComparer.OrdinalIgnoreCase);
+
+                foreach (var tally in companyGroup)
+                {
+                    if (string.IsNullOrWhiteSpace(
+                            tally.TallyGuid) ||
+                        string.IsNullOrWhiteSpace(
+                            tally.Name))
+                    {
+                        rejected++;
+                        continue;
+                    }
+
+                    var tallyGuid =
+                        tally.TallyGuid.Trim();
+
+                    var name =
+                        tally.Name.Trim();
+
+                    // -------------------------------------
+                    // INSERT
+                    // -------------------------------------
+                    if (!existingByGuid.TryGetValue(
+                            tallyGuid,
+                            out var stockItem))
+                    {
+                        stockItem = new StockItem
+                        {
+                            CompanyId = company.Id,
+
+                            TallyGuid = tallyGuid,
+                            MasterId = tally.MasterId,
+                            AlterId = tally.AlterId,
+
+                            Name = name,
+                            StockGroup =
+                                tally.StockGroup ?? "",
+                            Unit =
+                                tally.Unit ?? "",
+
+                            OpeningQuantity =
+                                tally.OpeningQuantity,
+
+                            ClosingQuantity =
+                                tally.ClosingQuantity,
+
+                            LastSyncedAt =
+                                DateTime.UtcNow
+                        };
+
+                        _dbContext.StockItems.Add(
+                            stockItem);
+
+                        existingByGuid[tallyGuid] =
+                            stockItem;
+
+                        inserted++;
+                        continue;
+                    }
+
+                    // -------------------------------------
+                    // CHECK CHANGES
+                    // -------------------------------------
+                    bool changed =
+                        stockItem.MasterId !=
+                            tally.MasterId ||
+
+                        stockItem.AlterId !=
+                            tally.AlterId ||
+
+                        stockItem.Name !=
+                            name ||
+
+                        stockItem.StockGroup !=
+                            (tally.StockGroup ?? "") ||
+
+                        stockItem.Unit !=
+                            (tally.Unit ?? "") ||
+
+                        stockItem.OpeningQuantity !=
+                            tally.OpeningQuantity ||
+
+                        stockItem.ClosingQuantity !=
+                            tally.ClosingQuantity;
+
+                    if (!changed)
+                    {
+                        skipped++;
+                        continue;
+                    }
+
+                    // -------------------------------------
+                    // UPDATE
+                    // -------------------------------------
+                    stockItem.MasterId =
+                        tally.MasterId;
+
+                    stockItem.AlterId =
+                        tally.AlterId;
+
+                    stockItem.Name =
+                        name;
+
+                    stockItem.StockGroup =
+                        tally.StockGroup ?? "";
+
+                    stockItem.Unit =
+                        tally.Unit ?? "";
+
+                    stockItem.OpeningQuantity =
+                        tally.OpeningQuantity;
+
+                    stockItem.ClosingQuantity =
+                        tally.ClosingQuantity;
+
+                    stockItem.LastSyncedAt =
+                        DateTime.UtcNow;
+
+                    updated++;
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new
+            {
+                fetched,
+                inserted,
+                updated,
+                skipped,
+                rejected
+            });
+        }
     }
 }

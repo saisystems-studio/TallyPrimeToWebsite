@@ -11,17 +11,20 @@ public class Worker : BackgroundService
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
     private readonly LedgerSyncWorker _ledgerSyncWorker;
+    private readonly StockItemSyncWorker _stockItemSyncWorker;
 
     public Worker(
         ILogger<Worker> logger,
         IHttpClientFactory httpClientFactory,
         IConfiguration configuration,
-         LedgerSyncWorker ledgerSyncWorker)
+         LedgerSyncWorker ledgerSyncWorker,
+         StockItemSyncWorker stockItemSyncWorker)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
         _configuration = configuration;
         _ledgerSyncWorker = ledgerSyncWorker;
+        _stockItemSyncWorker = stockItemSyncWorker;
     }
 
     protected override async Task ExecuteAsync(
@@ -41,6 +44,7 @@ public class Worker : BackgroundService
             {
                 await SyncCompaniesAsync(stoppingToken);
                 await _ledgerSyncWorker.SyncAsync(stoppingToken);
+                await _stockItemSyncWorker.SyncAsync(stoppingToken);
             }
             catch (OperationCanceledException)
                 when (stoppingToken.IsCancellationRequested)
