@@ -109,37 +109,37 @@ function PayablesReceivables() {
       ? rows.filter((row) => row.ledgerName === selectedLedger)
       : rows;
 
-    const receivableSigned = partyRows
-      .filter((row) => row.balanceType === "Receivable")
-      .reduce((total, row) => total + Number(row.signedPendingAmount || 0), 0);
+    // Summary must represent the same CURRENT PENDING BILLS
+    // displayed in the Payables & Receivables table.
+    // Do not include On Account/history rows here.
+    const pendingBills = partyRows.filter(
+      (row) => row.rowType === "Bill" && row.status === "Pending",
+    );
 
-    const payableSigned = partyRows
-      .filter((row) => row.balanceType === "Payable")
-      .reduce((total, row) => total + Number(row.signedPendingAmount || 0), 0);
+    const receivableRows = pendingBills.filter(
+      (row) => row.balanceType === "Receivable",
+    );
 
-    // Same accounting calculation already used by Outstanding.
-    const receivable = Math.abs(Math.min(receivableSigned, 0));
+    const payableRows = pendingBills.filter(
+      (row) => row.balanceType === "Payable",
+    );
 
-    const payable = Math.abs(Math.max(payableSigned, 0));
+    const receivable = receivableRows.reduce(
+      (total, row) => total + Number(row.pendingAmount || 0),
+      0,
+    );
+
+    const payable = payableRows.reduce(
+      (total, row) => total + Number(row.pendingAmount || 0),
+      0,
+    );
 
     const receivableParties = new Set(
-      partyRows
-        .filter(
-          (row) =>
-            row.balanceType === "Receivable" &&
-            Number(row.signedPendingAmount || 0) !== 0,
-        )
-        .map((row) => `${row.companyId}|${row.ledgerName}`),
+      receivableRows.map((row) => `${row.companyId}|${row.ledgerName}`),
     ).size;
 
     const payableParties = new Set(
-      partyRows
-        .filter(
-          (row) =>
-            row.balanceType === "Payable" &&
-            Number(row.signedPendingAmount || 0) !== 0,
-        )
-        .map((row) => `${row.companyId}|${row.ledgerName}`),
+      payableRows.map((row) => `${row.companyId}|${row.ledgerName}`),
     ).size;
 
     return {

@@ -67,10 +67,7 @@ namespace TallyWebSyncAgent
                     continue;
                 }
 
-                var toDate =
-                    fromDate
-                        .AddYears(1)
-                        .AddDays(-1);
+                var toDate = DateTime.Today;
 
                 var companyRows =
                     await GetOutstandingAsync(
