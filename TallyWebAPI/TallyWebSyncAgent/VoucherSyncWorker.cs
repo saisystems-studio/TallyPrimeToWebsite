@@ -608,17 +608,13 @@ namespace TallyWebSyncAgent
         // PUSH TO LIVE SERVER
         // =========================================================
 
-        private async Task PushToServerAsync(
-            List<AgentVoucherDto> vouchers,
-            CancellationToken cancellationToken)
+        private async Task PushToServerAsync(List<AgentVoucherDto> vouchers, CancellationToken cancellationToken)
         {
             var baseUrl =
-                _configuration[
-                    "ServerApi:BaseUrl"];
+                _configuration["ServerApi:BaseUrl"];
 
             var agentKey =
-                _configuration[
-                    "ServerApi:AgentKey"];
+                _configuration["ServerApi:AgentKey"];
 
             if (string.IsNullOrWhiteSpace(baseUrl))
             {
@@ -635,49 +631,80 @@ namespace TallyWebSyncAgent
             var endpoint =
                 $"{baseUrl.TrimEnd('/')}/agent-sync/vouchers";
 
-            using var client =
-                new HttpClient
-                {
-                    Timeout =
-                        TimeSpan.FromMinutes(3)
-                };
+            const int batchSize = 250;
 
-            using var request =
-                new HttpRequestMessage(
-                    HttpMethod.Post,
-                    endpoint);
+            int totalBatches =
+                (int)Math.Ceiling(
+                    vouchers.Count / (double)batchSize);
 
-            request.Headers.Add(
-                "X-Agent-Key",
-                agentKey);
+            _logger.LogInformation(
+                "Sending {Count} voucher(s) to server in {BatchCount} batch(es).",
+                vouchers.Count,
+                totalBatches);
 
-            request.Content =
-                JsonContent.Create(
-                    new AgentVoucherSyncRequest
+            for (int i = 0; i < vouchers.Count; i += batchSize)
+            {
+                var batch =
+                    vouchers
+                        .Skip(i)
+                        .Take(batchSize)
+                        .ToList();
+
+                var batchNumber =
+                    (i / batchSize) + 1;
+
+                using var client =
+                    new HttpClient
                     {
-                        Vouchers =
-                            vouchers
-                    });
+                        Timeout =
+                            TimeSpan.FromMinutes(3)
+                    };
 
-            using var response =
-                await client.SendAsync(
-                    request,
-                    cancellationToken);
+                using var request =
+                    new HttpRequestMessage(
+                        HttpMethod.Post,
+                        endpoint);
 
-            var responseText =
-                await response.Content
-                    .ReadAsStringAsync(
+                request.Headers.Add(
+                    "X-Agent-Key",
+                    agentKey);
+
+                request.Content =
+                    JsonContent.Create(
+                        new AgentVoucherSyncRequest
+                        {
+                            Vouchers = batch
+                        });
+
+                using var response =
+                    await client.SendAsync(
+                        request,
                         cancellationToken);
 
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new InvalidOperationException(
-                    $"Voucher server sync failed. HTTP {(int)response.StatusCode}: {responseText}");
+                var responseText =
+                    await response.Content
+                        .ReadAsStringAsync(
+                            cancellationToken);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new InvalidOperationException(
+                        $"Voucher server sync batch {batchNumber}/{totalBatches} failed. " +
+                        $"HTTP {(int)response.StatusCode}: {responseText}");
+                }
+
+                _logger.LogInformation(
+                    "Voucher batch {BatchNumber}/{TotalBatches} synced. " +
+                    "{Count} voucher(s). Server response: {Response}",
+                    batchNumber,
+                    totalBatches,
+                    batch.Count,
+                    responseText);
             }
 
             _logger.LogInformation(
-                "Voucher sync completed. Server response: {Response}",
-                responseText);
+                "Voucher sync completed. {Count} voucher(s) sent successfully.",
+                vouchers.Count);
         }
 
         // =========================================================

@@ -13,6 +13,7 @@ public class Worker : BackgroundService
     private readonly LedgerSyncWorker _ledgerSyncWorker;
     private readonly StockItemSyncWorker _stockItemSyncWorker;
     private readonly VoucherSyncWorker _voucherSyncWorker;
+    private readonly OutstandingSyncWorker _outstandingSyncWorker;
 
     public Worker(
         ILogger<Worker> logger,
@@ -20,7 +21,8 @@ public class Worker : BackgroundService
         IConfiguration configuration,
         LedgerSyncWorker ledgerSyncWorker,
         StockItemSyncWorker stockItemSyncWorker,
-        VoucherSyncWorker voucherSyncWorker)
+        VoucherSyncWorker voucherSyncWorker,
+        OutstandingSyncWorker outstandingSyncWorker)
     {
         _logger = logger;
         _httpClientFactory = httpClientFactory;
@@ -28,6 +30,7 @@ public class Worker : BackgroundService
         _ledgerSyncWorker = ledgerSyncWorker;
         _stockItemSyncWorker = stockItemSyncWorker;
         _voucherSyncWorker = voucherSyncWorker;
+        _outstandingSyncWorker = outstandingSyncWorker;
     }
 
     protected override async Task ExecuteAsync(
@@ -49,6 +52,7 @@ public class Worker : BackgroundService
                 await _ledgerSyncWorker.SyncAsync(stoppingToken);
                 await _stockItemSyncWorker.SyncAsync(stoppingToken);
                 await _voucherSyncWorker.SyncAsync(stoppingToken);
+                await _outstandingSyncWorker.SyncAsync(stoppingToken);
             }
             catch (OperationCanceledException)
                 when (stoppingToken.IsCancellationRequested)

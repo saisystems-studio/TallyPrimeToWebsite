@@ -14,6 +14,9 @@ builder.Services.AddHttpClient("Tally", client =>
 builder.Services.AddSingleton<LedgerSyncWorker>();
 builder.Services.AddSingleton<StockItemSyncWorker>();
 builder.Services.AddSingleton<VoucherSyncWorker>();
+builder.Services.AddSingleton<OutstandingSyncWorker>();
+
+
 builder.Services.AddHostedService<Worker>();
 
 var host = builder.Build();

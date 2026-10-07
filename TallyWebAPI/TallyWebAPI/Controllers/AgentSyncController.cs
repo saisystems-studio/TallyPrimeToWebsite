@@ -22,8 +22,7 @@ namespace TallyWebAPI.Controllers
         }
 
         [HttpPost("companies")]
-        public async Task<IActionResult> SyncCompanies(
-            [FromBody] AgentCompanySyncRequest request)
+        public async Task<IActionResult> SyncCompanies([FromBody] AgentCompanySyncRequest request)
         {
             // ---------------------------------------------
             // AGENT AUTHENTICATION
@@ -169,8 +168,7 @@ namespace TallyWebAPI.Controllers
 
 
         [HttpPost("ledgers")]
-        public async Task<IActionResult> SyncLedgers(
-    [FromBody] AgentLedgerSyncRequest request)
+        public async Task<IActionResult> SyncLedgers([FromBody] AgentLedgerSyncRequest request)
         {
             var expectedKey =
                 _configuration["AgentSync:ApiKey"];
@@ -400,8 +398,7 @@ namespace TallyWebAPI.Controllers
 
 
         [HttpPost("stock-items")]
-        public async Task<IActionResult> SyncStockItems(
-    [FromBody] AgentStockItemSyncRequest request)
+        public async Task<IActionResult> SyncStockItems([FromBody] AgentStockItemSyncRequest request)
         {
             // ---------------------------------------------
             // AGENT AUTHENTICATION
@@ -640,8 +637,7 @@ namespace TallyWebAPI.Controllers
         }
 
         [HttpPost("vouchers")]
-        public async Task<IActionResult> SyncVouchers(
-    [FromBody] AgentVoucherSyncRequest request)
+        public async Task<IActionResult> SyncVouchers([FromBody] AgentVoucherSyncRequest request)
         {
             // ---------------------------------------------
             // AGENT AUTHENTICATION
@@ -896,6 +892,258 @@ namespace TallyWebAPI.Controllers
                 skipped,
                 rejected
             });
+        }
+
+        [HttpPost("outstandings")]
+        public async Task<IActionResult> SyncOutstandings([FromBody] AgentOutstandingSyncRequest request)
+        {
+            var expectedKey =
+                _configuration["AgentSync:ApiKey"];
+
+            var receivedKey =
+                Request.Headers["X-Agent-Key"].FirstOrDefault();
+
+            if (string.IsNullOrWhiteSpace(expectedKey) ||
+                string.IsNullOrWhiteSpace(receivedKey) ||
+                !string.Equals(
+                    expectedKey,
+                    receivedKey,
+                    StringComparison.Ordinal))
+            {
+                return Unauthorized();
+            }
+
+            if (request?.Outstandings == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Outstandings payload is required."
+                });
+            }
+
+            var fetched = request.Outstandings.Count;
+
+            var inserted = 0;
+            var updated = 0;
+            var skipped = 0;
+            var rejected = 0;
+
+            // ---------------------------------------------------------
+            // Resolve Tally Company GUID -> SQL CompanyId
+            // ---------------------------------------------------------
+            var companyGuids = request.Outstandings
+                .Where(x =>
+                    !string.IsNullOrWhiteSpace(
+                        x.CompanyTallyGuid))
+                .Select(x =>
+                    x.CompanyTallyGuid.Trim())
+                .Distinct(
+                    StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            var companies = await _dbContext.Companies
+                .Where(x =>
+                    companyGuids.Contains(
+                        x.TallyGuid))
+                .ToListAsync();
+
+            var companyMap = companies
+                .GroupBy(
+                    x => x.TallyGuid,
+                    StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(
+                    x => x.Key,
+                    x => x.First(),
+                    StringComparer.OrdinalIgnoreCase);
+
+            // ---------------------------------------------------------
+            // Process company-wise
+            // ---------------------------------------------------------
+            foreach (var companyGroup in
+                request.Outstandings.GroupBy(
+                    x => x.CompanyTallyGuid ?? "",
+                    StringComparer.OrdinalIgnoreCase))
+            {
+                var companyGuid =
+                    companyGroup.Key?.Trim() ?? "";
+
+                if (string.IsNullOrWhiteSpace(companyGuid) ||
+                    !companyMap.TryGetValue(
+                        companyGuid,
+                        out var company))
+                {
+                    rejected += companyGroup.Count();
+                    continue;
+                }
+
+                var existingRows =
+                    await _dbContext.Outstandings
+                        .Where(x =>
+                            x.CompanyId == company.Id)
+                        .ToListAsync();
+
+                // Same logical identity as our Outstanding table:
+                // Company + Voucher + Ledger + Bill Ref + Bill Type
+                var existingMap = existingRows
+                    .GroupBy(x =>
+                        BuildOutstandingKey(
+                            x.TallyGuid,
+                            x.LedgerName,
+                            x.BillReference,
+                            x.BillType))
+                    .ToDictionary(
+                        x => x.Key,
+                        x => x.First(),
+                        StringComparer.OrdinalIgnoreCase);
+
+                foreach (var item in companyGroup)
+                {
+                    var ledgerName =
+                        item.LedgerName?.Trim() ?? "";
+
+                    var tallyGuid =
+                        item.TallyGuid?.Trim() ?? "";
+
+                    var billReference =
+                        item.BillReference?.Trim() ?? "";
+
+                    var billType =
+                        item.BillType?.Trim() ?? "";
+
+                    if (string.IsNullOrWhiteSpace(ledgerName) ||
+                        string.IsNullOrWhiteSpace(tallyGuid) ||
+                        string.IsNullOrWhiteSpace(billReference))
+                    {
+                        rejected++;
+                        continue;
+                    }
+
+                    var key =
+                        BuildOutstandingKey(
+                            tallyGuid,
+                            ledgerName,
+                            billReference,
+                            billType);
+
+                    if (!existingMap.TryGetValue(
+                        key,
+                        out var existing))
+                    {
+                        var entity =
+                            new OutstandingEntity
+                            {
+                                CompanyId = company.Id,
+
+                                LedgerName = ledgerName,
+
+                                TallyGuid = tallyGuid,
+
+                                VoucherNumber =
+                                    item.VoucherNumber,
+
+                                VoucherType =
+                                    item.VoucherType,
+
+                                VoucherDate =
+                                    item.VoucherDate,
+
+                                BillReference =
+                                    billReference,
+
+                                BillType =
+                                    item.BillType,
+
+                                BillDate =
+                                    item.BillDate,
+
+                                CreditPeriod =
+                                    item.CreditPeriod,
+
+                                Amount =
+                                    item.Amount,
+
+                                LastSyncedAt =
+                                    DateTime.UtcNow
+                            };
+
+                        _dbContext.Outstandings.Add(entity);
+
+                        existingMap[key] = entity;
+
+                        inserted++;
+                        continue;
+                    }
+
+                    var changed =
+                        existing.VoucherNumber !=
+                            item.VoucherNumber ||
+
+                        existing.VoucherType !=
+                            item.VoucherType ||
+
+                        existing.VoucherDate !=
+                            item.VoucherDate ||
+
+                        existing.BillDate !=
+                            item.BillDate ||
+
+                        existing.CreditPeriod !=
+                            item.CreditPeriod ||
+
+                        existing.Amount !=
+                            item.Amount;
+
+                    if (!changed)
+                    {
+                        skipped++;
+                        continue;
+                    }
+
+                    existing.VoucherNumber =
+                        item.VoucherNumber;
+
+                    existing.VoucherType =
+                        item.VoucherType;
+
+                    existing.VoucherDate =
+                        item.VoucherDate;
+
+                    existing.BillDate =
+                        item.BillDate;
+
+                    existing.CreditPeriod =
+                        item.CreditPeriod;
+
+                    existing.Amount =
+                        item.Amount;
+
+                    existing.LastSyncedAt =
+                        DateTime.UtcNow;
+
+                    updated++;
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return Ok(new
+            {
+                fetched,
+                inserted,
+                updated,
+                skipped,
+                rejected
+            });
+        }
+
+        private static string BuildOutstandingKey(string? tallyGuid, string? ledgerName, string? billReference, string? billType)
+        {
+            return string.Join(
+                "|",
+                tallyGuid?.Trim() ?? "",
+                ledgerName?.Trim() ?? "",
+                billReference?.Trim() ?? "",
+                billType?.Trim() ?? "");
         }
     }
 }
