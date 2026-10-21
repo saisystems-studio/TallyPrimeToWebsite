@@ -58,9 +58,9 @@ namespace TallyWebAPI.Services
 
                             <FETCH>Narration</FETCH>
                             <FETCH>GUID</FETCH>
-
                             <FETCH>AllLedgerEntries.*</FETCH>
                             <FETCH>LedgerEntries.*</FETCH>
+
 
                         </COLLECTION>
 
@@ -158,6 +158,10 @@ namespace TallyWebAPI.Services
                 );
 
                 var document = XDocument.Parse(xml);
+                var exportError = document.Descendants().FirstOrDefault(x =>
+                    x.Name.LocalName.Equals("LINEERROR", StringComparison.OrdinalIgnoreCase));
+                if (exportError != null)
+                    throw new InvalidOperationException($"Tally voucher export failed: {exportError.Value.Trim()}");
 
                 var vouchers = document
                     .Descendants()
@@ -219,6 +223,7 @@ namespace TallyWebAPI.Services
                             "NARRATION"
                         ),
 
+                        Postings = ParsePostings(voucher),
                         Guid = GetValue(
                             voucher,
                             "GUID"
@@ -282,7 +287,54 @@ namespace TallyWebAPI.Services
             string toDate,
             string companyName)
         {
-            var xml = await GetVouchersAsync(fromDate, toDate, companyName);
+            var safeCompanyName = System.Security.SecurityElement.Escape(companyName) ?? "";
+            var safeGuid = System.Security.SecurityElement.Escape(guid) ?? "";
+
+            var xmlRequest = $"""
+                <ENVELOPE>
+                    <HEADER>
+                        <VERSION>1</VERSION>
+                        <TALLYREQUEST>Export</TALLYREQUEST>
+                        <TYPE>Collection</TYPE>
+                        <ID>VoucherDetailCollection</ID>
+                    </HEADER>
+                    <BODY>
+                        <DESC>
+                            <STATICVARIABLES>
+                                <SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT>
+                                <SVCURRENTCOMPANY>{safeCompanyName}</SVCURRENTCOMPANY>
+                                <SVFROMDATE TYPE="Date">{fromDate}</SVFROMDATE>
+                                <SVTODATE TYPE="Date">{toDate}</SVTODATE>
+                            </STATICVARIABLES>
+                            <TDL>
+                                <TDLMESSAGE>
+                                    <COLLECTION NAME="VoucherDetailCollection">
+                                        <TYPE>Voucher</TYPE>
+                                        <FILTER>VoucherDetailGuidFilter</FILTER>
+                                        <FETCH>Date</FETCH>
+                                        <FETCH>VoucherNumber</FETCH>
+                                        <FETCH>VoucherTypeName</FETCH>
+                                        <FETCH>PartyLedgerName</FETCH>
+                                        <FETCH>PartyGSTIN</FETCH>
+                                        <FETCH>StateName</FETCH>
+                                        <FETCH>PlaceOfSupply</FETCH>
+                                        <FETCH>Reference</FETCH>
+                                        <FETCH>Narration</FETCH>
+                                        <FETCH>GUID</FETCH>
+                                        <FETCH>AllInventoryEntries.*</FETCH>
+                                        <FETCH>InventoryEntries.*</FETCH>
+                                    </COLLECTION>
+                                    <SYSTEM TYPE="Formulae" NAME="VoucherDetailGuidFilter">
+                                        $GUID = "{safeGuid}"
+                                    </SYSTEM>
+                                </TDLMESSAGE>
+                            </TDL>
+                        </DESC>
+                    </BODY>
+                </ENVELOPE>
+                """;
+
+            var xml = await TallyXmlTransport.PostAsync(_httpClient, xmlRequest);
 
             xml = System.Text.RegularExpressions.Regex.Replace(
                 xml,
@@ -385,6 +437,24 @@ namespace TallyWebAPI.Services
 
             return detail;
         }
+        private static List<VoucherPostingDto> ParsePostings(XElement voucher)
+        {
+            var entries = voucher.Elements().Where(x => x.Name.LocalName.Equals(
+                "ALLLEDGERENTRIES.LIST", StringComparison.OrdinalIgnoreCase)).ToList();
+            if (entries.Count == 0)
+                entries = voucher.Elements().Where(x => x.Name.LocalName.Equals(
+                    "LEDGERENTRIES.LIST", StringComparison.OrdinalIgnoreCase)).ToList();
+            return entries.Select((entry, index) =>
+            {
+                var name = GetValue(entry, "LEDGERNAME");
+                if (string.IsNullOrWhiteSpace(name) || !decimal.TryParse(
+                        GetValue(entry, "AMOUNT"), System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture, out var amount))
+                    throw new InvalidOperationException("Invalid voucher ledger posting; synchronization was stopped.");
+                return new VoucherPostingDto { LedgerName = name, Amount = amount, EntryIndex = index };
+            }).ToList();
+        }
+
         private static string GetVoucherAmount(XElement voucher)
         {
             // Tally voucher total is normally represented by
@@ -471,6 +541,7 @@ namespace TallyWebAPI.Services
                 ?.Value
                 ?.Trim() ?? "";
         }
+
         public async Task<string> GetTamilVoucherTestAsync(
             string fromDate,
             string toDate)

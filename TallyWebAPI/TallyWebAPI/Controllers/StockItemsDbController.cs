@@ -40,7 +40,13 @@ namespace TallyWebAPI.Controllers
                     unit = x.Unit,
 
                     openingQuantity = x.OpeningQuantity,
+                    openingStock = x.OpeningStock,
+                    openingRate = x.OpeningRate,
                     closingQuantity = x.ClosingQuantity,
+                    partNumber = x.PartNumber,
+                    standardSellingRate = x.StandardSellingRate,
+                    standardCostRate = x.StandardCostRate,
+                    mrp = x.MRP,
 
                     lastSyncedAt = x.LastSyncedAt
                 })

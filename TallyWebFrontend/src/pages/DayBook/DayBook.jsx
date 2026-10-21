@@ -212,7 +212,7 @@ function DayBook() {
 
           <h1>Day Book</h1>
 
-          <p>View synced voucher transactions date-wise</p>
+          <p>View synced voucher transactionxs date-wise</p>
         </div>
 
         <div className="daybook-count">
@@ -347,20 +347,14 @@ function DayBook() {
                 ))
               )}
             </tbody>
-
-            {vouchers.length > 0 && (
-              <tfoot>
-                <tr>
-                  <td colSpan="6">Total</td>
-
-                  <td className="amount-column">
-                    ₹ {formatAmount(totalAmount)}
-                  </td>
-                </tr>
-              </tfoot>
-            )}
           </table>
         </div>
+        {vouchers.length > 0 && (
+          <div className="daybook-table-footer">
+            <span>Total</span>
+            <strong>{`₹ ${formatAmount(totalAmount)}`}</strong>
+          </div>
+        )}
       </div>
 
       {/* =====================================================

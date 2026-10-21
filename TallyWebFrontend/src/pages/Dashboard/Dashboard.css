@@ -474,7 +474,8 @@
 }
 
 .dashboard-table tbody tr:hover {
-    background: #fcfaf7;
+    background: #fff2df;
+    box-shadow: inset 3px 0 0 #c47a22;
 }
 
 .dashboard-table td:first-child {

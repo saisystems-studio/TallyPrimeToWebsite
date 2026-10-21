@@ -98,6 +98,7 @@ namespace TallyWebAPI.Controllers
                 .Select(x => new
                 {
                     x.CompanyId,
+                    x.Id,
                     x.Name,
                     x.Parent
                 })
@@ -114,7 +115,10 @@ namespace TallyWebAPI.Controllers
                         x.Key.CompanyId,
                         x.Key.Name
                     ),
-                    x => x.First().Parent ?? ""
+                    x => (
+                        LedgerId: x.First().Id,
+                        LedgerParent: x.First().Parent ?? ""
+                    )
                 );
 
 
@@ -206,12 +210,14 @@ namespace TallyWebAPI.Controllers
                         (group.Key.LedgerName ?? "").ToUpper()
                     );
 
-                    ledgerParentMap.TryGetValue(
-                        ledgerKey,
-                        out var ledgerParent
-                    );
+                    var ledgerId = 0;
+                    var ledgerParent = "";
 
-                    ledgerParent ??= "";
+                    if (ledgerParentMap.TryGetValue(ledgerKey, out var ledger))
+                    {
+                        ledgerId = ledger.LedgerId;
+                        ledgerParent = ledger.LedgerParent;
+                    }
 
                     string balanceType;
 
@@ -323,6 +329,8 @@ namespace TallyWebAPI.Controllers
 
                         ledgerName =
                             group.Key.LedgerName,
+
+                        ledgerId,
 
                         ledgerParent,
 

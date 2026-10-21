@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/Services/VoucherPostingBackfill.cs" Link="VoucherPostingBackfill.cs" />
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/Services/LedgerBalanceMath.cs" Link="LedgerBalanceMath.cs" />
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/Services/LedgerReportService.cs" Link="LedgerReportService.cs" />
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/Services/TallyXmlTransport.cs" Link="TallyXmlTransport.cs" />
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/DTOs/LedgerReportDto.cs" Link="LedgerReportDto.cs" />
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/Services/VoucherService.cs" Link="VoucherService.cs" />
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/DTOs/VoucherDto.cs" Link="VoucherDto.cs" />
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/DTOs/VoucherDetailDto.cs" Link="VoucherDetailDto.cs" />
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/Models/VoucherEntity.cs" Link="VoucherEntity.cs" />
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/Models/VoucherLedgerEntryEntity.cs" Link="VoucherLedgerEntryEntity.cs" />
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/Models/CompanyEntity.cs" Link="CompanyEntity.cs" />
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/Models/LedgerEntity.cs" Link="LedgerEntity.cs" />
+  </ItemGroup>
+</Project>

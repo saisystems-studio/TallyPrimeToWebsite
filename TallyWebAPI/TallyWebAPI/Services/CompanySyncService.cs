@@ -45,6 +45,9 @@ namespace TallyWebAPI.Services
                     StartingFrom =
                         GetValue(x, "STARTINGFROM"),
 
+                    FinancialYearEnd =
+                        GetValue(x, "FINANCIALYEAREND"),
+
                     BooksFrom =
                         GetValue(x, "BOOKSFROM")
                 })
@@ -195,6 +198,7 @@ namespace TallyWebAPI.Services
                             gstRegistrationType,
 
                         StartingFrom = tally.StartingFrom,
+                        FinancialYearEnd = tally.FinancialYearEnd,
                         BooksFrom = tally.BooksFrom,
                         LastSyncedAt = DateTime.Now
                     };
@@ -225,6 +229,8 @@ namespace TallyWebAPI.Services
                         gstRegistrationType ||
                     company.StartingFrom !=
                         tally.StartingFrom ||
+                    company.FinancialYearEnd !=
+                        tally.FinancialYearEnd ||
                     company.BooksFrom != tally.BooksFrom;
 
                 if (!changed)
@@ -247,6 +253,9 @@ namespace TallyWebAPI.Services
 
                 company.StartingFrom =
                     tally.StartingFrom;
+
+                company.FinancialYearEnd =
+                    tally.FinancialYearEnd;
 
                 company.BooksFrom =
                     tally.BooksFrom;

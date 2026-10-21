@@ -1,0 +1,60 @@
+﻿.stock-summary-page { display:flex; flex:1 1 auto; flex-direction:column; width:100%; height:100%; min-width:0; min-height:0; color:#26344c; }
+.stock-summary-header { display:flex; flex:0 0 auto; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.stock-summary-header h1 { margin:0; color:#18263d; font-size:22px; letter-spacing:-.03em; }
+.stock-summary-header p { margin:3px 0 0; color:#718095; font-size:11px; }
+.ss-eyebrow { color:#b97824; font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+.stock-summary-page button { font:inherit; cursor:pointer; }
+.stock-summary-page button:disabled { cursor:default; opacity:.5; }
+.stock-summary-page button:focus-visible,.stock-summary-page input:focus-visible,.stock-summary-page select:focus-visible { outline:2px solid #267287; outline-offset:2px; }
+.ss-export-actions,.ss-group-actions { display:flex; gap:6px; }
+.ss-export-actions button,.ss-reset,.ss-pagination button { display:inline-flex; align-items:center; justify-content:center; border:1px solid #d1dae4; border-radius:5px; background:#fff; color:#33465c; padding:7px 11px; font-size:11px; }
+.stock-summary-filter { display:grid; grid-template-columns:minmax(220px,1.5fr) repeat(2,minmax(145px,.8fr)) auto auto; align-items:end; gap:9px; flex:0 0 auto; margin-bottom:10px; padding:10px; border:1px solid #dbe2ea; border-radius:7px; background:#fff; }
+.ss-field { display:grid; min-width:0; gap:4px; }
+.ss-field label { color:#536477; font-size:10px; font-weight:650; }
+.ss-field input { box-sizing:border-box; width:100%; min-width:0; height:34px; padding:5px 8px; border:1px solid #ccd6e0; border-radius:5px; color:#26344c; background:#fff; font:inherit; font-size:11px; }
+.ss-company-field { position:relative; }
+.ss-company-input { display:flex; height:34px; }
+.ss-company-input input { width:100%; min-width:0; border-radius:5px 0 0 5px; }
+.ss-company-input > button { display:grid; flex:0 0 32px; place-items:center; border:1px solid #ccd6e0; border-left:0; border-radius:0 5px 5px 0; background:#f7f9fb; color:#536477; }
+.ss-company-options { position:absolute; top:100%; left:0; right:0; z-index:20; max-height:220px; overflow:auto; margin-top:3px; padding:4px; border:1px solid #ccd6e0; border-radius:5px; background:#fff; box-shadow:0 6px 18px #243b5326; }
+.ss-company-options button { display:block; width:100%; border:0; padding:8px; background:#fff; color:#26344c; text-align:left; font-size:11px; }
+.ss-company-options button:hover,.ss-company-options button[aria-selected="true"] { background:#eaf3f7; }
+.ss-company-options span { display:block; padding:9px; color:#718095; font-size:11px; }
+.ss-view-button,.ss-reset { height:34px; padding:0 13px; white-space:nowrap; }
+.ss-view-button { border:1px solid #a9712b; border-radius:5px; background:#b97824; color:#fff; font-size:11px!important; font-weight:600!important; }
+.ss-reset { height:34px; }
+.ss-error { flex:0 0 auto; margin-bottom:8px; padding:8px 10px; border:1px solid #efc6c6; border-radius:5px; background:#fff4f4; color:#a32d2d; font-size:11px; }
+.stock-summary-card { display:flex; flex:1 1 auto; flex-direction:column; width:100%; min-width:0; min-height:0; overflow:hidden; border:1px solid #ced9e2; border-radius:7px; background:#fff; }
+.ss-card-header { display:flex; flex:0 0 auto; align-items:center; justify-content:space-between; gap:10px; padding:8px 10px; border-bottom:1px solid #ced9e2; }
+.ss-card-header h2 { margin:0; color:#163e52; font-size:12px; }
+.ss-card-header span { display:block; margin-top:3px; color:#718095; font-size:10px; }
+.ss-group-actions button { padding:3px 5px; border:0; background:transparent; color:#246379; font-size:10px; }
+.ss-report-controls { display:flex; align-items:center; justify-content:flex-end; flex-wrap:wrap; gap:10px; }
+.ss-item-view-toggle { display:inline-flex; align-items:center; gap:6px; color:#33465c; font-size:10px; font-weight:600; white-space:nowrap; cursor:pointer; }
+.ss-item-view-toggle input { margin:0; accent-color:#246379; }
+.stock-summary-table-wrapper { flex:1 1 auto; width:100%; min-width:0; min-height:0; overflow:auto; scrollbar-width:thin; scrollbar-color:#b8c8d2 #f4f7f9; }
+.stock-summary-table { width:max(100%,1100px); min-width:1100px; border-spacing:0; table-layout:fixed; font-variant-numeric:tabular-nums; }
+.stock-summary-table col.ss-particulars { width:36%; }
+.stock-summary-table thead { position:sticky; top:0; z-index:4; }
+.stock-summary-table th,.stock-summary-table td { box-sizing:border-box; height:27px; padding:4px 7px; border-bottom:1px solid #e6ebef; font-size:10px; text-align:right; white-space:nowrap; }
+.stock-summary-table thead th { height:25px; background:#eaf2f8; color:#12345b; font-weight:600; }
+.stock-summary-table thead tr:first-child th { height:27px; text-align:center; border-bottom:1px solid #cbd7e0; }
+.stock-summary-table thead tr:first-child th:first-child { text-align:left; }
+.stock-summary-table th:first-child,.stock-summary-table td:first-child { position:sticky; left:0; z-index:2; text-align:left; }
+.stock-summary-table thead th:first-child { z-index:6; background:#eaf2f8; }
+.stock-summary-table tbody td:first-child { background:#fff; }
+.stock-summary-table .ss-column-start { border-left:1px solid #d4dce3; }
+.stock-summary-group-row { background:#f5f8fa; color:#183c54; font-weight:650; }
+.stock-summary-group-row td:first-child { background:#f5f8fa; }
+.stock-summary-item-row:hover td { background:#fff4df; }
+.ss-group-toggle { display:inline-flex; align-items:center; gap:5px; padding:0; border:0; background:transparent; color:inherit; text-align:left; font-weight:inherit!important; }
+.stock-summary-empty { height:150px!important; color:#718095; text-align:center!important; }
+.stock-summary-table tfoot { position:sticky; bottom:0; z-index:3; }
+.stock-summary-table tfoot th,.stock-summary-table tfoot td { height:29px; background:#fff; border-top:2px solid #aebfca; color:#142f42; font-weight:700; }
+.stock-summary-table tfoot th:first-child { z-index:5; background:#fff; }
+.ss-pagination { display:flex; flex:0 0 auto; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; min-height:36px; padding:5px 10px; border-top:1px solid #d6e1e8; color:#64768a; font-size:10px; }
+.ss-pagination > div { display:flex; align-items:center; gap:7px; }
+.ss-pagination select { border:1px solid #d1dae4; border-radius:4px; padding:3px; background:#fff; color:#26344c; font-size:10px; }
+.ss-pagination button { padding:2px 7px; }
+@media(max-width:850px) { .stock-summary-filter { grid-template-columns:repeat(2,minmax(0,1fr)); } .ss-company-field { grid-column:1/-1; } }
+@media(max-width:600px) { .stock-summary-header { align-items:flex-start; } .stock-summary-filter { grid-template-columns:1fr 1fr; gap:7px; padding:8px; } .ss-company-field { grid-column:1/-1; } .ss-view-button,.ss-reset { width:100%; } .ss-export-actions button { padding:6px 8px; } }

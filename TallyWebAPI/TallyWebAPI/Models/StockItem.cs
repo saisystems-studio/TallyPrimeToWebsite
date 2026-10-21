@@ -24,7 +24,26 @@
 
         public decimal OpeningQuantity { get; set; }
 
+        public decimal OpeningStock { get; set; }
+
+        public decimal OpeningRate { get; set; }
+
         public decimal ClosingQuantity { get; set; }
+
+        // Standard Selling Rate
+        public decimal? StandardSellingRate { get; set; }
+
+        // Standard Cost Rate
+        public decimal? StandardCostRate { get; set; }
+
+        // Maximum Retail Price
+        public decimal? MRP { get; set; }
+
+        // HSN / SAC Code
+        public string? HsnSac { get; set; }
+
+        // Part Number
+        public string? PartNumber { get; set; }
 
         public DateTime LastSyncedAt { get; set; }
     }

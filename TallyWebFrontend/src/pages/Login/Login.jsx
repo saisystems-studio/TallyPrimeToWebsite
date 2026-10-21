@@ -34,32 +34,52 @@ function Login() {
   return (
     <div className="loginPage">
       <div className="loginCard">
-        <div className="loginLogo">T</div>
+        <div className="loginLogo" aria-label="Tally Web 2 logo">
+          <svg viewBox="0 0 48 48" role="img" aria-hidden="true">
+            <path d="M12 13h24v5H26v18h-5V18h-9z" fill="currentColor" />
+            <path d="M29 25h7v11h-7z" fill="currentColor" opacity=".72" />
+            <path d="M12 25h7v11h-7z" fill="currentColor" opacity=".48" />
+          </svg>
+        </div>
 
-        <h1>Tally Web</h1>
-        <p>Business Data Management</p>
+        <div className="loginBrand">
+          <span className="loginEyebrow">Business Suite</span>
+          <h1>Tally Web </h1>
+          <p>Business Data Management</p>
+        </div>
 
         <form onSubmit={handleLogin}>
-          <label>Username</label>
+          <label htmlFor="login-username">Username</label>
           <input
+            id="login-username"
             type="text"
+            autoComplete="username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter username"
           />
 
-          <label>Password</label>
+          <label htmlFor="login-password">Password</label>
           <input
+            id="login-password"
             type="password"
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter password"
           />
 
           <button type="submit" className="loginButton">
-            Sign In
+            <span>Sign In</span>
+            <span className="loginButtonArrow" aria-hidden="true">
+              →
+            </span>
           </button>
         </form>
+
+        <div className="loginFooter">
+          Secure sign in to your business workspace
+        </div>
       </div>
     </div>
   );

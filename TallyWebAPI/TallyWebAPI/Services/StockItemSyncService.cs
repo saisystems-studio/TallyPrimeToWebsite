@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -39,16 +40,14 @@ namespace TallyWebAPI.Services
             foreach (var company in companies)
             {
                 if (string.IsNullOrWhiteSpace(company.StartingFrom))
-                {
                     continue;
-                }
 
                 if (!DateTime.TryParseExact(
-                        company.StartingFrom,
-                        "yyyyMMdd",
-                        CultureInfo.InvariantCulture,
-                        DateTimeStyles.None,
-                        out var financialYearStart))
+                    company.StartingFrom,
+                    "yyyyMMdd",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out var financialYearStart))
                 {
                     continue;
                 }
@@ -57,13 +56,10 @@ namespace TallyWebAPI.Services
                     .AddYears(1)
                     .AddDays(-1);
 
-                var fromDate =
-                    financialYearStart.ToString("yyyyMMdd");
+                var fromDate = financialYearStart.ToString("yyyyMMdd");
+                var toDate = financialYearEnd.ToString("yyyyMMdd");
 
-                var toDate =
-                    financialYearEnd.ToString("yyyyMMdd");
-
-                // Fetch THIS company's stock items from Tally
+                // Fetch stock items for the selected company
                 var xml = await _stockSummaryService
                     .GetRawStockSummaryAsync(
                         fromDate,
@@ -71,9 +67,7 @@ namespace TallyWebAPI.Services
                         company.Name);
 
                 if (string.IsNullOrWhiteSpace(xml))
-                {
                     continue;
-                }
 
                 xml = CleanXml(xml);
 
@@ -89,14 +83,12 @@ namespace TallyWebAPI.Services
 
                 companiesProcessed++;
 
-                // Load only THIS company's existing stock items
                 var existingItems = await _dbContext.StockItems
                     .Where(x => x.CompanyId == company.Id)
                     .ToListAsync();
 
                 var existingByGuid = existingItems
-                    .Where(x =>
-                        !string.IsNullOrWhiteSpace(x.TallyGuid))
+                    .Where(x => !string.IsNullOrWhiteSpace(x.TallyGuid))
                     .GroupBy(
                         x => x.TallyGuid!,
                         StringComparer.OrdinalIgnoreCase)
@@ -107,22 +99,15 @@ namespace TallyWebAPI.Services
 
                 foreach (var tallyItem in tallyItems)
                 {
-                    var name =
-                        tallyItem
-                            .Attribute("NAME")
-                            ?.Value
-                            ?.Trim();
+                    var name = tallyItem
+                        .Attribute("NAME")
+                        ?.Value
+                        ?.Trim();
 
                     if (string.IsNullOrWhiteSpace(name))
-                    {
-                        name = GetValue(
-                            tallyItem,
-                            "NAME");
-                    }
+                        name = GetValue(tallyItem, "NAME");
 
-                    var guid = GetValue(
-                        tallyItem,
-                        "GUID");
+                    var guid = GetValue(tallyItem, "GUID");
 
                     if (string.IsNullOrWhiteSpace(name) ||
                         string.IsNullOrWhiteSpace(guid))
@@ -132,42 +117,56 @@ namespace TallyWebAPI.Services
 
                     fetched++;
 
-                    var stockGroup = GetValue(
-                        tallyItem,
-                        "PARENT");
+                    var stockGroup = GetValue(tallyItem, "PARENT");
+                    var unit = GetValue(tallyItem, "BASEUNITS");
 
-                    var unit = GetValue(
-                        tallyItem,
-                        "BASEUNITS");
+                    var openingQuantity = ParseQuantity(
+                        GetValue(tallyItem, "OPENINGBALANCE"));
 
-                    var openingQuantity =
-                        ParseQuantity(
-                            GetValue(
-                                tallyItem,
-                                "OPENINGBALANCE"));
+                    var openingStock = ParseMoney(
+                        GetValue(tallyItem, "OPENINGVALUE"));
 
-                    var closingQuantity =
-                        ParseQuantity(
-                            GetValue(
-                                tallyItem,
-                                "CLOSINGBALANCE"));
+                    var openingRate = ParseMoney(
+                        GetValue(tallyItem, "OPENINGRATE"));
 
-                    var masterId =
-                        ParseLong(
-                            GetValue(
-                                tallyItem,
-                                "MASTERID"));
+                    // Some Tally exports include the rate inside the opening
+                    // balance text instead of returning a separate OPENINGRATE.
+                    if (openingRate == 0)
+                    {
+                        openingRate = ParseMoney(
+                            GetValue(tallyItem, "OPENINGBALANCE"),
+                            afterQuantity: true);
+                    }
 
-                    var alterId =
-                        ParseLong(
-                            GetValue(
-                                tallyItem,
-                                "ALTERID"));
+                    var closingQuantity = ParseQuantity(
+                        GetValue(tallyItem, "CLOSINGBALANCE"));
 
-                    // NEW ITEM
+                    var masterId = ParseLong(
+                        GetValue(tallyItem, "MASTERID"));
+
+                    var alterId = ParseLong(
+                        GetValue(tallyItem, "ALTERID"));
+
+                    // Additional stock item fields
+                    var sellingRate = GetEffectiveRate(
+                        tallyItem, "STANDARDPRICELIST", "RATE", "STANDARDPRICE");
+
+                    var costRate = GetEffectiveRate(
+                        tallyItem, "STANDARDCOSTLIST", "RATE", "STANDARDCOST");
+
+                    var mrp = GetEffectiveRate(
+                        tallyItem, "MRPLIST", "MRPRATE", "MRP");
+
+                    var hsnSac = GetValue(
+                        tallyItem, "HSNCODE");
+
+                    var partNumber = GetValue(
+                        tallyItem, "PARTNO");
+
+                    // Insert new stock item
                     if (!existingByGuid.TryGetValue(
-                            guid,
-                            out var existing))
+                        guid,
+                        out var existing))
                     {
                         var newItem = new StockItem
                         {
@@ -182,7 +181,15 @@ namespace TallyWebAPI.Services
                             Unit = unit,
 
                             OpeningQuantity = openingQuantity,
+                            OpeningStock = openingStock,
+                            OpeningRate = openingRate,
                             ClosingQuantity = closingQuantity,
+
+                            StandardSellingRate = sellingRate,
+                            StandardCostRate = costRate,
+                            MRP = mrp,
+                            HsnSac = hsnSac,
+                            PartNumber = partNumber,
 
                             LastSyncedAt = DateTime.Now
                         };
@@ -195,6 +202,7 @@ namespace TallyWebAPI.Services
                         continue;
                     }
 
+                    // Check whether the item has changed
                     bool changed =
                         !string.Equals(
                             existing.Name,
@@ -211,17 +219,27 @@ namespace TallyWebAPI.Services
                             unit,
                             StringComparison.Ordinal) ||
 
-                        existing.OpeningQuantity !=
-                            openingQuantity ||
+                        existing.OpeningQuantity != openingQuantity ||
 
-                        existing.ClosingQuantity !=
-                            closingQuantity ||
+                        existing.OpeningStock != openingStock ||
 
-                        existing.MasterId !=
-                            masterId ||
+                        existing.OpeningRate != openingRate ||
 
-                        existing.AlterId !=
-                            alterId;
+                        existing.ClosingQuantity != closingQuantity ||
+
+                        existing.StandardSellingRate != sellingRate ||
+
+                        existing.StandardCostRate != costRate ||
+
+                        existing.MRP != mrp ||
+
+                        (existing.HsnSac ?? "") != hsnSac ||
+
+                        (existing.PartNumber ?? "") != partNumber ||
+
+                        existing.MasterId != masterId ||
+
+                        existing.AlterId != alterId;
 
                     if (!changed)
                     {
@@ -229,21 +247,26 @@ namespace TallyWebAPI.Services
                         continue;
                     }
 
+                    // Update existing stock item
                     existing.Name = name;
                     existing.StockGroup = stockGroup;
                     existing.Unit = unit;
 
-                    existing.OpeningQuantity =
-                        openingQuantity;
+                    existing.OpeningQuantity = openingQuantity;
+                    existing.OpeningStock = openingStock;
+                    existing.OpeningRate = openingRate;
+                    existing.ClosingQuantity = closingQuantity;
 
-                    existing.ClosingQuantity =
-                        closingQuantity;
+                    existing.StandardSellingRate = sellingRate;
+                    existing.StandardCostRate = costRate;
+                    existing.MRP = mrp;
+                    existing.HsnSac = hsnSac;
+                    existing.PartNumber = partNumber;
 
                     existing.MasterId = masterId;
                     existing.AlterId = alterId;
 
-                    existing.LastSyncedAt =
-                        DateTime.Now;
+                    existing.LastSyncedAt = DateTime.Now;
 
                     updated++;
                 }
@@ -253,22 +276,17 @@ namespace TallyWebAPI.Services
 
             return new StockItemSyncResult
             {
-                CompanyName =
-                    $"{companiesProcessed} companies",
-
+                CompanyName = $"{companiesProcessed} companies",
                 FinancialYearStart = "",
                 FinancialYearEnd = "",
-
                 Fetched = fetched,
                 Inserted = inserted,
                 Updated = updated,
                 Skipped = skipped
             };
         }
-        // =========================================================
-        // XML VALUE HELPER
-        // =========================================================
 
+        // Read XML value
         private static string GetValue(
             XElement parent,
             string elementName)
@@ -283,18 +301,14 @@ namespace TallyWebAPI.Services
                 ?.Trim() ?? "";
         }
 
-        // =========================================================
-        // LONG PARSER
-        // =========================================================
-
-        private static long? ParseLong(
-            string value)
+        // Parse MasterId / AlterId
+        private static long? ParseLong(string value)
         {
             if (long.TryParse(
-                    value,
-                    NumberStyles.Any,
-                    CultureInfo.InvariantCulture,
-                    out var result))
+                value,
+                NumberStyles.Any,
+                CultureInfo.InvariantCulture,
+                out var result))
             {
                 return result;
             }
@@ -302,12 +316,79 @@ namespace TallyWebAPI.Services
             return null;
         }
 
-        // =========================================================
-        // QUANTITY PARSER
-        // =========================================================
+        // Parse Tally rate values such as 267.86/PCS
+        private static decimal? ParseRate(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
 
-        private static decimal ParseQuantity(
-            string value)
+            var match = Regex.Match(
+                value.Replace(",", ""),
+                @"[-+]?\d+(?:\.\d+)?");
+
+            return match.Success &&
+                   decimal.TryParse(
+                       match.Value,
+                       NumberStyles.Number,
+                       CultureInfo.InvariantCulture,
+                       out var rate)
+                ? rate
+                : null;
+        }
+
+        private static decimal ParseMoney(string value, bool afterQuantity = false)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return 0;
+
+            var text = value.Trim().Replace(",", "");
+            var negative = text.Contains("(-)") || text.StartsWith("-");
+            text = text.Replace("(-)", "");
+            var matches = Regex.Matches(text, @"[-+]?\d+(?:\.\d+)?");
+            var match = afterQuantity && matches.Count > 1
+                ? matches[1]
+                : matches.Count > 0
+                    ? matches[0]
+                    : Match.Empty;
+
+            if (!match.Success || !decimal.TryParse(
+                match.Value,
+                NumberStyles.Number,
+                CultureInfo.InvariantCulture,
+                out var amount))
+            {
+                return 0;
+            }
+
+            amount = Math.Abs(amount);
+            return negative ? -amount : amount;
+        }
+
+        private static decimal? GetEffectiveRate(
+            XElement item,
+            string listName,
+            string rateName,
+            string fallbackName)
+        {
+            var rateList = item.Descendants().FirstOrDefault(element =>
+                element.Name.LocalName.Equals(
+                    listName,
+                    StringComparison.OrdinalIgnoreCase));
+
+            var rate = rateList == null
+                ? ""
+                : rateList.Descendants().FirstOrDefault(element =>
+                    element.Name.LocalName.Equals(
+                        rateName,
+                        StringComparison.OrdinalIgnoreCase))?.Value?.Trim() ?? "";
+
+            return ParseRate(
+                string.IsNullOrWhiteSpace(rate)
+                    ? GetValue(item, fallbackName)
+                    : rate);
+        }
+
+        // Parse stock quantity
+        private static decimal ParseQuantity(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
                 return 0;
@@ -320,9 +401,7 @@ namespace TallyWebAPI.Services
                 text.Contains("(-)") ||
                 text.StartsWith("-");
 
-            text = text.Replace(
-                "(-)",
-                "");
+            text = text.Replace("(-)", "");
 
             var match = Regex.Match(
                 text,
@@ -332,28 +411,21 @@ namespace TallyWebAPI.Services
                 return 0;
 
             if (!decimal.TryParse(
-                    match.Value,
-                    NumberStyles.Any,
-                    CultureInfo.InvariantCulture,
-                    out var quantity))
+                match.Value,
+                NumberStyles.Any,
+                CultureInfo.InvariantCulture,
+                out var quantity))
             {
                 return 0;
             }
 
-            quantity =
-                Math.Abs(quantity);
+            quantity = Math.Abs(quantity);
 
-            return negative
-                ? -quantity
-                : quantity;
+            return negative ? -quantity : quantity;
         }
 
-        // =========================================================
-        // CLEAN TALLY XML
-        // =========================================================
-
-        private static string CleanXml(
-            string xml)
+        // Clean invalid Tally XML characters
+        private static string CleanXml(string xml)
         {
             xml = Regex.Replace(
                 xml,
@@ -368,10 +440,6 @@ namespace TallyWebAPI.Services
             return xml;
         }
     }
-
-    // =============================================================
-    // SYNC RESULT
-    // =============================================================
 
     public class StockItemSyncResult
     {

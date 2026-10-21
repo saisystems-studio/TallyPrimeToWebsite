@@ -190,7 +190,8 @@
 }
 
 .voucher-table tbody tr:hover {
-    background: #fffaf3;
+    background: #fff2df;
+    box-shadow: inset 3px 0 0 #c47a22;
 }
 
 .voucher-table tbody tr:last-child td {
@@ -281,7 +282,8 @@
 }
 
 .voucher-clickable-row:hover {
-    background: #fff7eb !important;
+    background: #fff2df !important;
+    box-shadow: inset 3px 0 0 #c47a22;
 }
 
 

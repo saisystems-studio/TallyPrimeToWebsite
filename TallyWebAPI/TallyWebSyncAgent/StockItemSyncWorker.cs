@@ -265,6 +265,8 @@ namespace TallyWebSyncAgent
                                         <FETCH>BaseUnits</FETCH>
 
                                         <FETCH>OpeningBalance</FETCH>
+                                        <FETCH>OpeningRate</FETCH>
+                                        <FETCH>OpeningValue</FETCH>
                                         <FETCH>ClosingBalance</FETCH>
 
                                         <FETCH>GUID</FETCH>
@@ -273,6 +275,12 @@ namespace TallyWebSyncAgent
 
                                         <FETCH>OpeningValue</FETCH>
                                         <FETCH>ClosingValue</FETCH>
+                                        <FETCH>PartNo</FETCH>
+                                        <FETCH>StandardPrice</FETCH>
+                                        <FETCH>StandardCost</FETCH>
+                                        <FETCH>MRP</FETCH>
+                                        <FETCH>StandardPriceList.*</FETCH>
+                                        <FETCH>StandardCostList.*</FETCH>
                                     </COLLECTION>
                                 </TDLMESSAGE>
                             </TDL>
@@ -357,6 +365,19 @@ namespace TallyWebSyncAgent
                             tallyItem,
                             "CLOSINGBALANCE"));
 
+                var openingStock = ParseMoney(
+                    GetValue(tallyItem, "OPENINGVALUE"));
+
+                var openingRate = ParseMoney(
+                    GetValue(tallyItem, "OPENINGRATE"));
+
+                if (openingRate == 0)
+                {
+                    openingRate = ParseMoney(
+                        GetValue(tallyItem, "OPENINGBALANCE"),
+                        afterQuantity: true);
+                }
+
                 var masterId =
                     ParseLong(
                         GetValue(
@@ -368,6 +389,11 @@ namespace TallyWebSyncAgent
                         GetValue(
                             tallyItem,
                             "ALTERID"));
+
+                var partNumber = GetValue(tallyItem, "PARTNO");
+                var standardSellingRate = GetEffectiveRate(tallyItem, "STANDARDPRICELIST", "RATE", "STANDARDPRICE");
+                var standardCostRate = GetEffectiveRate(tallyItem, "STANDARDCOSTLIST", "RATE", "STANDARDCOST");
+                var mrp = GetEffectiveRate(tallyItem, "MRPLIST", "MRPRATE", "MRP");
 
                 result.Add(
                     new AgentStockItemDto
@@ -388,7 +414,15 @@ namespace TallyWebSyncAgent
                             openingQuantity,
 
                         ClosingQuantity =
-                            closingQuantity
+                            closingQuantity,
+
+                        OpeningStock = openingStock,
+                        OpeningRate = openingRate,
+
+                        PartNumber = partNumber,
+                        StandardSellingRate = standardSellingRate,
+                        StandardCostRate = standardCostRate,
+                        MRP = mrp
                     });
             }
 
@@ -601,6 +635,56 @@ namespace TallyWebSyncAgent
                 : quantity;
         }
 
+        private static decimal? ParseRate(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return null;
+
+            var numericValue = Regex.Replace(value, @"[^0-9,.-]", "").Replace(",", "");
+            return decimal.TryParse(numericValue, NumberStyles.Number, CultureInfo.InvariantCulture, out var result)
+                ? result
+                : null;
+        }
+
+        private static decimal ParseMoney(string value, bool afterQuantity = false)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return 0;
+
+            var text = value.Trim().Replace(",", "");
+            var negative = text.Contains("(-)") || text.StartsWith("-");
+            text = text.Replace("(-)", "");
+            var matches = Regex.Matches(text, @"[-+]?\d+(?:\.\d+)?");
+            var match = afterQuantity && matches.Count > 1
+                ? matches[1]
+                : matches.Count > 0
+                    ? matches[0]
+                    : Match.Empty;
+
+            if (!match.Success || !decimal.TryParse(
+                match.Value,
+                NumberStyles.Number,
+                CultureInfo.InvariantCulture,
+                out var amount))
+            {
+                return 0;
+            }
+
+            amount = Math.Abs(amount);
+            return negative ? -amount : amount;
+        }
+
+        private static decimal? GetEffectiveRate(XElement item, string listName, string rateName, string fallbackName)
+        {
+            var rateList = item.Descendants().FirstOrDefault(element =>
+                element.Name.LocalName.Equals(listName, StringComparison.OrdinalIgnoreCase));
+
+            var rate = rateList == null
+                ? ""
+                : rateList.Descendants().FirstOrDefault(element =>
+                    element.Name.LocalName.Equals(rateName, StringComparison.OrdinalIgnoreCase))?.Value?.Trim() ?? "";
+
+            return ParseRate(string.IsNullOrWhiteSpace(rate) ? GetValue(item, fallbackName) : rate);
+        }
+
         private static string CleanXml(
             string xml)
         {
@@ -691,11 +775,23 @@ namespace TallyWebSyncAgent
                 set;
             }
 
+            public decimal OpeningStock { get; set; }
+
+            public decimal OpeningRate { get; set; }
+
             public decimal ClosingQuantity
             {
                 get;
                 set;
             }
+
+            public string? PartNumber { get; set; }
+
+            public decimal? StandardSellingRate { get; set; }
+
+            public decimal? StandardCostRate { get; set; }
+
+            public decimal? MRP { get; set; }
         }
     }
 }

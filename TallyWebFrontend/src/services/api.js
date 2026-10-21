@@ -1,4 +1,7 @@
-const API_BASE_URL = "https://localhost:7108/api";
+const DEFAULT_API_BASE_URL = "https://localhost:7108/api";
+const API_BASE_URL = import.meta.env.DEV
+  ? import.meta.env.VITE_API_BASE_URL || DEFAULT_API_BASE_URL
+  : DEFAULT_API_BASE_URL;
 
 export async function apiRequest(endpoint, options = {}) {
   const token = localStorage.getItem("token");

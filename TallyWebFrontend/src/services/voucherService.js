@@ -57,7 +57,14 @@ export async function getVoucherDetail(
   );
 
   if (!response.ok) {
-    throw new Error("Unable to fetch voucher details from Tally.");
+    let message = "Unable to fetch voucher details from Tally.";
+    try {
+      const body = await response.json();
+      message = body.error || body.message || message;
+    } catch {
+      // Leave the default message when the API returns a non-JSON response.
+    }
+    throw new Error(message);
   }
 
   return await response.json();

@@ -68,18 +68,40 @@ namespace TallyWebSyncAgent
                     continue;
                 }
 
-                var financialYearEnd =
-                    financialYearStart
-                        .AddYears(1)
-                        .AddDays(-1);
+                var booksFrom = DateTime.TryParseExact(
+                    company.BooksFrom,
+                    "yyyyMMdd",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out var parsedBooksFrom)
+                        ? parsedBooksFrom
+                        : financialYearStart;
+                var financialYearEnd = DateTime.TryParseExact(
+                    company.FinancialYearEnd,
+                    "yyyyMMdd",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out var configuredEnd)
+                        ? configuredEnd
+                        : financialYearStart.AddYears(1).AddDays(-1);
+                var voucherEnd = financialYearEnd < DateTime.Today
+                    ? financialYearEnd
+                    : DateTime.Today;
+                // Re-fetch all available history on every run. Voucher GUIDs
+                // are upserted by the server, so this fills gaps safely without
+                // duplicate voucher rows and keeps period openings accurate.
+                var syncStart = booksFrom;
+
+                if (syncStart > voucherEnd)
+                    continue;
 
                 try
                 {
                     var vouchers =
                         await GetVouchersAsync(
                             company,
-                            financialYearStart,
-                            financialYearEnd,
+                            syncStart,
+                            voucherEnd,
                             cancellationToken);
 
                     allVouchers.AddRange(vouchers);
@@ -124,6 +146,7 @@ namespace TallyWebSyncAgent
             await PushToServerAsync(
                 allVouchers,
                 cancellationToken);
+
         }
 
         // =========================================================
@@ -154,6 +177,9 @@ namespace TallyWebSyncAgent
                                         <FETCH>Name</FETCH>
                                         <FETCH>GUID</FETCH>
                                         <FETCH>StartingFrom</FETCH>
+                                        <FETCH>BooksFrom</FETCH>
+                                        <FETCH>EndingAt</FETCH>
+                                        <COMPUTE>FinancialYearEnd : $$FinYearEnd:$EndingAt:$StartingFrom</COMPUTE>
                                     </COLLECTION>
                                 </TDLMESSAGE>
                             </TDL>
@@ -213,6 +239,9 @@ namespace TallyWebSyncAgent
                         company,
                         "STARTINGFROM");
 
+                var booksFrom = GetValue(company, "BOOKSFROM");
+                var financialYearEnd = GetValue(company, "FINANCIALYEAREND");
+
                 if (string.IsNullOrWhiteSpace(name) ||
                     string.IsNullOrWhiteSpace(guid))
                 {
@@ -224,7 +253,9 @@ namespace TallyWebSyncAgent
                     {
                         TallyGuid = guid,
                         Name = name,
-                        StartingFrom = startingFrom
+                        StartingFrom = startingFrom,
+                        BooksFrom = booksFrom,
+                        FinancialYearEnd = financialYearEnd
                     });
             }
 
@@ -356,8 +387,6 @@ namespace TallyWebSyncAgent
                                         <FETCH>Narration</FETCH>
                                         <FETCH>GUID</FETCH>
 
-                                        <FETCH>AllLedgerEntries.*</FETCH>
-                                        <FETCH>LedgerEntries.*</FETCH>
                                     </COLLECTION>
                                 </TDLMESSAGE>
                             </TDL>
@@ -802,6 +831,10 @@ namespace TallyWebSyncAgent
             public string Name { get; set; } = "";
 
             public string StartingFrom { get; set; } = "";
+
+            public string BooksFrom { get; set; } = "";
+
+            public string FinancialYearEnd { get; set; } = "";
         }
 
         private class AgentVoucherSyncRequest
@@ -880,6 +913,7 @@ namespace TallyWebSyncAgent
                 get;
                 set;
             }
+
         }
     }
 }

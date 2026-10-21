@@ -1,14 +1,219 @@
 .appShell {
     display: flex;
-    min-height: 100vh;
+    width: 100%;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
     background: #f6f7fb;
 }
 
 .mainContent {
+    display: flex;
+    flex-direction: column;
     width: calc(100% - 232px);
+    height: 100dvh;
     margin-left: 232px;
     min-width: 0;
+    min-height: 0;
     padding: 18px 22px 24px;
+    overflow: hidden;
+}
+
+.siteToolbar {
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    min-height: 34px;
+    margin-bottom: 6px;
+}
+
+.siteRefreshButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 34px;
+    padding: 0 11px;
+    border: 1px solid #d6deea;
+    border-radius: 8px;
+    background: #fff;
+    color: #26364d;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 150ms ease, border-color 150ms ease;
+}
+
+.siteRefreshButton:hover {
+    border-color: #c78b3b;
+    background: #fffaf2;
+}
+
+.siteRefreshButton svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.pageViewport {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+}
+
+.dataPageViewport {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.dashboardViewport {
+    overflow: auto;
+}
+
+/* Authenticated data pages keep their controls in place and scroll inside data grids. */
+.dataPageViewport > :is(
+    .company-page,
+    .ledgers-page,
+    .stock-items-page,
+    .vouchers-page,
+    .daybook-page,
+    .outstanding-page,
+    .sales-report-page,
+    .stock-summary-page,
+    .pr-page
+) {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+.dataPageViewport :is(
+    .ledger-table-wrapper,
+    .stock-items-table-wrapper,
+    .voucher-table-wrapper,
+    .daybook-table-wrapper,
+    .outstanding-table-wrapper,
+    .sales-table-wrapper,
+    .stock-summary-table-wrapper,
+    .pr-table-wrapper,
+    .company-list
+) {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 0;
+    max-height: none;
+    overflow-x: auto;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+.dataPageViewport :is(
+    .ledger-table-wrapper,
+    .stock-items-table-wrapper,
+    .voucher-table-wrapper,
+    .daybook-table-wrapper,
+    .outstanding-table-wrapper,
+    .sales-table-wrapper,
+    .stock-summary-table-wrapper,
+    .pr-table-wrapper,
+    .company-list
+)::-webkit-scrollbar {
+    display: none;
+}
+
+.dataPageViewport :is(
+    .daybook-table-card,
+    .stock-items-card,
+    .vouchers-card,
+    .outstanding-table-card,
+    .sales-table-card,
+    .stock-summary-card,
+    .pr-table-card
+) {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    max-height: 100%;
+}
+
+.dataPageViewport :is(
+    .ledger-table-wrapper,
+    .daybook-table-wrapper,
+    .stock-items-table-wrapper,
+    .voucher-table-wrapper,
+    .outstanding-table-wrapper,
+    .sales-table-wrapper,
+    .stock-summary-table-wrapper,
+    .pr-table-wrapper
+) > table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+}
+
+.dataPageViewport :is(
+    .ledger-table-wrapper,
+    .daybook-table-wrapper,
+    .stock-items-table-wrapper,
+    .voucher-table-wrapper,
+    .outstanding-table-wrapper,
+    .sales-table-wrapper,
+    .stock-summary-table-wrapper,
+    .pr-table-wrapper
+) > table tfoot {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+}
+
+.dataPageViewport .company-list-heading {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+}
+
+.dataPageViewport .stock-items-card > .stock-items-table-wrapper,
+.dataPageViewport .daybook-table-card > .daybook-table-wrapper,
+.dataPageViewport .vouchers-card > .voucher-table-wrapper,
+.dataPageViewport .outstanding-table-card > .outstanding-table-wrapper,
+.dataPageViewport .sales-table-card > .sales-table-wrapper,
+.dataPageViewport .stock-summary-card > .stock-summary-table-wrapper,
+.dataPageViewport .pr-table-card > .pr-table-wrapper {
+    width: 100%;
+}
+
+.dataPageViewport .ledger-table-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.dataPageViewport .ledger-table-wrapper table {
+    flex: 0 0 auto;
+}
+
+.dataPageViewport .company-list {
+    display: block;
+}
+
+.dataPageViewport .company-list-heading {
+    background: #f9fafc;
 }
 
 .mobileHeader {
@@ -99,8 +304,7 @@
     }
 
     .mobileHeader {
-        position: sticky;
-        top: 0;
+        position: relative;
         z-index: 10;
         display: flex;
         align-items: center;
@@ -145,14 +349,62 @@
     }
 
     .appShell > .mainContent {
+        flex: 1 1 auto;
         width: 100%;
+        height: auto;
         margin-left: 0;
+        min-height: 0;
         padding: 18px;
+    }
+
+    .siteToolbar {
+        min-height: 40px;
+        margin-bottom: 8px;
+    }
+
+    .siteRefreshButton {
+        min-height: 40px;
     }
 }
 
 @media (max-width: 600px) {
     .appShell > .mainContent {
         padding: 16px 16px max(24px, env(safe-area-inset-bottom));
+    }
+}
+
+@media (max-width: 1024px) {
+    .appShell {
+        height: 100dvh;
+    }
+
+    .mobileHeader {
+        flex: 0 0 auto;
+    }
+
+    .dataPageViewport .outstanding-page,
+    .dataPageViewport .pr-page {
+        padding: 0;
+    }
+
+    .dataPageViewport .company-list-heading,
+    .dataPageViewport .company-row-summary {
+        grid-template-columns: minmax(160px, 1.5fr) repeat(3, minmax(100px, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .appShell > .mainContent {
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+
+    .dataPageViewport :is(.outstanding-header, .pr-header) {
+        margin-bottom: 10px;
+    }
+
+    .dataPageViewport :is(.outstanding-filters, .pr-filters, .outstanding-summary) {
+        gap: 8px;
+        margin-bottom: 10px;
+        padding: 10px;
     }
 }

@@ -16,5 +16,13 @@
         public string Narration { get; set; } = "";
 
         public string Guid { get; set; } = "";
+        public List<VoucherPostingDto> Postings { get; set; } = new();
+    }
+
+    public class VoucherPostingDto
+    {
+        public string LedgerName { get; set; } = "";
+        public decimal Amount { get; set; }
+        public int EntryIndex { get; set; }
     }
 }

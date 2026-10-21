@@ -1,0 +1,20 @@
+﻿
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="AgentFiles\TallyWebSyncAgent.exe"
+                      LogicalName="TallyWebSyncAgent.exe" />
+    <EmbeddedResource Include="..\TallyWebAPI\TallyWebSyncAgent\appsettings.Local.json"
+                      LogicalName="TallyWebSyncAgent.appsettings.Local.json" />
+  </ItemGroup>
+
+</Project>

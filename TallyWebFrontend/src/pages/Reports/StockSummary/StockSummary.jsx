@@ -3,8 +3,8 @@ import { getStockSummary } from "../../../services/stockSummaryService";
 import "./StockSummary.css";
 
 export default function StockSummary() {
-  const [fromDate, setFromDate] = useState("2024-04-01");
-  const [toDate, setToDate] = useState("2024-12-31");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -30,12 +30,7 @@ export default function StockSummary() {
   };
 
   const loadReport = async () => {
-    if (!fromDate || !toDate) {
-      setError("Please select From Date and To Date.");
-      return;
-    }
-
-    if (fromDate > toDate) {
+    if (fromDate && toDate && fromDate > toDate) {
       setError("From Date cannot be greater than To Date.");
       return;
     }
@@ -44,10 +39,11 @@ export default function StockSummary() {
       setLoading(true);
       setError("");
 
-      const data = await getStockSummary(
-        formatApiDate(fromDate),
-        formatApiDate(toDate),
-      );
+      const data = await getStockSummary({
+        companyId: 1,
+        fromDate: fromDate ? formatApiDate(fromDate) : "",
+        toDate: toDate ? formatApiDate(toDate) : "",
+      });
 
       setReport(data);
     } catch (err) {
@@ -116,8 +112,8 @@ export default function StockSummary() {
 
             <span>
               {report
-                ? `${totalItems} Stock Items`
-                : "Select a date range to view stock"}
+                ? `${totalItems} Stock Items · ${report.fromDate} to ${report.toDate}`
+                : "Select a company period to view stock"}
             </span>
           </div>
         </div>

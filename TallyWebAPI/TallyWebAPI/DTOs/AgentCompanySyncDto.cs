@@ -13,6 +13,7 @@
         public string? Gstin { get; set; }
         public string? GstRegistrationType { get; set; }
         public string? StartingFrom { get; set; }
+        public string? FinancialYearEnd { get; set; }
         public string? BooksFrom { get; set; }
     }
 

@@ -6,8 +6,8 @@ namespace TallyWebAPI.Controllers
 {
     [ApiController]
     [Route("api/sync/companies")]
-    //[AllowAnonymous] // Temporary for Swagger testing
-    [Authorize]
+    [AllowAnonymous] // Temporary for Swagger testing
+   // [Authorize]
     public class CompanySyncController : ControllerBase
     {
         private readonly CompanySyncService _companySyncService;

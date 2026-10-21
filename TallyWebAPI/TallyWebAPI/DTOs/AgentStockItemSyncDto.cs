@@ -20,7 +20,19 @@
 
         public decimal OpeningQuantity { get; set; }
 
+        public decimal OpeningStock { get; set; }
+
+        public decimal OpeningRate { get; set; }
+
         public decimal ClosingQuantity { get; set; }
+
+        public string? PartNumber { get; set; }
+
+        public decimal? StandardSellingRate { get; set; }
+
+        public decimal? StandardCostRate { get; set; }
+
+        public decimal? MRP { get; set; }
     }
 
     public class AgentStockItemSyncRequest

@@ -7,12 +7,12 @@ import Ledgers from "./pages/Ledgers/Ledgers";
 import StockItems from "./pages/StockItems/StockItems";
 import Vouchers from "./pages/Vouchers/Vouchers";
 import SalesReport from "./pages/Reports/SalesReport/SalesReport";
-import LedgerReport from "./pages/Reports/LedgerReport/LedgerReport";
-import StockSummary from "./pages/Reports/StockSummary/StockSummary";
+import StockSummary from "./pages/StockSummary/StockSummary";
 import Company from "./pages/Company/Company";
 import Outstanding from "./pages/Outstanding/Outstanding";
 import DayBook from "./pages/DayBook/DayBook";
 import PayablesReceivables from "./pages/Reports/PayablesReceivables/PayablesReceivables";
+import LedgerReport from "./pages/Reports/LedgerReport/LedgerReport";
 
 function Placeholder({ title }) {
   return (
@@ -45,11 +45,19 @@ function App() {
           <Route path="/day-book" element={<DayBook />} />
 
           <Route path="/reports/sales" element={<SalesReport />} />
-          <Route path="/reports/ledger" element={<LedgerReport />} />
           <Route path="/reports/stock-summary" element={<StockSummary />} />
+          <Route path="/reports/ledger" element={<LedgerReport />} />
+          <Route
+            path="/receivables"
+            element={<PayablesReceivables key="receivables" />}
+          />
+          <Route
+            path="/payables"
+            element={<PayablesReceivables key="payables" />}
+          />
           <Route
             path="/payables-receivables"
-            element={<PayablesReceivables />}
+            element={<Navigate to="/receivables" replace />}
           />
 
           <Route path="/outstanding" element={<Outstanding />} />

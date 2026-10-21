@@ -26,6 +26,8 @@
 
         public string? StartingFrom { get; set; }
 
+        public string? FinancialYearEnd { get; set; }
+
         public string? BooksFrom { get; set; }
 
         public DateTime LastSyncedAt { get; set; }

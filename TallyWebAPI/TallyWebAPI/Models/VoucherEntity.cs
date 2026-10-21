@@ -24,5 +24,7 @@
         public string? Narration { get; set; }
 
         public DateTime LastSyncedAt { get; set; }
+
+        public List<VoucherLedgerEntryEntity> LedgerEntries { get; set; } = new();
     }
 }

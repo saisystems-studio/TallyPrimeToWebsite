@@ -465,7 +465,7 @@ namespace TallyWebAPI.Services
                     GetValue(company, "STARTINGFROM"),
 
                 FinancialYearEnd = 
-                    GetValue(company, "ENDINGAT"),
+                    GetValue(company, "FINANCIALYEAREND"),
 
                 BooksFrom =
                     GetValue(company, "BOOKSFROM"),
@@ -525,7 +525,8 @@ namespace TallyWebAPI.Services
                             <TDLMESSAGE>
                                 <COLLECTION NAME="CompanyCollection">
                                     <TYPE>Company</TYPE>
-                                    <FETCH>*</FETCH>
+                                    <FETCH>GUID,Name,BasicCompanyFormalName,StateName,CountryName,Pincode,Email,PhoneNumber,StartingFrom,EndingAt,BooksFrom</FETCH>
+                                    <COMPUTE>FinancialYearEnd : $$FinYearEnd:$EndingAt:$StartingFrom</COMPUTE>
                                 </COLLECTION>
                             </TDLMESSAGE>
                         </TDL>

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/Services/StockSummaryService.cs" Link="StockSummaryService.cs" />
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/Services/TallyXmlTransport.cs" Link="TallyXmlTransport.cs" />
+    <Compile Include="../../TallyWebAPI/TallyWebAPI/DTOs/StockSummaryDto.cs" Link="StockSummaryDto.cs" />
+  </ItemGroup>
+</Project>

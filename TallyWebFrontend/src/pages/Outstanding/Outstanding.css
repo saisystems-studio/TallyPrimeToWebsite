@@ -159,7 +159,8 @@
 }
 
 .clickable-row:hover {
-    background: #faf8f4;
+    background: #fff2df;
+    box-shadow: inset 3px 0 0 #c47a22;
 }
 
 .party-column {

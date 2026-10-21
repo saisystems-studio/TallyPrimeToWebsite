@@ -174,7 +174,8 @@
 }
 
 .sales-report-table tbody tr:hover {
-    background: #fffaf3;
+    background: #fff2df;
+    box-shadow: inset 3px 0 0 #c47a22;
 }
 
 .sales-report-table tbody tr:last-child td {

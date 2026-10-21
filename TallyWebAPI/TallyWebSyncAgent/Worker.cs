@@ -208,6 +208,9 @@ public class Worker : BackgroundService
                 StartingFrom =
                     GetValue(x, "STARTINGFROM"),
 
+                FinancialYearEnd =
+                    GetValue(x, "FINANCIALYEAREND"),
+
                 BooksFrom =
                     GetValue(x, "BOOKSFROM")
             })
@@ -425,7 +428,8 @@ public class Worker : BackgroundService
                         <TDLMESSAGE>
                             <COLLECTION NAME="CompanyCollection">
                                 <TYPE>Company</TYPE>
-                                <FETCH>*</FETCH>
+                                <FETCH>GUID,Name,BasicCompanyFormalName,StateName,CountryName,Pincode,Email,PhoneNumber,StartingFrom,EndingAt,BooksFrom</FETCH>
+                                <COMPUTE>FinancialYearEnd : $$FinYearEnd:$EndingAt:$StartingFrom</COMPUTE>
                             </COLLECTION>
                         </TDLMESSAGE>
                     </TDL>
@@ -545,6 +549,8 @@ public class Worker : BackgroundService
         }
 
         public string? StartingFrom { get; set; }
+
+        public string? FinancialYearEnd { get; set; }
 
         public string? BooksFrom { get; set; }
     }

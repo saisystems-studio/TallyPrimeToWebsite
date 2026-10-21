@@ -8,7 +8,7 @@ const sections = [
       {
         to: "/dashboard",
         label: "Dashboard",
-        icon: "▦",
+        icon: "\u25A6",
       },
     ],
   },
@@ -51,33 +51,25 @@ const sections = [
   {
     title: "Reports",
     items: [
-      /*
-    {
-      to: "/reports/sales",
-      label: "Sales Report",
-      icon: "▥",
-    },
-    {
-      to: "/reports/ledger",
-      label: "Ledger Report",
-      icon: "▤",
-    },
-  
-
       {
         to: "/reports/stock-summary",
         label: "Stock Summary",
         icon: "▦",
       },
-        */
+      { to: "/reports/ledger", label: "Ledger Report", icon: "\u25A4" },
       {
         to: "/outstanding",
         label: "Outstanding",
         icon: "▧",
       },
       {
-        to: "/payables-receivables",
-        label: "Payables & Receivables",
+        to: "/payables",
+        label: "Payables",
+        icon: "↔",
+      },
+      {
+        to: "/receivables",
+        label: "Receivables",
         icon: "↔",
       },
     ],
@@ -106,6 +98,7 @@ function Sidebar({ user = {}, onLogout, onNavigate }) {
             {section.items.map((item) => (
               <NavLink
                 to={item.to}
+                end
                 className="menuItem"
                 key={item.to}
                 onClick={onNavigate}

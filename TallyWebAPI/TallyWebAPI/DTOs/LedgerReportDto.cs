@@ -3,6 +3,10 @@
     public class LedgerReportDto
     {
         public string LedgerName { get; set; } = "";
+        public string FromDate { get; set; } = "";
+        public string ToDate { get; set; } = "";
+        public bool HistoryComplete { get; set; } = false;
+        public string HistoryNote { get; set; } = "";
 
         public decimal OpeningBalance { get; set; }
 

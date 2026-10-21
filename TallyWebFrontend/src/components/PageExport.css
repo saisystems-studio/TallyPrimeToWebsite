@@ -1,0 +1,150 @@
+.page-export {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0 0 0 auto;
+  flex-shrink: 0;
+}
+
+.mainContent .page-export-header {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 0 0 auto;
+  margin-bottom: 10px;
+  padding: 12px 14px;
+  border: 1px solid #e1e6ee;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgb(21 35 56 / 3%);
+}
+
+.mainContent .page-export-header > :first-child {
+  min-width: 0;
+}
+
+.mainContent .page-export-header > .page-export {
+  order: 1;
+}
+
+.mainContent .page-export-header > :not(:first-child):not(.page-export) {
+  order: 2;
+}
+
+.page-export button {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid #d6deea;
+  border-radius: 8px;
+  background: #fff;
+  color: #26364d;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.page-export button:hover {
+  background: #f3f6fa;
+}
+
+.page-export .page-export-icon-button {
+  display: grid;
+  width: 40px;
+  min-width: 40px;
+  height: 38px;
+  place-items: center;
+  padding: 0;
+}
+
+.page-export-icon-button svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.page-share {
+  position: relative;
+}
+
+.page-share-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 30;
+  display: grid;
+  min-width: 160px;
+  padding: 5px;
+  border: 1px solid #d6deea;
+  border-radius: 9px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgb(26 42 68 / 16%);
+}
+
+.page-share-menu button {
+  width: 100%;
+  min-height: 38px;
+  border: 0;
+  text-align: left;
+}
+
+@media print {
+  .page-export,
+  .desktopNavigation,
+  .mobileHeader,
+  .mobileDrawer,
+  .mainContent button,
+  .mainContent select,
+  .mainContent input,
+  .mainContent details,
+  .mainContent .modal-overlay,
+  .mainContent [role="dialog"] {
+    display: none !important;
+  }
+
+  .appShell,
+  .mainContent {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  .mainContent {
+    color: #111 !important;
+  }
+
+  .mainContent table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+  }
+
+  .mainContent th,
+  .mainContent td {
+    border: 1px solid #999 !important;
+    padding: 5px !important;
+    color: #111 !important;
+  }
+
+  .mainContent tr {
+    break-inside: avoid;
+  }
+}
+
+@media (max-width: 600px) {
+  .mainContent .page-export-header {
+    flex-wrap: wrap;
+  }
+
+  .page-export {
+    margin-left: auto;
+    flex-wrap: wrap;
+  }
+}

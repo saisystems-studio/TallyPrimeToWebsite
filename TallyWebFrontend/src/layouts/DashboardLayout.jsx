@@ -1,10 +1,12 @@
 import { useEffect, useRef } from "react";
-import { Outlet, Navigate, useNavigate } from "react-router-dom";
+import { Outlet, Navigate, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar/Sidebar";
+import PageExport from "../components/PageExport";
 import "./Layout.css";
 
 function DashboardLayout() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const menuRef = useRef(null);
   const triggerRef = useRef(null);
   const previousOverflow = useRef(null);
@@ -92,7 +94,26 @@ function DashboardLayout() {
       </dialog>
 
       <main className="mainContent">
-        <Outlet />
+        {pathname === "/dashboard" && (
+          <div className="siteToolbar">
+            <button
+              type="button"
+              className="siteRefreshButton"
+              onClick={() => window.location.reload()}
+              aria-label="Refresh website"
+              title="Refresh"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 7v5h-5M4.8 9a7 7 0 0 1 11.8-2L20 12M4 17v-5h5m10.2 3a7 7 0 0 1-11.8 2L4 12" />
+              </svg>
+              <span>Refresh</span>
+            </button>
+          </div>
+        )}
+        <PageExport />
+        <div className={`pageViewport${pathname === "/dashboard" ? " dashboardViewport" : " dataPageViewport"}`}>
+          <Outlet />
+        </div>
       </main>
     </div>
   );

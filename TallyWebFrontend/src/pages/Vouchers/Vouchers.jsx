@@ -256,7 +256,7 @@ function Vouchers() {
     } catch (err) {
       console.error("VOUCHER DETAIL ERROR:", err);
 
-      setDetailError("Unable to load voucher details from Tally.");
+      setDetailError(err.message || "Unable to load voucher details from Tally.");
     } finally {
       setDetailLoading(false);
     }

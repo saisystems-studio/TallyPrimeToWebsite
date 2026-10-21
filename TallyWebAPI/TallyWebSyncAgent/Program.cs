@@ -1,6 +1,11 @@
 using TallyWebSyncAgent;
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = Host.CreateApplicationBuilder(
+    new HostApplicationBuilderSettings
+    {
+        Args = args,
+        ContentRootPath = AppContext.BaseDirectory
+    });
 
 builder.Services.AddHttpClient("Tally", client =>
 {
@@ -15,6 +20,11 @@ builder.Services.AddSingleton<LedgerSyncWorker>();
 builder.Services.AddSingleton<StockItemSyncWorker>();
 builder.Services.AddSingleton<VoucherSyncWorker>();
 builder.Services.AddSingleton<OutstandingSyncWorker>();
+
+builder.Services.AddWindowsService(options =>
+{
+    options.ServiceName = "TallyWeb Sync Agent";
+});
 
 
 builder.Services.AddHostedService<Worker>();

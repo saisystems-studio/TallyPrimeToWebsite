@@ -42,12 +42,20 @@ builder.Services.AddHttpClient<VoucherService>();
 builder.Services.AddHttpClient<SalesReportService>();
 builder.Services.AddHttpClient<LedgerReportService>();
 builder.Services.AddHttpClient<StockSummaryService>();
+builder.Services.AddScoped<StockSummarySnapshotService>();
+builder.Services.AddScoped<LedgerReportSnapshotService>();
 builder.Services.AddHttpClient<OutstandingService>();
 builder.Services.AddScoped<StockItemSyncService>();
 builder.Services.AddScoped<CompanySyncService>();
 builder.Services.AddScoped<LedgerSyncService>();
 builder.Services.AddScoped<VoucherSyncService>();
-builder.Services.AddHostedService<TallyAutoSyncService>();
+
+
+// Enable automatic Tally sync only outside Development
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddHostedService<TallyAutoSyncService>();
+}
 
 
 builder.Services.AddScoped<OutstandingSyncService>();
@@ -123,9 +131,61 @@ if (app.Environment.IsDevelopment())
 }
 
 
-using (var scope = app.Services.CreateScope())
+// Keep the legacy schema compatibility and admin-seeding step enabled in
+// non-Development environments, but opt-in only for local Development runs.
+// This lets a local API serve manually prepared databases without changing
+// their schema or records during startup.
+var runLegacyStartupDatabaseInitialization = !app.Environment.IsDevelopment()
+    || builder.Configuration.GetValue<bool>("Startup:RunLegacyDatabaseInitialization");
+
+if (runLegacyStartupDatabaseInitialization)
 {
+    using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    // Keep existing SQL databases compatible with newly added stock fields.
+    db.Database.ExecuteSqlRaw("""
+        IF COL_LENGTH('dbo.StockItems_tbl', 'OpeningStock') IS NULL
+        BEGIN
+            ALTER TABLE dbo.StockItems_tbl
+            ADD OpeningStock decimal(18, 2) NOT NULL
+                CONSTRAINT DF_StockItems_tbl_OpeningStock DEFAULT (0);
+        END;
+
+        IF COL_LENGTH('dbo.StockItems_tbl', 'OpeningRate') IS NULL
+        BEGIN
+            ALTER TABLE dbo.StockItems_tbl
+            ADD OpeningRate decimal(18, 2) NOT NULL
+                CONSTRAINT DF_StockItems_tbl_OpeningRate DEFAULT (0);
+        END;
+
+        IF COL_LENGTH('dbo.Companies_tbl', 'FinancialYearEnd') IS NULL
+        BEGIN
+            ALTER TABLE dbo.Companies_tbl
+            ADD FinancialYearEnd nvarchar(8) NULL;
+        END;
+
+        IF OBJECT_ID('dbo.VoucherLedgerEntries_tbl', 'U') IS NULL
+        BEGIN
+            CREATE TABLE dbo.VoucherLedgerEntries_tbl
+            (
+                Id int IDENTITY(1,1) NOT NULL
+                    CONSTRAINT PK_VoucherLedgerEntries_tbl PRIMARY KEY,
+                VoucherId int NOT NULL,
+                LedgerId int NULL,
+                LedgerName nvarchar(250) NOT NULL,
+                Amount decimal(18,4) NOT NULL,
+                EntryIndex int NOT NULL,
+                CONSTRAINT FK_VoucherLedgerEntries_tbl_Vouchers_tbl
+                    FOREIGN KEY (VoucherId)
+                    REFERENCES dbo.Vouchers_tbl(Id)
+                    ON DELETE CASCADE
+            );
+
+            CREATE INDEX IX_VoucherLedgerEntries_Ledger_Voucher
+                ON dbo.VoucherLedgerEntries_tbl (LedgerId, VoucherId);
+        END;
+        """);
 
     if (!db.Users.Any(u => u.Username == "admin"))
     {

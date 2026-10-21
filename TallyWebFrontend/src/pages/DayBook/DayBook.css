@@ -4,6 +4,9 @@
 
 .daybook-page {
     width: 100%;
+    min-height: calc(100dvh - 42px);
+    display: flex;
+    flex-direction: column;
     color: #26344c;
 }
 
@@ -182,6 +185,10 @@
 ========================================= */
 
 .daybook-table-card {
+    flex: 1 1 auto;
+    min-height: 320px;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
 
     border: 1px solid #e2e6ed;
@@ -194,9 +201,38 @@
 
 .daybook-table-wrapper {
     width: 100%;
-    max-height: max(240px, calc(100dvh - 300px));
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
     overflow-y: auto;
     overflow-x: auto;
+}
+
+.daybook-table-footer {
+    z-index: 3;
+    display: grid;
+    flex: 0 0 auto;
+    grid-template-columns: minmax(0, 1fr) 140px;
+    align-items: center;
+    gap: 12px;
+    min-height: 38px;
+    padding: 8px 10px;
+    border-top: 1px solid #dfe3ea;
+    background: #faf7f2;
+    color: #26344c;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.daybook-table-footer span,
+.daybook-table-footer strong {
+    text-align: right;
+}
+
+.daybook-table-footer strong {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
 }
 
 .daybook-table {
@@ -297,7 +333,11 @@
 }
 
 .daybook-table tbody tr:hover td {
-    background: #fffaf4;
+    background: #fff2df;
+}
+
+.daybook-table tbody tr:hover {
+    box-shadow: inset 3px 0 0 #c47a22;
 }
 
 .daybook-party {
@@ -322,27 +362,6 @@
 /* =========================================
    TOTAL FOOTER
 ========================================= */
-
-.daybook-table tfoot td {
-    position: sticky;
-    bottom: 0;
-
-    padding: 10px;
-
-    border-top: 1px solid #dfe3ea;
-
-    background: #faf7f2;
-    color: #26344c;
-
-    font-size: 11px;
-    font-weight: 700;
-}
-
-.daybook-table tfoot td:first-child {
-    text-align: right;
-    text-transform: uppercase;
-}
-
 
 /* =========================================
    EMPTY / LOADING
@@ -418,7 +437,11 @@
 }
 
 .daybook-clickable-row:hover td {
-    background: #fff8ee !important;
+    background: #fff2df !important;
+}
+
+.daybook-clickable-row:hover {
+    box-shadow: inset 3px 0 0 #c47a22;
 }
 
 
@@ -749,6 +772,7 @@
 ========================================= */
 
 .daybook-narration {
+
     margin-top: 15px;
 
     padding: 11px 12px;

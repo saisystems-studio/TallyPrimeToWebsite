@@ -39,7 +39,7 @@
 
 .pr-filters {
     display: grid;
-    grid-template-columns: 220px 240px minmax(260px, 1fr);
+    grid-template-columns: 220px minmax(320px, 1.25fr) minmax(260px, 1.75fr);
     gap: 14px;
     align-items: end;
 
@@ -94,13 +94,53 @@
     color: #9ca3af;
 }
 
+.pr-party-filter-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.pr-party-filter-controls select {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.pr-ledger-wise-toggle {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    color: #4b5563;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.pr-view-toggle-slot {
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    min-width: 0;
+    padding-right: 18px;
+}
+
+.pr-ledger-wise-toggle input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+    accent-color: #9a6b2f;
+    cursor: pointer;
+}
+
 /* =========================
    SUMMARY
 ========================= */
 
 .pr-summary {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     margin-bottom: 18px;
 }
@@ -345,7 +385,8 @@
 }
 
 .pr-clickable-row:hover {
-    background: #faf8f5;
+    background: #fff2df;
+    box-shadow: inset 3px 0 0 #c47a22;
 }
 
 .pr-party {
@@ -381,6 +422,57 @@
 
 .pr-table tfoot td:first-child {
     text-align: right;
+}
+
+.pr-expand-toggle {
+    width: 22px;
+    height: 22px;
+    margin-right: 8px;
+    padding: 0;
+    border: 1px solid #e5e7eb;
+    border-radius: 5px;
+    background: #fff;
+    color: #795728;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.pr-expand-toggle:hover {
+    background: #fff7ed;
+    border-color: #d6b78d;
+}
+
+.pr-ledger-details-row > td {
+    height: auto;
+    padding: 0 14px 12px 44px;
+    background: #fafafa;
+}
+
+.pr-ledger-details-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+}
+
+.pr-ledger-details-table th {
+    height: 32px;
+    padding: 0 9px;
+    text-align: left;
+    white-space: nowrap;
+    color: #6b7280;
+    background: #f3f4f6;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 9px;
+    text-transform: uppercase;
+}
+
+.pr-ledger-details-table td {
+    height: 34px;
+    padding: 0 9px;
+    color: #4b5563;
+    border-bottom: 1px solid #eceff1;
 }
 
 /* =========================
@@ -564,6 +656,10 @@
         grid-template-columns: 1fr 1fr;
     }
 
+    .pr-party-filter-controls {
+        flex-wrap: wrap;
+    }
+
     .pr-search-field {
         grid-column: 1 / -1;
     }
@@ -584,6 +680,14 @@
         grid-column: auto;
     }
 
+    .pr-party-filter-controls {
+        flex-wrap: nowrap;
+    }
+
+    .pr-ledger-wise-toggle {
+        font-size: 11px;
+    }
+
     .pr-tabs {
         width: 100%;
     }
@@ -596,5 +700,117 @@
     .pr-table-header {
         align-items: flex-start;
         gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .pr-view-toggle-slot {
+        flex: 1 1 auto;
+        justify-content: flex-end;
+        padding-right: 0;
+    }
+}
+
+/* Compact report layout */
+.pr-page {
+    padding: 2px 4px 6px;
+}
+
+.pr-header {
+    margin-bottom: 7px;
+}
+
+.mainContent .pr-header.page-export-header {
+    gap: 12px;
+    margin-bottom: 7px;
+    padding: 7px 10px;
+}
+
+.pr-eyebrow {
+    margin-bottom: 3px;
+    font-size: 10px;
+}
+
+.pr-header h1 {
+    font-size: 21px;
+}
+
+.pr-header p {
+    margin-top: 2px;
+    font-size: 11px;
+}
+
+.pr-filters {
+    gap: 8px;
+    padding: 7px 10px;
+    margin-bottom: 8px;
+}
+
+.pr-field {
+    gap: 3px;
+}
+
+.pr-field select,
+.pr-field input {
+    height: 32px;
+    font-size: 12px;
+}
+
+.pr-summary {
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.pr-summary-card {
+    min-height: 64px;
+    padding: 7px 12px;
+}
+
+.pr-summary-card span {
+    margin-bottom: 3px;
+}
+
+.pr-summary-card strong {
+    font-size: 17px;
+}
+
+.pr-summary-card small {
+    margin-top: 3px;
+}
+
+.pr-tabs {
+    margin-bottom: 8px;
+}
+
+.pr-tabs button {
+    height: 30px;
+    padding: 0 11px;
+}
+
+.pr-table-header {
+    min-height: 44px;
+    padding: 5px 10px;
+}
+
+.pr-table-header h3 {
+    font-size: 14px;
+}
+
+.pr-table th {
+    height: 33px;
+    padding-inline: 9px;
+}
+
+.pr-table td {
+    height: 38px;
+    padding-inline: 9px;
+}
+
+.pr-table tfoot td {
+    height: 36px;
+}
+
+@media (max-width: 700px) {
+    .pr-page {
+        padding: 4px 0 12px;
     }
 }

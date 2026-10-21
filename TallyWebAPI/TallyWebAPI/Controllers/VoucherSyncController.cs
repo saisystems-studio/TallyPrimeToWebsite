@@ -36,5 +36,18 @@ namespace TallyWebAPI.Controllers
                 });
             }
         }
+
+        [HttpPost("postings/backfill")]
+        public async Task<IActionResult> BackfillPostings([FromQuery] int companyId,
+            [FromQuery] string fromDate, [FromQuery] string toDate, [FromQuery] bool apply = false)
+        {
+            if (companyId <= 0) return BadRequest(new { message = "A single CompanyId is required." });
+            try
+            {
+                return Ok(await _voucherSyncService.BackfillPostingsAsync(companyId, fromDate, toDate, apply));
+            }
+            catch (ArgumentException ex) { return BadRequest(new { message = ex.Message }); }
+            catch (InvalidOperationException ex) { return Conflict(new { message = ex.Message }); }
+        }
     }
 }

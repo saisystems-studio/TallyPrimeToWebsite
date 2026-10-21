@@ -103,6 +103,7 @@ namespace TallyWebAPI.Controllers
                         GstRegistrationType =
                             incoming.GstRegistrationType,
                         StartingFrom = incoming.StartingFrom,
+                        FinancialYearEnd = incoming.FinancialYearEnd,
                         BooksFrom = incoming.BooksFrom,
                         LastSyncedAt = DateTime.UtcNow
                     };
@@ -127,6 +128,7 @@ namespace TallyWebAPI.Controllers
                     company.GstRegistrationType !=
                         incoming.GstRegistrationType ||
                     company.StartingFrom != incoming.StartingFrom ||
+                    company.FinancialYearEnd != incoming.FinancialYearEnd ||
                     company.BooksFrom != incoming.BooksFrom;
 
                 if (!changed)
@@ -147,6 +149,8 @@ namespace TallyWebAPI.Controllers
                     incoming.GstRegistrationType;
                 company.StartingFrom =
                     incoming.StartingFrom;
+                company.FinancialYearEnd =
+                    incoming.FinancialYearEnd;
                 company.BooksFrom =
                     incoming.BooksFrom;
                 company.LastSyncedAt =
@@ -545,8 +549,16 @@ namespace TallyWebAPI.Controllers
                             OpeningQuantity =
                                 tally.OpeningQuantity,
 
+                            OpeningStock = tally.OpeningStock,
+                            OpeningRate = tally.OpeningRate,
+
                             ClosingQuantity =
                                 tally.ClosingQuantity,
+
+                            PartNumber = tally.PartNumber,
+                            StandardSellingRate = tally.StandardSellingRate,
+                            StandardCostRate = tally.StandardCostRate,
+                            MRP = tally.MRP,
 
                             LastSyncedAt =
                                 DateTime.UtcNow
@@ -584,8 +596,16 @@ namespace TallyWebAPI.Controllers
                         stockItem.OpeningQuantity !=
                             tally.OpeningQuantity ||
 
+                        stockItem.OpeningStock != tally.OpeningStock ||
+                        stockItem.OpeningRate != tally.OpeningRate ||
+
                         stockItem.ClosingQuantity !=
-                            tally.ClosingQuantity;
+                            tally.ClosingQuantity ||
+
+                        stockItem.PartNumber != tally.PartNumber ||
+                        stockItem.StandardSellingRate != tally.StandardSellingRate ||
+                        stockItem.StandardCostRate != tally.StandardCostRate ||
+                        stockItem.MRP != tally.MRP;
 
                     if (!changed)
                     {
@@ -614,8 +634,16 @@ namespace TallyWebAPI.Controllers
                     stockItem.OpeningQuantity =
                         tally.OpeningQuantity;
 
+                    stockItem.OpeningStock = tally.OpeningStock;
+                    stockItem.OpeningRate = tally.OpeningRate;
+
                     stockItem.ClosingQuantity =
                         tally.ClosingQuantity;
+
+                    stockItem.PartNumber = tally.PartNumber;
+                    stockItem.StandardSellingRate = tally.StandardSellingRate;
+                    stockItem.StandardCostRate = tally.StandardCostRate;
+                    stockItem.MRP = tally.MRP;
 
                     stockItem.LastSyncedAt =
                         DateTime.UtcNow;
@@ -1145,5 +1173,6 @@ namespace TallyWebAPI.Controllers
                 billReference?.Trim() ?? "",
                 billType?.Trim() ?? "");
         }
+
     }
 }

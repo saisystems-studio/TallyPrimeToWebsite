@@ -10,8 +10,8 @@
   background: #fff;
   border-right: 1px solid #e5e9f0;
   box-shadow: 3px 0 14px rgba(26, 42, 68, .025);
-  scrollbar-color: #c9d1dd transparent;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .brand {
@@ -25,6 +25,7 @@
 }
 
 .brandIcon {
+  position: relative;
   display: grid;
   width: 40px;
   height: 40px;
@@ -36,6 +37,11 @@
   color: #fff;
   font-size: 19px;
   font-weight: 800;
+}
+
+.brandIcon svg {
+  width: 27px;
+  height: 27px;
 }
 
 .brandCopy h2 {
@@ -57,6 +63,8 @@
   flex: 1;
   overflow-y: auto;
   min-height: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .menuSection {
@@ -250,19 +258,12 @@
   flex-shrink: 0;
 }
 
-/* Clean hidden scrollbar */
+/* Keep sidebar navigation scrollable without showing its scrollbar. */
 
 .sidebarNav::-webkit-scrollbar {
-  width: 4px;
-}
-
-.sidebarNav::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 10px;
-}
-
-.sidebarNav::-webkit-scrollbar-track {
-  background: transparent;
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 

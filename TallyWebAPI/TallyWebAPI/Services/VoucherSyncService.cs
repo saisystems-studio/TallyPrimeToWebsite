@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using TallyWebAPI.Data;
+using TallyWebAPI.DTOs;
 using TallyWebAPI.Models;
 
 namespace TallyWebAPI.Services
@@ -33,28 +34,44 @@ namespace TallyWebAPI.Services
 
             foreach (var company in companies)
             {
-                if (string.IsNullOrWhiteSpace(company.StartingFrom))
-                    continue;
-
-                if (!DateTime.TryParseExact(
+                var hasBooksFrom = DateTime.TryParseExact(
+                    company.BooksFrom,
+                    "yyyyMMdd",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out var financialYearStart);
+                if (!hasBooksFrom && !DateTime.TryParseExact(
                         company.StartingFrom,
                         "yyyyMMdd",
                         CultureInfo.InvariantCulture,
                         DateTimeStyles.None,
-                        out var financialYearStart))
-                {
+                        out financialYearStart))
                     continue;
-                }
 
-                var financialYearEnd = financialYearStart
-                    .AddYears(1)
-                    .AddDays(-1);
+                var financialYearEnd = DateTime.TryParseExact(
+                    company.FinancialYearEnd,
+                    "yyyyMMdd",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out var configuredEnd)
+                        ? configuredEnd
+                        : financialYearStart.AddYears(1).AddDays(-1);
+
+                // Always request the complete available company history. The
+                // voucher GUID upsert below makes this safe to repeat and keeps
+                // historical ledger postings available for period openings.
+                var syncStart = financialYearStart;
+                var syncEnd = financialYearEnd < DateTime.Today
+                    ? financialYearEnd
+                    : DateTime.Today;
+                if (syncStart > syncEnd)
+                    continue;
 
                 var fromDate =
-                    financialYearStart.ToString("yyyyMMdd");
+                    syncStart.ToString("yyyyMMdd");
 
                 var toDate =
-                    financialYearEnd.ToString("yyyyMMdd");
+                    syncEnd.ToString("yyyyMMdd");
 
                 var tallyVouchers =
                     await _voucherService.GetVoucherListAsync(
@@ -120,7 +137,6 @@ namespace TallyWebAPI.Services
 
                             Amount = amount,
                             Narration = voucher.Narration,
-
                             LastSyncedAt = DateTime.Now
                         };
 
@@ -161,7 +177,6 @@ namespace TallyWebAPI.Services
 
                     existing.Amount = amount;
                     existing.Narration = voucher.Narration;
-
                     existing.LastSyncedAt = DateTime.Now;
 
                     updated++;
@@ -179,5 +194,59 @@ namespace TallyWebAPI.Services
                 skipped
             };
         }
+
+        // Explicit repair only; the normal sync/Windows Agent never invokes it.
+        // Preview and apply use the same validations. One SaveChanges is atomic.
+        public async Task<object> BackfillPostingsAsync(int companyId, string fromDate, string toDate, bool apply = false)
+        {
+            if (!DateTime.TryParseExact(fromDate, "yyyyMMdd", CultureInfo.InvariantCulture,
+                    DateTimeStyles.None, out var from) ||
+                !DateTime.TryParseExact(toDate, "yyyyMMdd", CultureInfo.InvariantCulture,
+                    DateTimeStyles.None, out var to) || from > to)
+                throw new ArgumentException("Supply an ordered yyyyMMdd date range.");
+            var company = await _dbContext.Companies.AsNoTracking().SingleAsync(x => x.Id == companyId);
+            var ledgers = await _dbContext.Ledgers.AsNoTracking().Where(x => x.CompanyId == companyId).ToListAsync();
+            var incoming = await _voucherService.GetVoucherListAsync(fromDate, toDate, company.Name);
+            if (incoming.Count == 0)
+                throw new InvalidOperationException("Tally returned no vouchers; no backfill can be verified.");
+            if (incoming.Any(x => string.IsNullOrWhiteSpace(x.Guid) ||
+                    !DateTime.TryParseExact(x.Date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) ||
+                    date < from || date > to) ||
+                incoming.GroupBy(x => x.Guid.Trim(), StringComparer.OrdinalIgnoreCase).Any(x => x.Count() > 1))
+                throw new InvalidOperationException("Tally returned missing/duplicate voucher GUIDs or dates outside the requested range.");
+            var existing = await _dbContext.Vouchers.Include(x => x.LedgerEntries)
+                .Where(x => x.CompanyId == companyId).ToListAsync();
+            if (existing.GroupBy(x => x.TallyGuid.Trim(), StringComparer.OrdinalIgnoreCase).Any(x => x.Count() > 1))
+                throw new InvalidOperationException("Duplicate stored voucher GUIDs require review before backfill.");
+            var byGuid = existing.ToDictionary(x => x.TallyGuid.Trim(), StringComparer.OrdinalIgnoreCase);
+            int headersAdded = 0, postingsAdded = 0;
+            foreach (var source in incoming)
+            {
+                var guid = source.Guid.Trim();
+                if (!byGuid.TryGetValue(guid, out var voucher))
+                {
+                    voucher = new VoucherEntity {
+                        CompanyId = companyId, TallyGuid = guid, VoucherDate = source.Date,
+                        VoucherNumber = source.VoucherNumber, VoucherType = source.VoucherType,
+                        PartyName = source.PartyName, PartyGstin = source.PartyGstin,
+                        State = source.State, PlaceOfSupply = source.PlaceOfSupply, Narration = source.Narration,
+                        Amount = decimal.TryParse(source.Amount, NumberStyles.Any, CultureInfo.InvariantCulture, out var amount) ? amount : null,
+                        LastSyncedAt = DateTime.UtcNow
+                    };
+                    _dbContext.Vouchers.Add(voucher);
+                    byGuid.Add(guid, voucher);
+                    headersAdded++;
+                }
+                else if (voucher.VoucherDate != source.Date || voucher.VoucherNumber != source.VoucherNumber ||
+                         voucher.VoucherType != source.VoucherType)
+                    throw new InvalidOperationException("Existing voucher identity differs from Tally; backfill stopped.");
+                postingsAdded += VoucherPostingBackfill.Apply(voucher, source.Postings, ledgers);
+            }
+            if (apply) await _dbContext.SaveChangesAsync();
+            else _dbContext.ChangeTracker.Clear();
+            return new { companyId, companyName = company.Name, fromDate, toDate, preview = !apply,
+                vouchersFetched = incoming.Count, headersAdded, postingsAdded };
+        }
+
     }
 }
