@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Outlet, Navigate, useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar/Sidebar";
 import PageExport from "../components/PageExport";
+import InstallAppButton from "../components/InstallAppButton";
 import "./Layout.css";
 
 function DashboardLayout() {
@@ -96,18 +97,21 @@ function DashboardLayout() {
       <main className="mainContent">
         {pathname === "/dashboard" && (
           <div className="siteToolbar">
-            <button
-              type="button"
-              className="siteRefreshButton"
-              onClick={() => window.location.reload()}
-              aria-label="Refresh website"
-              title="Refresh"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M20 7v5h-5M4.8 9a7 7 0 0 1 11.8-2L20 12M4 17v-5h5m10.2 3a7 7 0 0 1-11.8 2L4 12" />
-              </svg>
-              <span>Refresh</span>
-            </button>
+            <div className="siteToolbarActions">
+              <InstallAppButton />
+              <button
+                type="button"
+                className="siteRefreshButton"
+                onClick={() => window.location.reload()}
+                aria-label="Refresh website"
+                title="Refresh"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M20 7v5h-5M4.8 9a7 7 0 0 1 11.8-2L20 12M4 17v-5h5m10.2 3a7 7 0 0 1-11.8 2L4 12" />
+                </svg>
+                <span>Refresh</span>
+              </button>
+            </div>
           </div>
         )}
         <PageExport />

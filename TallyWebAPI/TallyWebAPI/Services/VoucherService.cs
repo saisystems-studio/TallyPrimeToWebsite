@@ -319,6 +319,10 @@ namespace TallyWebAPI.Services
                                         <FETCH>StateName</FETCH>
                                         <FETCH>PlaceOfSupply</FETCH>
                                         <FETCH>Reference</FETCH>
+                                        <FETCH>ReferenceDate,PartyName,PartyMailingName,Address,Address.*,PartyPincode,PartyCity,CountryOfResidence,PartyStateCode</FETCH>
+                                        <FETCH>BasicBuyerName,BasicBuyerAddress.*,ConsigneeMailingName,ConsigneeAddress.*,ConsigneeGSTIN,ConsigneeStateName,ConsigneeStateCode,ConsigneePincode,ConsigneeCity,ConsigneeCountryName,ConsigneeMail,ConsigneeMobileNumber</FETCH>
+                                        <FETCH>CmpGSTIN,CmpGSTState,BasicOrderRef</FETCH>
+                                        <FETCH>AllLedgerEntries.*,LedgerEntries.*</FETCH>
                                         <FETCH>Narration</FETCH>
                                         <FETCH>GUID</FETCH>
                                         <FETCH>AllInventoryEntries.*</FETCH>
@@ -367,19 +371,44 @@ namespace TallyWebAPI.Services
             if (voucher == null)
                 return null;
 
+            var partyGstin = InvoiceValue(voucher, "PARTYGSTIN");
+            var consigneeGstin = InvoiceValue(voucher, "CONSIGNEEGSTIN");
             var detail = new VoucherDetailDto
             {
                 Date = GetValue(voucher, "DATE"),
                 VoucherNumber = GetValue(voucher, "VOUCHERNUMBER"),
                 VoucherType = GetValue(voucher, "VOUCHERTYPENAME"),
 
-                PartyName = GetValue(voucher, "PARTYLEDGERNAME"),
-                PartyGstin = GetValue(voucher, "PARTYGSTIN"),
+                PartyName = FirstInvoiceValue(voucher, "PARTYNAME", "PARTYLEDGERNAME"),
+                PartyLedgerName = InvoiceValue(voucher, "PARTYLEDGERNAME"),
+                PartyAddress = InvoiceAddress(voucher, "ADDRESS.LIST", "ADDRESS"),
+                PartyCity = InvoiceValue(voucher, "PARTYCITY"),
+                PartyPincode = InvoiceValue(voucher, "PARTYPINCODE"),
+                PartyCountry = InvoiceValue(voucher, "COUNTRYOFRESIDENCE"),
+                PartyStateCode = InvoiceStateCode(InvoiceValue(voucher, "PARTYSTATECODE"), partyGstin),
+                PartyGstin = partyGstin,
+                CompanyGstin = InvoiceValue(voucher, "CMPGSTIN"),
+                CompanyState = InvoiceValue(voucher, "CMPGSTSTATE"),
+                Consignee = new InvoicePartyDto
+                {
+                    Name = FirstInvoiceValue(voucher, "CONSIGNEEMAILINGNAME", "BASICBUYERNAME"),
+                    Address = FirstNonEmpty(InvoiceAddress(voucher, "CONSIGNEEADDRESS.LIST", "CONSIGNEEADDRESS"), InvoiceAddress(voucher, "BASICBUYERADDRESS.LIST", "BASICBUYERADDRESS")),
+                    City = InvoiceValue(voucher, "CONSIGNEECITY"),
+                    Gstin = consigneeGstin,
+                    State = InvoiceValue(voucher, "CONSIGNEESTATENAME"),
+                    StateCode = InvoiceStateCode(InvoiceValue(voucher, "CONSIGNEESTATECODE"), consigneeGstin),
+                    Pincode = InvoiceValue(voucher, "CONSIGNEEPINCODE"),
+                    Country = InvoiceValue(voucher, "CONSIGNEECOUNTRYNAME"),
+                    Email = InvoiceValue(voucher, "CONSIGNEEMAIL"),
+                    Mobile = InvoiceValue(voucher, "CONSIGNEEMOBILENUMBER")
+                },
 
                 State = GetValue(voucher, "STATENAME"),
                 PlaceOfSupply = GetValue(voucher, "PLACEOFSUPPLY"),
 
                 Reference = GetValue(voucher, "REFERENCE"),
+                ReferenceDate = InvoiceValue(voucher, "REFERENCEDATE"),
+                OtherReferences = InvoiceValue(voucher, "BASICORDERREF"),
                 Narration = GetValue(voucher, "NARRATION"),
                 Guid = GetValue(voucher, "GUID"),
 
@@ -410,14 +439,9 @@ namespace TallyWebAPI.Services
                 });
             }
 
-            var inventoryEntries = voucher
-                .Descendants()
-                .Where(x =>
-                    x.Name.LocalName.Equals(
-                        "ALLINVENTORYENTRIES.LIST",
-                        StringComparison.OrdinalIgnoreCase
-                    )
-                );
+            var inventoryEntries = voucher.Elements().Where(x => x.Name.LocalName.Equals("ALLINVENTORYENTRIES.LIST", StringComparison.OrdinalIgnoreCase)).ToList();
+            if (inventoryEntries.Count == 0)
+                inventoryEntries = voucher.Elements().Where(x => x.Name.LocalName.Equals("INVENTORYENTRIES.LIST", StringComparison.OrdinalIgnoreCase)).ToList();
 
             foreach (var entry in inventoryEntries)
             {
@@ -431,12 +455,46 @@ namespace TallyWebAPI.Services
                     ItemName = itemName,
                     Quantity = GetValue(entry, "ACTUALQTY"),
                     Rate = GetValue(entry, "RATE"),
-                    Amount = CleanAmount(GetValue(entry, "AMOUNT"))
+                    Amount = CleanAmount(GetValue(entry, "AMOUNT")),
+                    Discount = InvoiceValue(entry, "DISCOUNT")
                 });
             }
 
             return detail;
         }
+
+        // Invoice-only Company object export: the Company collection does not expose
+        // its postal address in current TallyPrime. This never invokes sync or SQL writes.
+        public async Task<InvoiceCompanyDto?> GetInvoiceCompanyAsync(string companyName)
+        {
+            if (string.IsNullOrWhiteSpace(companyName)) throw new ArgumentException("Company name is required.");
+            var name = System.Security.SecurityElement.Escape(companyName) ?? "";
+            var request = $"""
+            <ENVELOPE><HEADER><VERSION>1</VERSION><TALLYREQUEST>Export</TALLYREQUEST><TYPE>Object</TYPE><SUBTYPE>Company</SUBTYPE><ID TYPE="Name">{name}</ID></HEADER><BODY><DESC><STATICVARIABLES><SVCURRENTCOMPANY>{name}</SVCURRENTCOMPANY><SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT></STATICVARIABLES><FETCHLIST><FETCH>GUID</FETCH><FETCH>Name</FETCH><FETCH>Address</FETCH><FETCH>StateName</FETCH><FETCH>StateCode</FETCH><FETCH>CountryName</FETCH><FETCH>Pincode</FETCH><FETCH>Email</FETCH><FETCH>PhoneNumber</FETCH><FETCH>MobileNumbers</FETCH><FETCH>City</FETCH><FETCH>GSTRegistrationNumber</FETCH><FETCH>Address.*</FETCH></FETCHLIST></DESC></BODY></ENVELOPE>
+            """;
+            var xml = await TallyXmlTransport.PostAsync(_httpClient, request);
+            xml = System.Text.RegularExpressions.Regex.Replace(xml, @"&#(?:0?[0-8]|0?1[0-9]|0?2[0-9]|3[01]);", "");
+            xml = System.Text.RegularExpressions.Regex.Replace(xml, @"(<\/?)UDF:", "$1");
+            var doc = XDocument.Parse(xml);
+            var company = doc.Descendants("COMPANY").SingleOrDefault(x => string.Equals((string?)x.Attribute("NAME"), companyName, StringComparison.OrdinalIgnoreCase));
+            if (company is null) return null;
+            var gstin = InvoiceValue(company, "GSTREGISTRATIONNUMBER");
+            return new InvoiceCompanyDto
+            {
+                Name = (string?)company.Attribute("NAME") ?? "", TallyGuid = InvoiceValue(company, "GUID"),
+                Address = InvoiceAddress(company, "ADDRESS.LIST", "ADDRESS"), City = InvoiceValue(company, "CITY"),
+                State = InvoiceValue(company, "STATENAME"), StateCode = InvoiceStateCode(InvoiceValue(company, "STATECODE"), gstin),
+                Country = InvoiceValue(company, "COUNTRYNAME"), Pincode = InvoiceValue(company, "PINCODE"), Gstin = gstin,
+                Email = InvoiceValue(company, "EMAIL"), Phone = InvoiceValue(company, "PHONENUMBER"),
+                Mobile = InvoiceAddress(company, "MOBILENUMBERS.LIST", "MOBILENUMBERS")
+            };
+        }
+
+        private static string InvoiceValue(XElement parent, string tag) => parent.Elements().FirstOrDefault(x => x.Name.LocalName.Equals(tag, StringComparison.OrdinalIgnoreCase))?.Value.Trim() ?? "";
+        private static string FirstInvoiceValue(XElement parent, params string[] tags) => FirstNonEmpty(tags.Select(tag => InvoiceValue(parent, tag)).ToArray());
+        private static string FirstNonEmpty(params string[] values) => values.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x)) ?? "";
+        private static string InvoiceAddress(XElement parent, string list, string tag) => string.Join("\n", parent.Elements().Where(x => x.Name.LocalName.Equals(list, StringComparison.OrdinalIgnoreCase)).SelectMany(x => x.Elements()).Where(x => x.Name.LocalName.Equals(tag, StringComparison.OrdinalIgnoreCase)).Select(x => x.Value.Trim()).Where(x => x.Length > 0));
+        private static string InvoiceStateCode(string explicitCode, string gstin) => !string.IsNullOrWhiteSpace(explicitCode) ? explicitCode : System.Text.RegularExpressions.Regex.IsMatch(gstin, @"^\d{2}[A-Z0-9]{13}$") ? gstin[..2] : "";
         private static List<VoucherPostingDto> ParsePostings(XElement voucher)
         {
             var entries = voucher.Elements().Where(x => x.Name.LocalName.Equals(

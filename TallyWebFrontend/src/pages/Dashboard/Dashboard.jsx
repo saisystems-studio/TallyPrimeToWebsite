@@ -373,7 +373,7 @@ function Dashboard() {
             <div>
               <strong>Auto Sync Active</strong>
 
-              <small>Tally → SQL</small>
+              <small>Tally → Web</small>
             </div>
           </div>
         </div>

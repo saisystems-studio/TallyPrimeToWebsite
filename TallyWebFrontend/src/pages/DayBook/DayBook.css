@@ -496,6 +496,69 @@
     background: #fafbfc;
 }
 
+.daybook-modal-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.daybook-modal-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.daybook-modal-action {
+    min-height: 38px;
+    padding: 0 12px;
+    border: 1px solid #dce2ea;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #26344c;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.daybook-modal-action:hover:not(:disabled) {
+    border-color: #d4b88f;
+    background: #fff8ee;
+    color: #8d5a1d;
+}
+
+.daybook-modal-action:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.daybook-modal-action:focus-visible,
+.daybook-modal-close:focus-visible {
+    outline: 2px solid #1765c1;
+    outline-offset: 2px;
+}
+
+.daybook-export-error {
+    flex-shrink: 0;
+    padding: 9px 18px;
+    border-bottom: 1px solid #f1d3d3;
+    background: #fff6f6;
+    color: #a32323;
+    font-size: 12px;
+}
+
+.daybook-export-status {
+    flex-shrink: 0;
+    padding: 9px 18px;
+    border-bottom: 1px solid #d9e5f3;
+    background: #f5f8fc;
+    color: #34445d;
+    font-size: 12px;
+}
+
 .daybook-modal-header span {
     display: block;
 
@@ -528,8 +591,8 @@
 }
 
 .daybook-modal-close {
-    width: 31px;
-    height: 31px;
+    width: 38px;
+    height: 38px;
 
     display: flex;
     align-items: center;
@@ -823,6 +886,33 @@
 }
 
 @media (max-width: 520px) {
+    .daybook-modal-header {
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        padding: 12px;
+    }
+
+    .daybook-modal-header > div:first-child {
+        min-width: 0;
+        flex: 1 1 120px;
+    }
+
+    .daybook-modal-actions {
+        gap: 5px;
+    }
+
+    .daybook-modal-action {
+        min-height: 38px;
+        padding: 0 8px;
+        font-size: 11px;
+    }
+
+    .daybook-modal-close {
+        width: 38px;
+        height: 38px;
+    }
+
     .daybook-detail-grid {
         grid-template-columns: 1fr;
     }

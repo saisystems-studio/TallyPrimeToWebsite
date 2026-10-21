@@ -355,6 +355,80 @@
 
 
 /* Body */
+.voucher-header-actions, .voucher-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.voucher-actions { position: relative; }
+.voucher-action-anchor { position: relative; }
+.voucher-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 8px 10px;
+    border: 1px solid #dce2ea;
+    border-radius: 7px;
+    background: white;
+    color: #26344c;
+    cursor: pointer;
+}
+.voucher-action-button:hover { background: #edf3fb; }
+.voucher-action-button:disabled { opacity: .45; cursor: not-allowed; }
+.voucher-action-button:focus-visible, .voucher-action-menu button:focus-visible { outline: 2px solid #1765c1; outline-offset: 2px; }
+.voucher-action-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 3;
+    width: 164px;
+    padding: 5px;
+    background: white;
+    border: 1px solid #dce2ea;
+    border-radius: 9px;
+    box-shadow: 0 8px 24px #18263d26;
+}
+.voucher-action-menu button {
+    display: block;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    border-radius: 5px;
+    color: #26344c;
+    cursor: pointer;
+}
+.voucher-action-menu button:hover, .voucher-action-menu button:focus { background: #edf3fb; }
+.voucher-action-status {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    z-index: 4;
+    display: flex;
+    gap: 8px;
+    width: min(300px, 70vw);
+    padding: 10px;
+    background: #f0f5fc;
+    border: 1px solid #cbd9ed;
+    border-radius: 8px;
+    color: #26344c;
+    font-size: 12px;
+}
+.voucher-action-status button { align-self: start; border: 0; background: transparent; cursor: pointer; }
+@media (max-width: 600px) {
+    .voucher-action-button span { display: none; }
+    .voucher-header-actions, .voucher-actions { gap: 4px; }
+    .voucher-detail-header { gap: 8px; padding: 12px; }
+    .voucher-detail-header > div:first-child { min-width: 0; overflow-wrap: anywhere; }
+    .voucher-detail-header h3 { font-size: 16px; }
+}
+
 .voucher-detail-body {
     max-height: calc(90vh - 70px);
     overflow-y: auto;

@@ -1,7 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getDbCompanies } from "../../services/companyService";
 import { getDayBook } from "../../services/dayBookService";
 import { getVoucherDetail } from "../../services/voucherService";
+import { prepareInvoiceDocument } from "../Vouchers/invoiceData";
+import { invoicePdf, invoicePdfFilename, shareInvoicePdf } from "../Vouchers/invoiceRenderer";
+import InvoicePreview from "../Vouchers/InvoicePreview";
+import { getDayBookInvoiceContext } from "./dayBookInvoice";
 import "./DayBook.css";
 
 function DayBook() {
@@ -23,6 +27,12 @@ function DayBook() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState("");
+  const [invoicePreview, setInvoicePreview] = useState(null);
+  const [invoiceActionError, setInvoiceActionError] = useState("");
+  const [invoiceActionStatus, setInvoiceActionStatus] = useState("");
+  const [sharingPdf, setSharingPdf] = useState(false);
+  const detailRequestId = useRef(0);
+  const shareRequestId = useRef(0);
 
   // ---------------------------------------------------------
   // Companies
@@ -120,11 +130,19 @@ function DayBook() {
   // ---------------------------------------------------------
 
   const handleVoucherClick = async (voucher) => {
+    const requestId = ++detailRequestId.current;
     try {
       setSelectedRow(voucher);
       setSelectedVoucher(null);
+      setInvoicePreview(null);
+      setInvoiceActionError("");
+      setInvoiceActionStatus("");
       setDetailLoading(true);
       setDetailError("");
+
+      if (!voucher.tallyGuid || !voucher.companyName || !voucher.companyId) {
+        throw new Error("This voucher is missing its company or Tally identity.");
+      }
 
       const data = await getVoucherDetail(
         voucher.tallyGuid,
@@ -133,23 +151,84 @@ function DayBook() {
         voucher.companyName,
       );
 
-      setSelectedVoucher(data?.voucher || null);
+      if (requestId !== detailRequestId.current) return;
+      const detail = data?.voucher;
+      if (!detail?.guid || detail.guid.trim().toLowerCase() !== voucher.tallyGuid.trim().toLowerCase()) {
+        throw new Error("The returned voucher did not match the selected Day Book entry.");
+      }
+      setSelectedVoucher({ ...detail, companyId: voucher.companyId });
     } catch (err) {
+      if (requestId !== detailRequestId.current) return;
       console.error("Voucher Detail Error:", err);
 
       setSelectedVoucher(null);
 
       setDetailError(err.message || "Unable to load voucher details.");
     } finally {
-      setDetailLoading(false);
+      if (requestId === detailRequestId.current) setDetailLoading(false);
     }
   };
 
   const closeVoucherModal = () => {
+    ++detailRequestId.current;
+    ++shareRequestId.current;
     setSelectedRow(null);
     setSelectedVoucher(null);
+    setInvoicePreview(null);
+    setInvoiceActionError("");
+    setInvoiceActionStatus("");
+    setSharingPdf(false);
     setDetailLoading(false);
     setDetailError("");
+  };
+
+  const openInvoicePreview = () => {
+    try {
+      const context = getDayBookInvoiceContext(selectedRow, selectedVoucher, companies);
+      setInvoiceActionError("");
+      setInvoiceActionStatus("");
+      setInvoicePreview(context);
+    } catch (error) {
+      setInvoiceActionError(error.message || "Unable to prepare this voucher.");
+    }
+  };
+
+  const handleSharePdf = async () => {
+    let requestId;
+    try {
+      const context = getDayBookInvoiceContext(selectedRow, selectedVoucher, companies);
+      requestId = ++shareRequestId.current;
+      setInvoiceActionError("");
+      setInvoiceActionStatus("Preparing the selected voucher PDF...");
+      setSharingPdf(true);
+      const prepared = await prepareInvoiceDocument(context.company, context.voucher, undefined, { includeTaxLedgerEntries: true });
+      const file = new File([invoicePdf(prepared.canvases)], invoicePdfFilename(prepared.model), { type: "application/pdf" });
+      let fallbackUsed = false;
+      const result = await shareInvoicePdf(file, {
+        fallbackDownload: sharedFile => {
+          fallbackUsed = true;
+          const url = URL.createObjectURL(sharedFile);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = sharedFile.name;
+          document.body.append(link);
+          link.click();
+          link.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 60000);
+        },
+      });
+      if (requestId !== shareRequestId.current) return;
+      if (result === "shared") setInvoiceActionStatus("The selected voucher PDF was shared.");
+      else if (result === "cancelled") setInvoiceActionStatus("Sharing was cancelled. The selected voucher PDF is ready to export.");
+      else if (fallbackUsed) setInvoiceActionStatus("Native PDF sharing is unavailable. The selected voucher PDF was downloaded instead.");
+    } catch (error) {
+      if (!requestId || requestId === shareRequestId.current) {
+        setInvoiceActionError(error.message || "Unable to share or download the selected voucher PDF.");
+        setInvoiceActionStatus("");
+      }
+    } finally {
+      if (!requestId || requestId === shareRequestId.current) setSharingPdf(false);
+    }
   };
 
   // ---------------------------------------------------------
@@ -379,15 +458,35 @@ function DayBook() {
                 <p>{selectedRow.companyName || "--"}</p>
               </div>
 
-              <button
-                type="button"
-                className="daybook-modal-close"
-                onClick={closeVoucherModal}
-                aria-label="Close"
-              >
-                ×
-              </button>
+              <div className="daybook-modal-controls">
+                <div className="daybook-modal-actions">
+                  <button type="button" className="daybook-modal-action" onClick={openInvoicePreview} disabled={detailLoading || !selectedVoucher || Boolean(detailError) || sharingPdf}>Export PDF</button>
+                  <button type="button" className="daybook-modal-action" onClick={handleSharePdf} disabled={detailLoading || !selectedVoucher || Boolean(detailError) || sharingPdf}>{sharingPdf ? "Preparing..." : "Share"}</button>
+                </div>
+                <button
+                  type="button"
+                  className="daybook-modal-close"
+                  onClick={closeVoucherModal}
+                  aria-label="Close"
+                >
+                  ×
+
+                </button>
+              </div>
             </div>
+
+            {invoiceActionError && <div className="daybook-export-error" role="alert">{invoiceActionError}</div>}
+            {invoiceActionStatus && <div className="daybook-export-status" role="status">{invoiceActionStatus}</div>}
+
+            {invoicePreview && (
+              <InvoicePreview
+                key={`${invoicePreview.company.id}:${invoicePreview.voucher.guid}`}
+                voucher={invoicePreview.voucher}
+                company={invoicePreview.company}
+                showTaxLedgerEntries
+                onClose={() => setInvoicePreview(null)}
+              />
+            )}
 
             {/* LOADING */}
 

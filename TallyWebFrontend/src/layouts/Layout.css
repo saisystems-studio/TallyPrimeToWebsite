@@ -27,6 +27,65 @@
     margin-bottom: 6px;
 }
 
+.siteToolbarActions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.siteInstallControl {
+    position: relative;
+}
+
+.siteInstallButton {
+    border-color: #d9c39d;
+    color: #865a1f;
+}
+
+.siteInstallButton:hover {
+    border-color: #c78b3b;
+    background: #fff8ee;
+}
+
+.siteInstallHelp {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 50;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    width: min(340px, calc(100vw - 32px));
+    padding: 12px;
+    border: 1px solid #e1e6ed;
+    border-radius: 9px;
+    background: #fff;
+    box-shadow: 0 10px 28px rgba(23, 36, 59, .16);
+    color: #405069;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.siteInstallHelp button {
+    flex: 0 0 auto;
+    padding: 2px 0;
+    border: 0;
+    background: transparent;
+    color: #81571f;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.siteInstallHelp-confirmed {
+    position: static;
+    width: auto;
+    max-width: 340px;
+    align-items: center;
+}
+
 .siteRefreshButton {
     display: inline-flex;
     align-items: center;

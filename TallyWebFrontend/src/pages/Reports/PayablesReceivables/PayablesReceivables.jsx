@@ -3,6 +3,9 @@ import { useLocation } from "react-router-dom";
 
 import { getDbCompanies } from "../../../services/companyService";
 import { getDbOutstanding } from "../../../services/outstandingDbService";
+import { findOutstandingBill, outstandingBillFilename, outstandingBillPdf, payableBillModel, receivableBillModel } from "../../Outstanding/outstandingBillDocument";
+import OutstandingBillPreview from "../../Outstanding/OutstandingBillPreview";
+import { shareInvoicePdf } from "../../Vouchers/invoiceRenderer";
 
 import "./PayablesReceivables.css";
 
@@ -23,6 +26,10 @@ function PayablesReceivables() {
   const [error, setError] = useState("");
 
   const [selectedRow, setSelectedRow] = useState(null);
+  const [billPreviewModel, setBillPreviewModel] = useState(null);
+  const [billActionError, setBillActionError] = useState("");
+  const [billActionStatus, setBillActionStatus] = useState("");
+  const [billActionBusy, setBillActionBusy] = useState(false);
 
   // =========================================================
   // LOAD COMPANIES
@@ -281,6 +288,58 @@ function PayablesReceivables() {
     return row.creditPeriod || "--";
   }
 
+  async function fetchSelectedReportBill() {
+    if (!selectedRow?.companyId || !selectedRow?.ledgerId || !selectedRow?.ledgerName || !selectedRow?.internalBillReference) {
+      throw new Error("The selected payable bill is missing its company, supplier, or bill identity.");
+    }
+    const rowsForParty = await getDbOutstanding(selectedRow.companyId, selectedRow.ledgerName, true);
+    const bill = findOutstandingBill(rowsForParty, selectedRow);
+    if (!bill || bill.balanceType !== activeTab || bill.rowType !== "Bill") {
+      throw new Error(`The selected ${activeTab.toLowerCase()} bill could not be uniquely matched. Reload the report and try again.`);
+    }
+    return bill;
+  }
+
+  function createSelectedBillModel(bill) {
+    return activeTab === "Payable" ? payableBillModel(bill) : receivableBillModel(bill);
+  }
+
+  async function openBillPreview() {
+    setBillActionBusy(true); setBillActionError(""); setBillActionStatus("");
+    try {
+      const bill = await fetchSelectedReportBill();
+      setSelectedRow(bill);
+      setBillPreviewModel(createSelectedBillModel(bill));
+    } catch (failure) { setBillActionError(failure.message || `Unable to prepare the selected ${activeTab.toLowerCase()} bill.`); }
+    finally { setBillActionBusy(false); }
+  }
+
+  async function shareSelectedReportBill() {
+    setBillActionBusy(true); setBillActionError(""); setBillActionStatus(`Preparing the selected ${activeTab.toLowerCase()} bill PDF...`);
+    try {
+      const bill = await fetchSelectedReportBill();
+      setSelectedRow(bill);
+      const model = createSelectedBillModel(bill);
+      await document.fonts.ready;
+      const file = new File([outstandingBillPdf(model)], outstandingBillFilename(model), { type: "application/pdf" });
+      let fallbackUsed = false;
+      const result = await shareInvoicePdf(file, { fallbackDownload: (sharedFile) => {
+        fallbackUsed = true;
+        const url = URL.createObjectURL(sharedFile); const link = document.createElement("a");
+        link.href = url; link.download = sharedFile.name; document.body.append(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      } });
+      if (result === "shared") setBillActionStatus(`The selected ${activeTab.toLowerCase()} bill PDF was shared.`);
+      else if (result === "cancelled") setBillActionStatus("Sharing was cancelled.");
+      else if (fallbackUsed) setBillActionStatus(`Native file sharing is unavailable. The selected ${activeTab.toLowerCase()} bill PDF was downloaded instead.`);
+    } catch (failure) { setBillActionError(failure.message || `Unable to share or download the selected ${activeTab.toLowerCase()} bill PDF.`); setBillActionStatus(""); }
+    finally { setBillActionBusy(false); }
+  }
+
+  function closeBillDetails() {
+    setSelectedRow(null); setBillPreviewModel(null); setBillActionError(""); setBillActionStatus("");
+  }
+
   return (
     <div className="pr-page">
       {/* HEADER */}
@@ -532,7 +591,7 @@ function PayablesReceivables() {
       {/* DETAIL MODAL */}
 
       {selectedRow && !ledgerWise && (
-        <div className="pr-modal-backdrop" onClick={() => setSelectedRow(null)}>
+        <div className="pr-modal-backdrop" onClick={closeBillDetails}>
           <div className="pr-modal" onClick={(e) => e.stopPropagation()}>
             <div className="pr-modal-header">
               <div>
@@ -546,10 +605,21 @@ function PayablesReceivables() {
                 </p>
               </div>
 
-              <button type="button" onClick={() => setSelectedRow(null)}>
+              <div className="pr-modal-controls">
+                {(activeTab === "Payable" || activeTab === "Receivable") && (
+                  <>
+                    <button type="button" className="pr-modal-action" onClick={openBillPreview} disabled={billActionBusy}>Export PDF</button>
+                    <button type="button" className="pr-modal-action" onClick={shareSelectedReportBill} disabled={billActionBusy}>{billActionBusy ? "Preparing..." : "Share"}</button>
+                  </>
+                )}
+              <button type="button" className="pr-modal-close" onClick={closeBillDetails} aria-label="Close">
                 ×
               </button>
+              </div>
             </div>
+
+            {billActionError && <div className="pr-bill-action-error" role="alert">{billActionError}</div>}
+            {billActionStatus && <div className="pr-bill-action-status" role="status">{billActionStatus}</div>}
 
             <div className="pr-modal-summary">
               <div>
@@ -623,6 +693,7 @@ function PayablesReceivables() {
           </div>
         </div>
       )}
+      {billPreviewModel && <OutstandingBillPreview key={`${billPreviewModel.companyName}:${billPreviewModel.ledgerName}:${billPreviewModel.billReference}`} model={billPreviewModel} onClose={() => setBillPreviewModel(null)} />}
     </div>
   );
 }

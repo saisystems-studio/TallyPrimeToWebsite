@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { getVoucherDetail } from "../../services/voucherService";
 import { getDbVouchers } from "../../services/voucherDbService";
 import { getDbCompanies } from "../../services/companyService";
 
 import "./Vouchers.css";
+import VoucherActions from "./VoucherActions";
 
 function Vouchers() {
   const [companies, setCompanies] = useState([]);
@@ -22,6 +23,8 @@ function Vouchers() {
   const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState("");
+  const [detailCompany, setDetailCompany] = useState(null);
+  const detailRequestId = useRef(0);
 
   // ==========================================
   // DATE HELPERS
@@ -144,6 +147,7 @@ function Vouchers() {
   // ==========================================
 
   function handleCompanyChange(event) {
+    ++detailRequestId.current;
     const companyId = event.target.value;
 
     setSelectedCompanyId(companyId);
@@ -219,6 +223,8 @@ function Vouchers() {
   // ==========================================
 
   async function openVoucherDetail(voucher) {
+    const requestId = ++detailRequestId.current;
+    setDetailLoading(false);
     const guid = voucher.guid || voucher.tallyGuid;
 
     if (!guid) {
@@ -231,6 +237,13 @@ function Vouchers() {
 
     const company = getSelectedCompany();
 
+    if (voucher.companyId != null && String(voucher.companyId) !== String(company?.id)) {
+      setSelectedVoucher(voucher);
+      setDetailLoading(false);
+      setDetailError("This voucher belongs to a different company. Reload vouchers for the selected company.");
+      return;
+    }
+
     if (!company?.name) {
       setSelectedVoucher(voucher);
 
@@ -240,6 +253,7 @@ function Vouchers() {
     }
 
     try {
+      setDetailCompany(company);
       setSelectedVoucher(voucher);
 
       setDetailLoading(true);
@@ -252,17 +266,20 @@ function Vouchers() {
         company.name,
       );
 
-      setSelectedVoucher(data.voucher || voucher);
+      if (requestId !== detailRequestId.current) return;
+      setSelectedVoucher({ ...(data.voucher || voucher), companyId: company.id });
     } catch (err) {
+      if (requestId !== detailRequestId.current) return;
       console.error("VOUCHER DETAIL ERROR:", err);
 
       setDetailError(err.message || "Unable to load voucher details from Tally.");
     } finally {
-      setDetailLoading(false);
+      if (requestId === detailRequestId.current) setDetailLoading(false);
     }
   }
 
   function closeVoucherDetail() {
+    ++detailRequestId.current;
     setSelectedVoucher(null);
     setDetailError("");
     setDetailLoading(false);
@@ -489,6 +506,8 @@ function Vouchers() {
                 </p>
               </div>
 
+              <div className="voucher-header-actions">
+              <VoucherActions key={selectedVoucher.guid || selectedVoucher.voucherNumber} voucher={selectedVoucher} company={detailCompany} disabled={detailLoading || Boolean(detailError)} />
               <button
                 type="button"
                 className="voucher-modal-close"
@@ -497,6 +516,7 @@ function Vouchers() {
               >
                 ×
               </button>
+              </div>
             </div>
 
             {/* DETAIL LOADING */}

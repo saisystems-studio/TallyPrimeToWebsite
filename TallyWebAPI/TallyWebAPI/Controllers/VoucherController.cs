@@ -143,6 +143,18 @@ namespace TallyWebAPI.Controllers
             }
         }
 
+        [HttpGet("invoice-company")]
+        public async Task<IActionResult> GetInvoiceCompany([FromQuery] string companyName)
+        {
+            if (string.IsNullOrWhiteSpace(companyName)) return BadRequest(new { message = "Company name is required." });
+            try
+            {
+                var company = await _voucherService.GetInvoiceCompanyAsync(companyName);
+                return company is null ? NotFound(new { message = "The selected Tally company was not found." }) : Ok(new { company });
+            }
+            catch (HttpRequestException) { return StatusCode(503, new { message = "TallyPrime company details are unavailable." }); }
+        }
+
         [HttpGet("voucher-export-raw")]
         public async Task<IActionResult> GetVoucherExportRaw(
     [FromQuery] string voucherNumber,

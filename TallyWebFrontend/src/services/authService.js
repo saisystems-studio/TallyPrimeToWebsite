@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://localhost:7108/api";
+import { API_BASE_URL } from "./api";
 
 export async function loginUser(username, password) {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {

@@ -1,0 +1,55 @@
+{
+  "date": "20240401",
+  "voucherNumber": "1",
+  "voucherType": "Sales",
+  "partyName": "AgSundry Parties",
+  "partyLedgerName": "AgSundry Parties",
+  "partyAddress": "",
+  "partyCity": "",
+  "partyPincode": "",
+  "partyCountry": "India",
+  "partyStateCode": "",
+  "partyGstin": "",
+  "consignee": {
+    "name": "AgSundry Parties",
+    "address": "",
+    "city": "",
+    "gstin": "",
+    "state": "Tamil Nadu",
+    "stateCode": "",
+    "pincode": "",
+    "country": "India",
+    "email": "",
+    "phone": "",
+    "mobile": ""
+  },
+  "companyGstin": "33AFHPB5979B1ZO",
+  "companyState": "Tamil Nadu",
+  "state": "Tamil Nadu",
+  "placeOfSupply": "Tamil Nadu",
+  "reference": "",
+  "referenceDate": "",
+  "otherReferences": "",
+  "narration": "",
+  "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-00006be2",
+  "totalAmount": "4180.00",
+  "ledgerEntries": [
+    {
+      "ledgerName": "AgSundry Parties",
+      "amount": "-4180.00"
+    },
+    {
+      "ledgerName": "GST EXEMPTED SALES",
+      "amount": "4180.00"
+    }
+  ],
+  "items": [
+    {
+      "itemName": "Tholi Ulunthu Payaru",
+      "quantity": "50.000 kg =  1 bg",
+      "rate": "83.60/kg",
+      "amount": "4180.00",
+      "discount": "0"
+    }
+  ]
+}

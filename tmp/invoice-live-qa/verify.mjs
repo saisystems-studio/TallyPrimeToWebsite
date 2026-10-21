@@ -1,0 +1,48 @@
+import assert from 'node:assert/strict';
+import { readFile,writeFile,mkdir } from 'node:fs/promises';
+import { createCanvas,DOMMatrix,ImageData,Path2D } from '@napi-rs/canvas';
+import { DOMParser } from 'linkedom';
+import { invoiceModel } from '../../TallyWebFrontend/src/pages/Vouchers/invoiceDocument.js';
+import { mergeInvoiceCompany,parseInvoiceMasters,invoiceStateCode } from '../../TallyWebFrontend/src/pages/Vouchers/invoiceMasterData.js';
+import { renderInvoice,invoicePdf,printInvoicePages } from '../../TallyWebFrontend/src/pages/Vouchers/invoiceRenderer.js';
+globalThis.DOMParser=DOMParser; globalThis.DOMMatrix=DOMMatrix; globalThis.ImageData=ImageData; globalThis.Path2D=Path2D;
+const {getDocument}=await import('pdfjs-dist/legacy/build/pdf.mjs');
+const audit=new URL('../../diagnostics/invoice-data/',import.meta.url);
+const company=JSON.parse(await readFile(new URL('company-api.json',audit),'utf8'));
+const regs=parseInvoiceMasters(await readFile(new URL('taxunits.xml',audit),'utf8'),'TAXUNIT');
+const results=[];
+for (const kind of ['purchase','sales']) {
+  const voucher=JSON.parse(await readFile(new URL(`${kind}-api.json`,audit),'utf8'));
+  const merged=mergeInvoiceCompany({...company,gstin:voucher.companyGstin},[company],regs);
+  merged.stateCode=invoiceStateCode(merged.stateCode,merged.gstin);
+  const model=invoiceModel(voucher,merged);
+  const seen=[];
+  const pages=renderInvoice(model,()=>{
+    const canvas=createCanvas(1190,1684), original=canvas.getContext.bind(canvas);
+    canvas.getContext=(type)=>{const ctx=original(type), fill=ctx.fillText.bind(ctx); ctx.fillText=(text,x,y)=>{seen.push(String(text)); assert.ok(x>=0&&x<=1190&&y>=0&&y<=1684,`Text outside A4: ${text}`); fill(text,x,y);}; return ctx;}; return canvas;
+  });
+  const content=seen.join('\n');
+  for(const text of [company.name,...company.address.split('\n'),company.email,company.mobile,voucher.partyName,...voucher.partyAddress.split('\n').filter(Boolean),voucher.companyGstin,voucher.partyGstin,voucher.consignee.name,...voucher.consignee.address.split('\n').filter(Boolean),voucher.reference]) if(text) assert.ok(content.includes(text),`Missing rendered field: ${text}`);
+  assert.ok(content.includes('Code: 33'));
+  assert.ok(content.includes(model.total));
+  if(voucher.referenceDate) assert.ok(content.includes('23-Oct-2024'));
+  assert.equal(model.rows.length,voucher.items.length);
+  voucher.items.forEach((item,i)=>{assert.equal(model.rows[i].description,item.itemName);assert.equal(model.rows[i].quantity,item.quantity);assert.equal(model.rows[i].rate,item.rate.split('/')[0]);});
+  const pngs=pages.map(page=>page.toDataURL('image/png'));
+  const printed=[]; let didPrint=false;
+  const popup={closed:false,document:{createElement:tag=>tag==='img'?{decode:async()=>{}}:{},head:{append(){}},body:{append(image){printed.push(image.src)}},close(){}},focus(){},print(){didPrint=true}};
+  await printInvoicePages(pngs,model.heading,()=>popup);
+  assert.deepEqual(printed,pngs);assert.ok(didPrint);
+  const bytes=new Uint8Array(await invoicePdf(pages).arrayBuffer());
+  await writeFile(new URL(`${kind}-verified.pdf`,audit),bytes);
+  const task=getDocument({data:bytes}), pdf=await task.promise;
+  assert.equal(pdf.numPages,pages.length);
+  const page=await pdf.getPage(1),viewport=page.getViewport({scale:1.5});
+  assert.equal(page.view[2],595);assert.equal(page.view[3],842);
+  const canvas=createCanvas(Math.ceil(viewport.width),Math.ceil(viewport.height));
+  await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+  await writeFile(new URL(`${kind}-verified.png`,audit),canvas.toBuffer('image/png')); await task.destroy();
+  results.push({type:voucher.voucherType,number:voucher.voucherNumber,guid:voucher.guid,date:voucher.date,total:voucher.totalAmount,items:voucher.items.length,pages:pages.length,party:voucher.partyName,companyAddress:company.address,consignee:voucher.consignee,reference:voucher.reference,referenceDate:voucher.referenceDate,previewPdfAndPrintVerified:true,unavailable:{partyAddress:!voucher.partyAddress,partyGstin:!voucher.partyGstin,consigneeAddress:!voucher.consignee.address,consigneeGstin:!voucher.consignee.gstin,reference:!voucher.reference,referenceDate:!voucher.referenceDate}});
+  console.log(`${kind} ${model.number}: live field values appear in shared preview pages, actual PDF parsed/rendered, Print uses exactly those images; ${pages.length} A4 page(s).`);
+}
+await writeFile(new URL('verification.json',audit),JSON.stringify(results,null,2));

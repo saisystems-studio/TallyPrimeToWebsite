@@ -1,0 +1,55 @@
+{
+  "date": "20241101",
+  "voucherNumber": "661",
+  "voucherType": "Purchase",
+  "partyName": "Shri Amman Dhall Mill",
+  "partyLedgerName": "Shri Amman Dhall Mill",
+  "partyAddress": "B/7/269/3-Bye-Pass Road,\nUnjampatty\nTheni",
+  "partyCity": "",
+  "partyPincode": "625531",
+  "partyCountry": "India",
+  "partyStateCode": "33",
+  "partyGstin": "33AGIPS9108F1ZB",
+  "consignee": {
+    "name": "JAYA JOTHI MALIGAI",
+    "address": "318, East Masi Street\nMadurai\nE-Mail : realram1960@gmail.com",
+    "city": "",
+    "gstin": "33AFHPB5979B1ZO",
+    "state": "Tamil Nadu",
+    "stateCode": "33",
+    "pincode": "625001",
+    "country": "India",
+    "email": "",
+    "phone": "",
+    "mobile": ""
+  },
+  "companyGstin": "33AFHPB5979B1ZO",
+  "companyState": "Tamil Nadu",
+  "state": "Tamil Nadu",
+  "placeOfSupply": "Tamil Nadu",
+  "reference": "2882/24-25",
+  "referenceDate": "20241023",
+  "otherReferences": "",
+  "narration": "",
+  "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-000075f0",
+  "totalAmount": "228040.00",
+  "ledgerEntries": [
+    {
+      "ledgerName": "Shri Amman Dhall Mill",
+      "amount": "228040.00"
+    },
+    {
+      "ledgerName": "GST EXEMPTED PURCHASE",
+      "amount": "-228040.00"
+    }
+  ],
+  "items": [
+    {
+      "itemName": "\u0B89\u0BB3\u0BC1\u0BA8\u0BCD\u0BA4\u0BAE\u0BCD \u0BAA\u0BB0\u0BC1\u0BAA\u0BCD\u0BAA\u0BC1",
+      "quantity": "2000.000 kg",
+      "rate": "114.02/kg",
+      "amount": "228040.00",
+      "discount": "0"
+    }
+  ]
+}

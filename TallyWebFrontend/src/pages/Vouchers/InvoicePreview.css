@@ -1,0 +1,13 @@
+.invoice-preview-overlay{position:fixed;inset:0;z-index:20000;background:#172339a6;padding:20px;display:flex;align-items:center;justify-content:center}
+.invoice-preview{width:90vw;height:90dvh;display:flex;flex-direction:column;background:#e6e9ed;border-radius:12px;overflow:hidden;box-shadow:0 24px 80px #0005;color:#18263d}
+.invoice-preview-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 20px;background:#fff;border-bottom:1px solid #d8dfe8;flex-shrink:0}
+.invoice-preview-toolbar h2{margin:0 0 4px;font-size:18px}.invoice-preview-toolbar small{color:#64748b}
+.invoice-preview-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.invoice-preview-controls button,.invoice-preview-controls select{min-height:40px;border:1px solid #cbd5e1;border-radius:6px;background:#fff;padding:8px 12px;color:#18263d;cursor:pointer;font:inherit;font-size:13px}
+.invoice-preview-controls button:first-child{background:#1765c1;color:#fff;border-color:#1765c1}
+.invoice-preview-controls button:disabled{opacity:.45;cursor:not-allowed}.invoice-preview-controls button:focus-visible,.invoice-preview-controls select:focus-visible{outline:2px solid #1765c1;outline-offset:2px}
+.invoice-preview-controls label{font-size:12px;display:flex;gap:5px;align-items:center}
+.invoice-preview-error{padding:7px 20px;font-size:12px;border-bottom:1px solid #ece0bf;flex-shrink:0;background:#fff0f0;color:#a32323}
+.invoice-preview-stage{overflow:auto;flex:1;min-height:0;padding:24px;scroll-behavior:smooth;overscroll-behavior:contain;scrollbar-gutter:stable}.invoice-preview-sheets{display:flex;flex-direction:column;align-items:center;gap:20px;min-width:100%;width:max-content}.invoice-preview-sheets img{display:block;background:#fff;max-width:none;box-shadow:0 3px 16px #0003;flex-shrink:0}
+@media(prefers-reduced-motion:reduce){.invoice-preview-stage{scroll-behavior:auto}}
+@media(max-width:640px){.invoice-preview-overlay{padding:0}.invoice-preview{width:94vw;height:94dvh}.invoice-preview-toolbar{flex-direction:column;align-items:stretch;padding:12px;gap:8px}.invoice-preview-controls{gap:5px}.invoice-preview-controls button,.invoice-preview-controls select{padding:7px;min-height:44px}.invoice-preview-stage{padding:12px}.invoice-preview-error{padding:6px 12px;font-size:11px}}

@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 
 import { getDbCompanies } from "../../services/companyService";
 import { getDbOutstanding } from "../../services/outstandingDbService";
+import { findOutstandingBill, outstandingBillFilename, outstandingBillModel, outstandingBillPdf } from "./outstandingBillDocument";
+import OutstandingBillPreview from "./OutstandingBillPreview";
+import { shareInvoicePdf } from "../Vouchers/invoiceRenderer";
 
 import "./Outstanding.css";
 
@@ -17,6 +20,10 @@ function Outstanding() {
   const [error, setError] = useState("");
 
   const [selectedRow, setSelectedRow] = useState(null);
+  const [previewModel, setPreviewModel] = useState(null);
+  const [billActionError, setBillActionError] = useState("");
+  const [billActionStatus, setBillActionStatus] = useState("");
+  const [billActionBusy, setBillActionBusy] = useState(false);
 
   // =========================================================
   // LOAD COMPANIES
@@ -203,6 +210,52 @@ function Outstanding() {
     const day = value.substring(6, 8);
 
     return `${day}/${month}/${year}`;
+  }
+
+  async function fetchSelectedBill() {
+    if (!selectedRow?.companyId || !selectedRow?.ledgerId || !selectedRow?.ledgerName || !selectedRow?.internalBillReference) {
+      throw new Error("The selected bill is missing its company, party, or bill identity.");
+    }
+    const data = await getDbOutstanding(selectedRow.companyId, selectedRow.ledgerName, true);
+    const match = findOutstandingBill(data, selectedRow);
+    if (!match) throw new Error("The selected bill could not be uniquely matched in the current outstanding data. Reload the report and try again.");
+    return match;
+  }
+
+  async function openBillPreview() {
+    setBillActionBusy(true); setBillActionError(""); setBillActionStatus("");
+    try {
+      const bill = await fetchSelectedBill();
+      setSelectedRow(bill);
+      setPreviewModel(outstandingBillModel(bill));
+    } catch (failure) { setBillActionError(failure.message || "Unable to prepare the selected bill."); }
+    finally { setBillActionBusy(false); }
+  }
+
+  async function shareSelectedBill() {
+    setBillActionBusy(true); setBillActionError(""); setBillActionStatus("Preparing the selected bill PDF...");
+    try {
+      const bill = await fetchSelectedBill();
+      setSelectedRow(bill);
+      const model = outstandingBillModel(bill);
+      await document.fonts.ready;
+      const file = new File([outstandingBillPdf(model)], outstandingBillFilename(model), { type: "application/pdf" });
+      let fallbackUsed = false;
+      const result = await shareInvoicePdf(file, { fallbackDownload: (sharedFile) => {
+        fallbackUsed = true;
+        const url = URL.createObjectURL(sharedFile); const link = document.createElement("a");
+        link.href = url; link.download = sharedFile.name; document.body.append(link); link.click(); link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+      } });
+      if (result === "shared") setBillActionStatus("The selected bill PDF was shared.");
+      else if (result === "cancelled") setBillActionStatus("Sharing was cancelled.");
+      else if (fallbackUsed) setBillActionStatus("Native file sharing is unavailable. The selected bill PDF was downloaded instead.");
+    } catch (failure) { setBillActionError(failure.message || "Unable to share or download the selected bill PDF."); setBillActionStatus(""); }
+    finally { setBillActionBusy(false); }
+  }
+
+  function closeBillDetails() {
+    setSelectedRow(null); setPreviewModel(null); setBillActionError(""); setBillActionStatus("");
   }
 
   return (
@@ -450,7 +503,7 @@ function Outstanding() {
       {selectedRow && (
         <div
           className="outstanding-modal-backdrop"
-          onClick={() => setSelectedRow(null)}
+          onClick={closeBillDetails}
         >
           <div
             className="outstanding-modal"
@@ -472,14 +525,15 @@ function Outstanding() {
                 </p>
               </div>
 
-              <button
-                type="button"
-                className="outstanding-modal-close"
-                onClick={() => setSelectedRow(null)}
-              >
-                ×
-              </button>
+              <div className="outstanding-modal-controls">
+                <button type="button" className="outstanding-modal-action" onClick={openBillPreview} disabled={billActionBusy}>Export PDF</button>
+                <button type="button" className="outstanding-modal-action" onClick={shareSelectedBill} disabled={billActionBusy}>{billActionBusy ? "Preparing..." : "Share"}</button>
+                <button type="button" className="outstanding-modal-close" onClick={closeBillDetails} aria-label="Close">×</button>
+              </div>
             </div>
+
+            {billActionError && <div className="outstanding-action-error" role="alert">{billActionError}</div>}
+            {billActionStatus && <div className="outstanding-action-status" role="status">{billActionStatus}</div>}
 
             {/* MODAL SUMMARY */}
 
@@ -583,6 +637,7 @@ function Outstanding() {
           </div>
         </div>
       )}
+      {previewModel && <OutstandingBillPreview model={previewModel} onClose={() => setPreviewModel(null)} />}
     </div>
   );
 }

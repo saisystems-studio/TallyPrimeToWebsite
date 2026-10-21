@@ -1,0 +1,72 @@
+[
+  {
+    "type": "Purchase",
+    "number": "661",
+    "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-000075f0",
+    "date": "20241101",
+    "total": "228040.00",
+    "items": 1,
+    "pages": 1,
+    "party": "Shri Amman Dhall Mill",
+    "companyAddress": "318, East Masi Street\nMadurai",
+    "consignee": {
+      "name": "JAYA JOTHI MALIGAI",
+      "address": "318, East Masi Street\nMadurai\nE-Mail : realram1960@gmail.com",
+      "city": "",
+      "gstin": "33AFHPB5979B1ZO",
+      "state": "Tamil Nadu",
+      "stateCode": "33",
+      "pincode": "625001",
+      "country": "India",
+      "email": "",
+      "phone": "",
+      "mobile": ""
+    },
+    "reference": "2882/24-25",
+    "referenceDate": "20241023",
+    "previewPdfAndPrintVerified": true,
+    "unavailable": {
+      "partyAddress": false,
+      "partyGstin": false,
+      "consigneeAddress": false,
+      "consigneeGstin": false,
+      "reference": false,
+      "referenceDate": false
+    }
+  },
+  {
+    "type": "Sales",
+    "number": "1",
+    "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-00006be2",
+    "date": "20240401",
+    "total": "4180.00",
+    "items": 1,
+    "pages": 1,
+    "party": "AgSundry Parties",
+    "companyAddress": "318, East Masi Street\nMadurai",
+    "consignee": {
+      "name": "AgSundry Parties",
+      "address": "",
+      "city": "",
+      "gstin": "",
+      "state": "Tamil Nadu",
+      "stateCode": "",
+      "pincode": "",
+      "country": "India",
+      "email": "",
+      "phone": "",
+      "mobile": ""
+    },
+    "reference": "",
+    "referenceDate": "",
+    "previewPdfAndPrintVerified": true,
+    "unavailable": {
+      "partyAddress": true,
+      "partyGstin": true,
+      "consigneeAddress": true,
+      "consigneeGstin": true,
+      "reference": true,
+      "referenceDate": true
+    }
+  }
+]
