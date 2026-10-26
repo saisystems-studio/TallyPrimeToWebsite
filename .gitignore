@@ -25,3 +25,24 @@ dist/
 *.log
 .DS_Store
 Thumbs.db
+
+# Temporary local build and check outputs
+/tmp/all-years-checks-build/
+/tmp/all-years-discovery-build/
+/tmp/cancellation-checks/
+/tmp/cancellation-final-checks/
+/tmp/sales-register-all-years-frontend/
+/tmp/sales-register-credit-format-build/
+/tmp/sales-register-month-fix-build/
+/tmp/sales-register-month-fix-final-build/
+/tmp/sales-register-ui-api/
+/tmp/sales-register-ui-build/
+/tmp/sales-regression-build/
+/tmp/sales-safe-sync-frontend/
+/tmp/sales-safety-build/
+/tmp/sales-safety-final-build/
+/tmp/tallywebapi-active.err
+
+# Previously tracked local .NET diagnostic outputs (tracked files remain tracked)
+/TallyWebAPI/TallyWebAPI/bin-ledger-check/
+/TallyWebAPI/TallyWebAPI/bin-ledger-start/

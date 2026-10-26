@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+using System.Globalization;
+using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
 using TallyWebAPI.Data;
 using TallyWebAPI.DTOs;
@@ -10,13 +11,16 @@ namespace TallyWebAPI.Services
     {
         private readonly AppDbContext _dbContext;
         private readonly VoucherService _voucherService;
+        private readonly TallyService _tallyService;
 
         public VoucherSyncService(
             AppDbContext dbContext,
-            VoucherService voucherService)
+            VoucherService voucherService,
+            TallyService tallyService)
         {
             _dbContext = dbContext;
             _voucherService = voucherService;
+            _tallyService = tallyService;
         }
 
         public async Task<object> SyncAsync()
@@ -197,8 +201,13 @@ namespace TallyWebAPI.Services
 
         // Explicit repair only; the normal sync/Windows Agent never invokes it.
         // Preview and apply use the same validations. One SaveChanges is atomic.
-        public async Task<object> BackfillPostingsAsync(int companyId, string fromDate, string toDate, bool apply = false)
+        public async Task<object> BackfillPostingsAsync(
+            int companyId, string fromDate, string toDate, bool apply = false, bool salesOnly = false)
         {
+            if (salesOnly)
+                throw new InvalidOperationException(
+                    "Sales backfills into shared voucher tables are disabled. Use the independent Sales Register preview/apply API.");
+
             if (!DateTime.TryParseExact(fromDate, "yyyyMMdd", CultureInfo.InvariantCulture,
                     DateTimeStyles.None, out var from) ||
                 !DateTime.TryParseExact(toDate, "yyyyMMdd", CultureInfo.InvariantCulture,
@@ -247,6 +256,7 @@ namespace TallyWebAPI.Services
             return new { companyId, companyName = company.Name, fromDate, toDate, preview = !apply,
                 vouchersFetched = incoming.Count, headersAdded, postingsAdded };
         }
+
 
     }
 }

@@ -1,0 +1,38 @@
+[
+    {
+        "period":  "April2024",
+        "http":  200,
+        "records":  103,
+        "postings":  250,
+        "total":  4241929.1,
+        "from":  "20240401",
+        "to":  "20240430"
+    },
+    {
+        "period":  "ThisYear",
+        "http":  200,
+        "records":  0,
+        "postings":  0,
+        "total":  null,
+        "from":  null,
+        "to":  null
+    },
+    {
+        "period":  "LastYear",
+        "http":  200,
+        "records":  0,
+        "postings":  0,
+        "total":  null,
+        "from":  null,
+        "to":  null
+    },
+    {
+        "period":  "AllAvailable",
+        "http":  200,
+        "records":  103,
+        "postings":  250,
+        "total":  4241929.1,
+        "from":  "20240401",
+        "to":  "20240430"
+    }
+]

@@ -1,0 +1,721 @@
+/* Sales Register — complete stylesheet (replace previous CSS with this file) */
+.sales-register {
+  --sr-navy: #20334f;
+  --sr-ink: #263650;
+  --sr-muted: #748198;
+  --sr-line: #e3e9f1;
+  --sr-accent: #bd741e;
+  --sr-soft: #f7f9fc;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+  padding: 10px 12px;
+  background: #f5f7fb;
+  color: var(--sr-ink);
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.sales-register *,
+.sales-register *::before,
+.sales-register *::after {
+  box-sizing: border-box;
+}
+
+.sales-register button,
+.sales-register input,
+.sales-register select {
+  font: inherit;
+}
+
+.sales-register button {
+  cursor: pointer;
+}
+
+.sales-register button:focus-visible,
+.sales-register input:focus-visible,
+.sales-register select:focus-visible {
+  outline: 2px solid #4b82b7;
+  outline-offset: 2px;
+}
+
+/* Report heading */
+.sr-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 0 0 auto;
+  min-height: 68px;
+  padding: 10px 14px;
+  border: 1px solid var(--sr-line);
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(25, 42, 68, .025);
+}
+
+.sr-head>div>span {
+  display: block;
+  color: var(--sr-accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.sr-head h1 {
+  color: var(--sr-navy);
+  font-size: 21px;
+  font-weight: 750;
+  line-height: 1.2;
+  margin: 0 0 5px;
+}
+
+.sr-head p {
+  color: var(--sr-muted);
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Filters */
+.sr-filters {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 2px 0 0;
+}
+
+.sr-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1 1 200px;
+  min-width: 180px;
+  color: #4b5f7c;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.sr-filters label:first-child {
+  flex: 1.6 1 320px;
+  min-width: min(320px, 100%);
+}
+
+.sr-filters input,
+.sr-filters select {
+  width: 100%;
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid #d6dfeb;
+  border-radius: 6px;
+  background: #fff;
+  color: var(--sr-ink);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.sr-filters input:focus,
+.sr-filters select:focus {
+  border-color: #8eaccf;
+}
+
+.sr-company-control {
+  display: flex;
+  align-items: stretch;
+  gap: 7px;
+}
+
+.sr-company-control input {
+  flex: 1;
+  min-width: 0;
+}
+
+.sr-company-control button,
+.sr-clear,
+.sr-back {
+  min-height: 38px;
+  padding: 7px 13px;
+  border: 1px solid #d6dfeb;
+  border-radius: 6px;
+  background: #fff;
+  color: #315178;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sr-company-control button:hover,
+.sr-clear:hover,
+.sr-back:hover {
+  background: #edf4fc;
+}
+
+.sr-filter-actions {
+  display: flex;
+  align-items: end;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.sr-back {
+  display: inline-grid;
+  width: 38px;
+  min-width: 38px;
+  place-items: center;
+  padding: 0;
+}
+
+.sr-back svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sr-error,
+.sr-warning {
+  flex: 0 0 auto;
+  border-radius: 6px;
+  padding: 10px 13px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.sr-error {
+  color: #a92828;
+  border: 1px solid #f1bbbb;
+  background: #fff1f0;
+}
+
+.sr-warning {
+  color: #91601d;
+  border: 1px solid #f3d8a4;
+  background: #fff8ec;
+}
+
+/* White report table: fills remaining height; only table scrolls */
+.sr-grid {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 280px;
+  overflow: hidden;
+  border: 1px solid var(--sr-line);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.sr-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #bec9d7 transparent;
+}
+
+.sr-scroll>table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 12px;
+}
+
+.sr-scroll>table>thead {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+.sr-scroll>table>thead th {
+  padding: 8px 10px;
+  border-bottom: 1px solid #dbe3ed;
+  background: #f4f7fa;
+  color: #687a96;
+  text-align: left;
+  text-transform: uppercase;
+  letter-spacing: .045em;
+  font-size: 10px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.sr-scroll>table>tbody>tr>td {
+  padding: 7px 10px;
+  border-bottom: 1px solid #edf0f4;
+  vertical-align: middle;
+  background: #fff;
+  color: var(--sr-ink);
+  white-space: nowrap;
+}
+
+.sr-scroll>table>tbody>tr:last-child>td {
+  border-bottom: 0;
+}
+
+.sr-scroll>table>tbody>tr:hover>td {
+  background: #fafcff;
+}
+
+.sr-scroll>table>tbody>tr>td:nth-child(n+3) {
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-scroll>table>tbody>tr>td.sr-empty {
+  padding: 46px 16px;
+  text-align: center;
+  color: var(--sr-muted);
+  white-space: normal;
+}
+
+/* Month summary drilldown */
+.sr-drill {
+  cursor: pointer;
+}
+
+.sr-drill>td:first-child {
+  font-weight: 700;
+}
+
+.sr-drill button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-width: 130px;
+  border: 0;
+  background: transparent;
+  color: #263c5a;
+  padding: 4px 0;
+  font-weight: 700;
+  text-align: left;
+}
+
+.sr-drill button span {
+  color: var(--sr-accent);
+  font-size: 19px;
+  line-height: 1;
+}
+
+.sr-drill:hover button {
+  color: #9a5c10;
+}
+
+/* Grouped ledger tree */
+.sr-ledger-parent>td {
+  background: #fff !important;
+}
+
+.sr-ledger-parent:hover>td {
+  background: #f6f9ff !important;
+}
+
+.sr-ledger-parent>td:first-child {
+  width: 62px;
+  color: #6c7c92;
+}
+
+.sr-ledger-parent>td:nth-child(2) {
+  min-width: 200px;
+}
+
+.sr-ledger-parent>td:nth-child(n+4):nth-child(-n+5) {
+  font-weight: 700;
+}
+
+.sr-ledger-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 2px;
+  border: 0;
+  background: transparent;
+  color: #263650;
+  font-size: 12px;
+  text-align: left;
+}
+
+.sr-ledger-toggle strong {
+  font-weight: 700;
+}
+
+.sr-ledger-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #bf751f;
+  font-size: 20px;
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.sr-ledger-child>td {
+  padding: 0 10px 8px 22px !important;
+  background: #f6f9fc !important;
+  white-space: normal !important;
+}
+
+.sr-ledger-details {
+  margin: 2px 0 0;
+  padding: 5px 0 0 8px;
+  border-left: 2px solid #df9a44;
+  overflow-x: auto;
+}
+
+.sr-ledger-details table {
+  width: 100%;
+  min-width: 590px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.sr-ledger-details thead th {
+  position: static;
+  background: #eaf0f7;
+  color: #62758f;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+
+.sr-ledger-details th,
+.sr-ledger-details td {
+  padding: 6px 9px;
+  text-align: left;
+  border-bottom: 1px solid #e8edf4;
+  white-space: nowrap;
+}
+
+.sr-ledger-details tbody td {
+  background: #fff;
+}
+
+.sr-ledger-details tbody tr:hover td {
+  background: #f7faff;
+}
+
+.sr-view {
+  display: inline-grid;
+  width: 30px;
+  height: 29px;
+  place-items: center;
+  min-height: 29px;
+  padding: 0;
+  border: 1px solid #e4bd86;
+  border-radius: 6px;
+  background: #fff;
+  color: #a96211;
+}
+
+.sr-view svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sr-view:hover {
+  background: #fff4e5;
+  border-color: #cf9348;
+}
+
+/* Bottom anchored totals + pagination */
+.sr-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex: 0 0 auto;
+  min-height: 42px;
+  padding: 6px 10px;
+  border-top: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.sr-footer>strong {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: #263a56;
+  font-size: 12px;
+}
+
+.sr-footer>strong>span {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sr-footer>div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--sr-muted);
+  font-size: 11px;
+}
+
+.sr-footer>div button {
+  border: 1px solid #d8e0eb;
+  background: #fff;
+  border-radius: 6px;
+  color: #294268;
+  padding: 7px 11px;
+  font-size: 11px;
+}
+
+.sr-footer>div button:not(:disabled):hover {
+  background: #f0f5fb;
+}
+
+.sr-footer>div button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+/* Voucher detail modal */
+.sr-modal-shade {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3vh 3vw;
+  background: rgba(15, 25, 42, .62);
+}
+
+.sr-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(980px, 92vw);
+  height: auto;
+  max-height: min(780px, 88vh);
+  overflow: hidden;
+  border-radius: 11px;
+  background: #fff;
+  box-shadow: 0 22px 65px rgba(0, 0, 0, .22);
+}
+
+.sr-modal>header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--sr-line);
+}
+
+.sr-modal>header h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  color: #243a59;
+}
+
+.sr-modal>header p {
+  margin: 0;
+  color: var(--sr-muted);
+  font-size: 12px;
+}
+
+.sr-modal>header button {
+  display: inline-grid;
+  width: 38px;
+  height: 36px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #d7e0eb;
+  border-radius: 6px;
+  background: #fff;
+  color: #294362;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sr-modal>header button svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.sr-modal-toolbar button {
+  display: inline-grid;
+  width: 38px;
+  height: 36px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #d7e0eb;
+  border-radius: 6px;
+  background: #fff;
+  color: #294362;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.sr-modal-toolbar button svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sr-modal>header button:hover,
+.sr-modal-toolbar button:hover {
+  background: #f1f5fb;
+}
+
+.sr-modal-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.sr-modal-body {
+  flex: 0 1 auto;
+  min-height: 0;
+  padding: 10px 16px 14px;
+  max-height: 62vh;
+  overflow: auto;
+  font-size: 12px;
+}
+
+.sr-modal-body>p {
+  margin: 2px 0 12px;
+  line-height: 1.4;
+}
+
+.sr-modal-body h3 {
+  margin: 0 0 7px;
+  font-size: 14px;
+  color: #263e5d;
+}
+
+.sr-modal-body table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 610px;
+}
+
+.sr-modal-body th,
+.sr-modal-body td {
+  padding: 8px 10px;
+  border: 1px solid #e5ebf2;
+  text-align: left;
+}
+
+.sr-modal-body th {
+  background: #f3f6fa;
+  color: #667894;
+  font-size: 11px;
+}
+
+.sr-modal>p {
+  padding: 14px 20px;
+}
+
+@media (max-width: 960px) {
+  .sales-register {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .sr-filters {
+    gap: 10px;
+  }
+
+  .sr-filters label {
+    flex: 1 1 200px;
+  }
+
+  .sr-filters label:first-child {
+    flex: 2 1 260px;
+  }
+
+  .sr-filter-actions {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .sales-register {
+    padding: 10px;
+  }
+
+  .sr-head {
+    padding: 13px;
+    min-height: 76px;
+  }
+
+  .sr-head h1 {
+    font-size: 19px;
+  }
+
+  .sr-filters label,
+  .sr-filters label:first-child {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .sr-filters select,
+  .sr-filters input {
+    min-height: 36px;
+  }
+
+  .sr-grid {
+    min-height: 250px;
+  }
+
+  .sr-scroll>table>thead th,
+  .sr-scroll>table>tbody>tr>td {
+    padding: 10px;
+  }
+
+  .sr-footer {
+    align-items: flex-start;
+  }
+
+  .sr-footer>strong {
+    gap: 6px 12px;
+  }
+
+  .sr-modal-shade {
+    padding: 8px;
+  }
+
+  .sr-modal {
+    width: 100%;
+    max-height: 94vh;
+  }
+
+  .sr-modal>header,
+  .sr-modal-body {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .sr-modal>header {
+    gap: 8px;
+  }
+
+  .sr-modal-toolbar {
+    gap: 5px;
+  }
+}

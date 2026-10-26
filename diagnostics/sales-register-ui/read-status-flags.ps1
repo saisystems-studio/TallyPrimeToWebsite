@@ -1,0 +1,7 @@
+$ErrorActionPreference='Stop'
+$xml='<ENVELOPE><HEADER><VERSION>1</VERSION><TALLYREQUEST>Export</TALLYREQUEST><TYPE>Collection</TYPE><ID>ReadOnlySalesFlags</ID></HEADER><BODY><DESC><STATICVARIABLES><SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT><SVCURRENTCOMPANY>JAYA JOTHI MALIGAI</SVCURRENTCOMPANY><SVFROMDATE TYPE="Date">20240901</SVFROMDATE><SVTODATE TYPE="Date">20241031</SVTODATE></STATICVARIABLES><TDL><TDLMESSAGE><COLLECTION NAME="ReadOnlySalesFlags"><TYPE>Voucher</TYPE><FETCH>GUID</FETCH><FETCH>Date</FETCH><FETCH>VoucherTypeName</FETCH><FETCH>VoucherNumber</FETCH><FETCH>IsCancelled</FETCH><FETCH>IsOptional</FETCH></COLLECTION></TDLMESSAGE></TDL></DESC></BODY></ENVELOPE>'
+$r=Invoke-WebRequest 'http://127.0.0.1:9000/' -Method Post -ContentType 'text/xml; charset=utf-16' -Body ([Text.Encoding]::Unicode.GetBytes($xml)) -UseBasicParsing -TimeoutSec 60
+$b=$r.RawContentStream.ToArray();$raw=if($b[1] -eq 0 -or $b[0] -eq 255){[Text.Encoding]::Unicode.GetString($b)}else{[Text.Encoding]::UTF8.GetString($b)}
+$raw.TrimStart([char]0xFEFF)|Set-Content -Encoding UTF8 diagnostics/sales-register-ui/sept-oct-voucher-flags.xml
+[xml]$d=$raw.TrimStart([char]0xFEFF); $d.SelectNodes('//VOUCHER')|Where-Object {$_.ISCANCELLED -eq 'Yes' -or $_.ISOPTIONAL -eq 'Yes'}|Select-Object DATE,GUID,VOUCHERTYPENAME,VOUCHERNUMBER,ISCANCELLED,ISOPTIONAL|ConvertTo-Json -Depth 4|Set-Content diagnostics/sales-register-ui/sept-oct-special-flags.json
+Write-Output 'Read-only voucher status flags saved.'

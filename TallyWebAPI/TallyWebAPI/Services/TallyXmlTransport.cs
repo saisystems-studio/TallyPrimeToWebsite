@@ -9,8 +9,6 @@ namespace TallyWebAPI.Services
     /// </summary>
     internal static class TallyXmlTransport
     {
-        private static readonly Uri TallyEndpoint = new("http://127.0.0.1:9000");
-
         public static async Task<string> PostAsync(
             HttpClient httpClient,
             string xmlRequest,
@@ -21,7 +19,9 @@ namespace TallyWebAPI.Services
             content.Headers.ContentType = new MediaTypeHeaderValue("text/xml");
             content.Headers.ContentType.CharSet = "utf-16";
 
-            using var request = new HttpRequestMessage(HttpMethod.Post, TallyEndpoint)
+            var tallyEndpoint = httpClient.BaseAddress
+                ?? throw new InvalidOperationException("Tally endpoint is not configured.");
+            using var request = new HttpRequestMessage(HttpMethod.Post, tallyEndpoint)
             {
                 Content = content
             };

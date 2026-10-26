@@ -1,0 +1,11 @@
+{
+  "beforeSha256": "5FDB4E0E214A4952CE2B15FAFBE52E7687BCE98EB2CA92F22406EC4FDFAAAF0A",
+  "afterSha256": "5FDB4E0E214A4952CE2B15FAFBE52E7687BCE98EB2CA92F22406EC4FDFAAAF0A",
+  "unchanged": true,
+  "existingHeaders": 103,
+  "existingPostings": 250,
+  "existingTotal": 4241929.10,
+  "companyId": 1,
+  "companyGuid": "5bd36bbb-820e-4784-b692-fe9891019a11",
+  "safeToApply": true
+}

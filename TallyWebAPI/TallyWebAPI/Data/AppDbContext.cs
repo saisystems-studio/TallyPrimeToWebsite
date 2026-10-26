@@ -21,6 +21,10 @@ namespace TallyWebAPI.Data
         public DbSet<StockSummaryDetailEntity> StockSummaryDetails => Set<StockSummaryDetailEntity>();
         public DbSet<LedgerReportSnapshotEntity> LedgerReportSnapshots => Set<LedgerReportSnapshotEntity>();
         public DbSet<LedgerReportSnapshotDetailEntity> LedgerReportSnapshotDetails => Set<LedgerReportSnapshotDetailEntity>();
+        public DbSet<SalesRegisterEntity> SalesRegister => Set<SalesRegisterEntity>();
+        public DbSet<SalesRegisterEntryEntity> SalesRegisterEntries => Set<SalesRegisterEntryEntity>();
+        public DbSet<PurchaseRegisterEntity> PurchaseRegister => Set<PurchaseRegisterEntity>();
+        public DbSet<PurchaseRegisterEntryEntity> PurchaseRegisterEntries => Set<PurchaseRegisterEntryEntity>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -443,6 +447,83 @@ namespace TallyWebAPI.Data
                 entity.Property(x => x.Debit).HasPrecision(19, 2);
                 entity.Property(x => x.Credit).HasPrecision(19, 2);
                 entity.HasIndex(x => new { x.SnapshotId, x.PostingOrder }).HasDatabaseName("IX_LedgerReportSnapshotDetails_Order");
+            });
+
+            modelBuilder.Entity<SalesRegisterEntity>(entity =>
+            {
+                entity.ToTable("SalesRegister_tbl");
+                entity.HasKey(x => x.Id);
+                entity.HasOne(x => x.Company).WithMany().HasForeignKey(x => x.CompanyId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.Property(x => x.TallyGuid).HasMaxLength(100).IsRequired();
+                entity.Property(x => x.VoucherNumber).HasMaxLength(100).IsRequired();
+                entity.Property(x => x.VoucherDate).HasColumnType("date");
+                entity.Property(x => x.VoucherType).HasMaxLength(250).IsRequired();
+                entity.Property(x => x.PartyLedgerName).HasMaxLength(250).IsRequired();
+                entity.Property(x => x.PartyLedgerGuid).HasMaxLength(100);
+                entity.Property(x => x.Amount).HasPrecision(19, 2);
+                entity.Property(x => x.CreatedAt).HasColumnType("datetime2(3)");
+                entity.Property(x => x.UpdatedAt).HasColumnType("datetime2(3)");
+                entity.HasIndex(x => new { x.CompanyId, x.TallyGuid }).IsUnique()
+                    .HasDatabaseName("UX_SalesRegister_Company_TallyGuid");
+                entity.HasIndex(x => new { x.CompanyId, x.VoucherDate })
+                    .HasDatabaseName("IX_SalesRegister_Company_Date");
+                entity.HasMany(x => x.Entries).WithOne(x => x.SalesRegister)
+                    .HasForeignKey(x => x.SalesRegisterId).OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<SalesRegisterEntryEntity>(entity =>
+            {
+                entity.ToTable("SalesRegisterEntries_tbl");
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.LedgerGuid).HasMaxLength(100).IsRequired();
+                entity.Property(x => x.LedgerName).HasMaxLength(250).IsRequired();
+                entity.Property(x => x.SignedAmount).HasPrecision(19, 4);
+                entity.HasIndex(x => new { x.SalesRegisterId, x.EntrySequence }).IsUnique()
+                    .HasDatabaseName("UX_SalesRegisterEntries_Voucher_Sequence");
+                entity.HasIndex(x => new { x.LedgerGuid, x.SalesRegisterId })
+                    .HasDatabaseName("IX_SalesRegisterEntries_Ledger_Voucher");
+            });
+
+            modelBuilder.Entity<PurchaseRegisterEntity>(entity =>
+            {
+                entity.ToTable("PurchaseRegister_tbl");
+                entity.HasKey(x => x.Id);
+                entity.HasOne(x => x.Company).WithMany().HasForeignKey(x => x.CompanyId).OnDelete(DeleteBehavior.Restrict);
+                entity.Property(x => x.TallyGuid).HasMaxLength(100).IsRequired();
+                entity.Property(x => x.VoucherNumber).HasMaxLength(100).IsRequired();
+                entity.Property(x => x.VoucherDate).HasColumnType("date");
+                entity.Property(x => x.VoucherType).HasMaxLength(250).IsRequired();
+                entity.Property(x => x.PartyLedgerName).HasMaxLength(250).IsRequired();
+                entity.Property(x => x.PartyLedgerGuid).HasMaxLength(100).IsRequired();
+                entity.Property(x => x.PurchaseLedgerNames).HasMaxLength(1000).IsRequired();
+                entity.Property(x => x.PurchaseLedgerGuids).HasMaxLength(1000).IsRequired();
+                entity.Property(x => x.Amount).HasPrecision(19, 2);
+                entity.Property(x => x.Debit).HasPrecision(19, 2);
+                entity.Property(x => x.Credit).HasPrecision(19, 2);
+                entity.Property(x => x.Narration).HasMaxLength(2000).IsRequired();
+                entity.Property(x => x.CreatedAt).HasColumnType("datetime2(3)");
+                entity.Property(x => x.UpdatedAt).HasColumnType("datetime2(3)");
+                entity.HasIndex(x => new { x.CompanyId, x.TallyGuid }).IsUnique()
+                    .HasDatabaseName("UX_PurchaseRegister_Company_TallyGuid");
+                entity.HasIndex(x => new { x.CompanyId, x.VoucherDate })
+                    .HasDatabaseName("IX_PurchaseRegister_Company_Date");
+                entity.HasMany(x => x.Entries).WithOne(x => x.PurchaseRegister)
+                    .HasForeignKey(x => x.PurchaseRegisterId).OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<PurchaseRegisterEntryEntity>(entity =>
+            {
+                entity.ToTable("PurchaseRegisterEntries_tbl");
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.LedgerGuid).HasMaxLength(100).IsRequired();
+                entity.Property(x => x.LedgerName).HasMaxLength(250).IsRequired();
+                entity.Property(x => x.SignedAmount).HasPrecision(19, 4);
+                entity.Property(x => x.IsPurchaseLedger).IsRequired();
+                entity.HasIndex(x => new { x.PurchaseRegisterId, x.EntrySequence }).IsUnique()
+                    .HasDatabaseName("UX_PurchaseRegisterEntries_Voucher_Sequence");
+                entity.HasIndex(x => new { x.LedgerGuid, x.PurchaseRegisterId })
+                    .HasDatabaseName("IX_PurchaseRegisterEntries_Ledger_Voucher");
             });
         }
     }

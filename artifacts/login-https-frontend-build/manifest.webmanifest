@@ -1,0 +1,18 @@
+{
+  "id": "/",
+  "name": "Tally Web",
+  "short_name": "Tally Web",
+  "description": "Tally Web Business Suite",
+  "start_url": "/dashboard",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#b97824",
+  "background_color": "#f6f7fb",
+  "orientation": "any",
+  "categories": ["business", "productivity"],
+  "prefer_related_applications": false,
+  "icons": [
+    { "src": "/icons/tally-web-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/tally-web-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

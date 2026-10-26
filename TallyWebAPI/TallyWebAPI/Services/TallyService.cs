@@ -23,6 +23,37 @@ namespace TallyWebAPI.Services
             return await TallyXmlTransport.PostAsync(_httpClient, xmlRequest);
         }
 
+        public async Task<List<(string Name, string Parent)>> GetVoucherTypesAsync(string companyName)
+        {
+            var safeCompanyName = System.Security.SecurityElement.Escape(companyName) ?? "";
+            var xmlRequest = $"""
+                <ENVELOPE>
+                    <HEADER><VERSION>1</VERSION><TALLYREQUEST>Export</TALLYREQUEST><TYPE>Collection</TYPE><ID>VoucherTypeCollection</ID></HEADER>
+                    <BODY><DESC>
+                        <STATICVARIABLES><SVEXPORTFORMAT>$$SysName:XML</SVEXPORTFORMAT><SVCURRENTCOMPANY>{safeCompanyName}</SVCURRENTCOMPANY></STATICVARIABLES>
+                        <TDL><TDLMESSAGE>
+                            <COLLECTION NAME="VoucherTypeCollection"><TYPE>Voucher Type</TYPE><FETCH>Name,Parent</FETCH></COLLECTION>
+                        </TDLMESSAGE></TDL>
+                    </DESC></BODY>
+                </ENVELOPE>
+                """;
+            var xml = await TallyXmlTransport.PostAsync(_httpClient, xmlRequest);
+            xml = System.Text.RegularExpressions.Regex.Replace(xml, @"&#(?:0?[0-8]|0?1[0-9]|0?2[0-9]|3[01]);", "");
+            var document = XDocument.Parse(xml);
+            var lineError = document.Descendants().FirstOrDefault(x =>
+                x.Name.LocalName.Equals("LINEERROR", StringComparison.OrdinalIgnoreCase));
+            if (lineError != null)
+                throw new InvalidOperationException($"Tally voucher type export failed: {lineError.Value.Trim()}");
+            return document.Descendants()
+                .Where(x => x.Name.LocalName.Equals("VOUCHERTYPE", StringComparison.OrdinalIgnoreCase))
+                .Select(x => (
+                    Name: (x.Attribute("NAME")?.Value ?? GetValue(x, "NAME")).Trim(),
+                    Parent: GetValue(x, "PARENT").Trim()))
+                .Where(x => !string.IsNullOrWhiteSpace(x.Name))
+                .DistinctBy(x => x.Name, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+        }
+
         public async Task<string> GetCurrentPeriodRawAsync()
         {
             var xmlRequest = """

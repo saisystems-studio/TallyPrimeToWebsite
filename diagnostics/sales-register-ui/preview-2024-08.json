@@ -1,0 +1,36 @@
+{
+    "preview":  true,
+    "applied":  false,
+    "companyId":  1,
+    "companyName":  "JAYA JOTHI MALIGAI",
+    "companyTallyGuid":  "5bd36bbb-820e-4784-b692-fe9891019a11",
+    "fromDate":  "20240801",
+    "toDate":  "20240831",
+    "salesVoucherTypes":  [
+                              "GST Sales",
+                              "Sales"
+                          ],
+    "sourceVoucherCount":  207,
+    "salesVoucherCount":  107,
+    "skippedNonSales":  100,
+    "unclassifiedVoucherCount":  0,
+    "duplicateSourceGuidRows":  0,
+    "crossCompanyGuidMatches":  0,
+    "existingSalesVouchers":  0,
+    "existingSalesRegisterRowsInPeriod":  0,
+    "unexpectedExistingSalesRegisterRows":  0,
+    "distinctPostingLedgerNames":  15,
+    "mappedPostingLedgerNames":  15,
+    "distinctMappedPostingLedgerGuids":  15,
+    "unmappedPostingLedgerNames":  [
+
+                                   ],
+    "headersToAdd":  107,
+    "signedPostingsToAdd":  306,
+    "absoluteSalesTotal":  5037213.00,
+    "validationErrors":  [
+
+                         ],
+    "tablesExist":  true,
+    "safeToApply":  true
+}

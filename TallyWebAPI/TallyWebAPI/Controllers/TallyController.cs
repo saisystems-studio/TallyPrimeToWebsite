@@ -13,11 +13,13 @@ namespace TallyWebAPI.Controllers
     {
         private readonly TallyService _tallyService;
         private readonly AppDbContext _dbContext;
+        private readonly ILogger<TallyController> _logger;
 
-        public TallyController(TallyService tallyService,  AppDbContext dbContext)
+        public TallyController(TallyService tallyService, AppDbContext dbContext, ILogger<TallyController> logger)
         {
             _tallyService = tallyService;
             _dbContext = dbContext;
+            _logger = logger;
         }
 
         [HttpGet("companies")]
@@ -37,6 +39,23 @@ namespace TallyWebAPI.Controllers
                     message = "Tally communication failed.",
                     error = ex.Message
                 });
+            }
+        }
+
+        [HttpGet("voucher-types")]
+        public async Task<IActionResult> GetVoucherTypes([FromQuery] string companyName)
+        {
+            if (string.IsNullOrWhiteSpace(companyName))
+                return BadRequest(new { message = "Company name is required." });
+            try
+            {
+                var voucherTypes = await _tallyService.GetVoucherTypesAsync(companyName);
+                return Ok(new { companyName, voucherTypes = voucherTypes.Select(x => new { name = x.Name, parent = x.Parent }) });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to read voucher type classification from TallyPrime for company {CompanyName}.", companyName);
+                return StatusCode(503, new { message = "Unable to read voucher type classification from TallyPrime.", error = ex.Message });
             }
         }
 

@@ -17,14 +17,19 @@ function PageExport() {
   const [shareMenuOpen, setShareMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (pathname === "/dashboard" || pathname === "/reports/stock-summary") {
+    if (pathname === "/dashboard") {
+      setHeader(null);
       return;
     }
 
-    const pageHeading = document.querySelector(".mainContent h1, .mainContent h2");
+    setHeader(null);
+    const pageHeading = document.querySelector(".mainContent h1");
     let current = pageHeading;
     while (current && current !== document.querySelector(".mainContent")) {
-      if ([...current.classList].some((name) => name.endsWith("-header"))) {
+      if (
+        current.matches("header, [class*='header'], [class*='-head']") &&
+        current.closest(".pageViewport")
+      ) {
         current.classList.add("page-export-header");
         setHeader(current);
         return;
@@ -33,7 +38,7 @@ function PageExport() {
     }
   }, [pathname]);
 
-  if (pathname === "/dashboard" || pathname === "/reports/stock-summary" || !header) return null;
+  if (pathname === "/dashboard" || !header) return null;
 
   const exportExcel = () => {
     const table = document.querySelector(".mainContent table");

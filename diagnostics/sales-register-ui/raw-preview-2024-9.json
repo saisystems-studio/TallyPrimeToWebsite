@@ -1,0 +1,1812 @@
+{
+    "month":  9,
+    "salesVoucherCount":  179,
+    "missingSql":  179,
+    "postingCount":  549,
+    "total":  5462724.00,
+    "distinctPostingLedgers":  24,
+    "errors":  [
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000747a",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000747d",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000747f",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007482",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007483",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007484",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074fe",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000748c",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000748b",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000750e",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007494",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007493",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000748f",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007500",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074a0",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074a7",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074ad",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007511",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074b3",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000750d",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007510",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000750c",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007507",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   }
+               ],
+    "invalidNonSales":  [
+
+                        ],
+    "vouchers":  [
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007414",
+                         "date":  "20240901",
+                         "type":  "Sales",
+                         "party":  "Cash",
+                         "amount":  26250.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007479",
+                         "date":  "20240901",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  44800.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000747a",
+                         "date":  "20240901",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000751d",
+                         "date":  "20240901",
+                         "type":  "Sales",
+                         "party":  "Kiruba  Muthiyor  Illam",
+                         "amount":  27201.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074f9",
+                         "date":  "20240901",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  45920.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000747b",
+                         "date":  "20240902",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  38000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000747e",
+                         "date":  "20240902",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  32256.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000751e",
+                         "date":  "20240902",
+                         "type":  "Sales",
+                         "party":  "Anjapar Chettinad Restaurant",
+                         "amount":  21470.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000747d",
+                         "date":  "20240902",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000747c",
+                         "date":  "20240902",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  15000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074fa",
+                         "date":  "20240902",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  38000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000747f",
+                         "date":  "20240903",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000751f",
+                         "date":  "20240903",
+                         "type":  "Sales",
+                         "party":  "Anjapar Chettinad Restaurant",
+                         "amount":  10690.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007481",
+                         "date":  "20240903",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  32000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007480",
+                         "date":  "20240903",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  30000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074fd",
+                         "date":  "20240903",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  47250.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007482",
+                         "date":  "20240904",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000752a",
+                         "date":  "20240904",
+                         "type":  "Sales",
+                         "party":  "Gowri Ganga Hotel",
+                         "amount":  95687.00,
+                         "postingCount":  5,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007483",
+                         "date":  "20240904",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007520",
+                         "date":  "20240904",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  195620.00,
+                         "postingCount":  10,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007528",
+                         "date":  "20240904",
+                         "type":  "Sales",
+                         "party":  "Anjapar Chettinad Restaurant",
+                         "amount":  30055.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007484",
+                         "date":  "20240904",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007485",
+                         "date":  "20240904",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  33000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074fe",
+                         "date":  "20240904",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007529",
+                         "date":  "20240904",
+                         "type":  "Sales",
+                         "party":  "Gowri Ganga Hotel",
+                         "amount":  68310.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007486",
+                         "date":  "20240905",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  23220.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007487",
+                         "date":  "20240905",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  48000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007488",
+                         "date":  "20240905",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  32000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074fb",
+                         "date":  "20240905",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  23220.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074fc",
+                         "date":  "20240905",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  48000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000750f",
+                         "date":  "20240905",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  48000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007489",
+                         "date":  "20240906",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  39900.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000748d",
+                         "date":  "20240906",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  22500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000748c",
+                         "date":  "20240906",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007521",
+                         "date":  "20240906",
+                         "type":  "Sales",
+                         "party":  "Bell Hotel Pvt Ltd",
+                         "amount":  13640.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007522",
+                         "date":  "20240906",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  88960.00,
+                         "postingCount":  13,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000748b",
+                         "date":  "20240906",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000748a",
+                         "date":  "20240906",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  47880.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000750e",
+                         "date":  "20240906",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000748e",
+                         "date":  "20240907",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  32256.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007494",
+                         "date":  "20240907",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007526",
+                         "date":  "20240907",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  10450.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007493",
+                         "date":  "20240907",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007525",
+                         "date":  "20240907",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  131910.00,
+                         "postingCount":  10,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007492",
+                         "date":  "20240907",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  22500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007524",
+                         "date":  "20240907",
+                         "type":  "Sales",
+                         "party":  "CSI CCC BOYS HOME",
+                         "amount":  6728.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000748f",
+                         "date":  "20240907",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074ff",
+                         "date":  "20240907",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  32256.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007523",
+                         "date":  "20240907",
+                         "type":  "Sales",
+                         "party":  "Laksihmanan Cettier Hostes",
+                         "amount":  76240.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007490",
+                         "date":  "20240908",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  39900.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007491",
+                         "date":  "20240908",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  23783.00,
+                         "postingCount":  5,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007495",
+                         "date":  "20240908",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  15480.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007496",
+                         "date":  "20240908",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  22500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007497",
+                         "date":  "20240908",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  24000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007500",
+                         "date":  "20240908",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007498",
+                         "date":  "20240909",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  30960.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000749d",
+                         "date":  "20240909",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  23220.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000749a",
+                         "date":  "20240909",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  22500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007499",
+                         "date":  "20240909",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  39900.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007501",
+                         "date":  "20240909",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  30960.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007502",
+                         "date":  "20240909",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  23220.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007527",
+                         "date":  "20240909",
+                         "type":  "Sales",
+                         "party":  "Anjapar Chettinad Restaurant",
+                         "amount":  10540.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000749c",
+                         "date":  "20240910",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  30960.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000749f",
+                         "date":  "20240910",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  15000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000749e",
+                         "date":  "20240910",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  47500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000749b",
+                         "date":  "20240910",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  19800.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007503",
+                         "date":  "20240910",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  30960.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007504",
+                         "date":  "20240910",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  15000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074a0",
+                         "date":  "20240911",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074a3",
+                         "date":  "20240911",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  32256.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000752b",
+                         "date":  "20240911",
+                         "type":  "Sales",
+                         "party":  "cini suvai restaurant",
+                         "amount":  31220.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074a2",
+                         "date":  "20240911",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  30000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074a1",
+                         "date":  "20240911",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  30000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074a4",
+                         "date":  "20240912",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  42000.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074a7",
+                         "date":  "20240912",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000752f",
+                         "date":  "20240912",
+                         "type":  "Sales",
+                         "party":  "Peter School",
+                         "amount":  72455.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074a6",
+                         "date":  "20240912",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  18928.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074a5",
+                         "date":  "20240912",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  33000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074a8",
+                         "date":  "20240913",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  19350.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074ac",
+                         "date":  "20240913",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  38700.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074aa",
+                         "date":  "20240913",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  19350.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074a9",
+                         "date":  "20240913",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  49500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074ab",
+                         "date":  "20240914",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  44800.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074ae",
+                         "date":  "20240914",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  30300.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000752d",
+                         "date":  "20240914",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  11340.00,
+                         "postingCount":  9,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074ad",
+                         "date":  "20240914",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007511",
+                         "date":  "20240914",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000752c",
+                         "date":  "20240914",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  123415.00,
+                         "postingCount":  10,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074af",
+                         "date":  "20240915",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  44800.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074b0",
+                         "date":  "20240915",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  30300.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074b1",
+                         "date":  "20240915",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  48000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074b2",
+                         "date":  "20240916",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  33600.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074b4",
+                         "date":  "20240916",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  31500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000752e",
+                         "date":  "20240916",
+                         "type":  "Sales",
+                         "party":  "Bell Hotel Pvt Ltd",
+                         "amount":  18530.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074b3",
+                         "date":  "20240916",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007512",
+                         "date":  "20240916",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  33600.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074b5",
+                         "date":  "20240917",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  7875.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074b8",
+                         "date":  "20240917",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  10920.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074b7",
+                         "date":  "20240917",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  47880.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074ba",
+                         "date":  "20240917",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  45000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074b9",
+                         "date":  "20240917",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  22050.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074b6",
+                         "date":  "20240917",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  43890.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000750d",
+                         "date":  "20240917",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007530",
+                         "date":  "20240917",
+                         "type":  "Sales",
+                         "party":  "Anjapar Chettinad Restaurant",
+                         "amount":  27010.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074bb",
+                         "date":  "20240918",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  45000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074bf",
+                         "date":  "20240918",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  11610.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074bd",
+                         "date":  "20240918",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  42000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074bc",
+                         "date":  "20240918",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  48160.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007510",
+                         "date":  "20240918",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007531",
+                         "date":  "20240918",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  42830.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074be",
+                         "date":  "20240919",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  40000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074c2",
+                         "date":  "20240919",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  22500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074c0",
+                         "date":  "20240919",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  19350.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074c1",
+                         "date":  "20240919",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  23220.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007513",
+                         "date":  "20240919",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  7875.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074c3",
+                         "date":  "20240920",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  45000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074c7",
+                         "date":  "20240920",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  37856.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074c4",
+                         "date":  "20240920",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  19350.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074c5",
+                         "date":  "20240920",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  33600.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074c6",
+                         "date":  "20240920",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  45000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000750c",
+                         "date":  "20240920",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007532",
+                         "date":  "20240920",
+                         "type":  "Sales",
+                         "party":  "Gowri Ganga Hotel",
+                         "amount":  118788.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074c8",
+                         "date":  "20240921",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  13125.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074ca",
+                         "date":  "20240921",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  22500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074cc",
+                         "date":  "20240921",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  37856.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074c9",
+                         "date":  "20240921",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  4900.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074cb",
+                         "date":  "20240921",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  45000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074cd",
+                         "date":  "20240922",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  47880.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074ce",
+                         "date":  "20240922",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  45885.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074cf",
+                         "date":  "20240922",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  43890.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074d0",
+                         "date":  "20240922",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  47880.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000750a",
+                         "date":  "20240922",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  47880.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074d1",
+                         "date":  "20240923",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  40320.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074d4",
+                         "date":  "20240923",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  16065.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074d3",
+                         "date":  "20240923",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  37500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074d2",
+                         "date":  "20240923",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  42000.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000750b",
+                         "date":  "20240923",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  40320.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074d5",
+                         "date":  "20240924",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  39600.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074d7",
+                         "date":  "20240924",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  13750.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074d6",
+                         "date":  "20240924",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  44550.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074d8",
+                         "date":  "20240924",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  30000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074d9",
+                         "date":  "20240924",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  39600.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074da",
+                         "date":  "20240924",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  13750.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074db",
+                         "date":  "20240924",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  44550.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007509",
+                         "date":  "20240924",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  44550.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074dc",
+                         "date":  "20240925",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  32000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074e0",
+                         "date":  "20240925",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  24000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074df",
+                         "date":  "20240925",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  5460.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074de",
+                         "date":  "20240925",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  38900.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074dd",
+                         "date":  "20240925",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  40000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007508",
+                         "date":  "20240925",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  40000.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074e1",
+                         "date":  "20240926",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  44550.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074e2",
+                         "date":  "20240926",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  33600.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074e3",
+                         "date":  "20240926",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  34830.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074e4",
+                         "date":  "20240926",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  34830.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074e5",
+                         "date":  "20240926",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  33600.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074e6",
+                         "date":  "20240927",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  47500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074e8",
+                         "date":  "20240927",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  8064.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074e7",
+                         "date":  "20240927",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  28500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074e9",
+                         "date":  "20240927",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  12096.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074ea",
+                         "date":  "20240927",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  47500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074eb",
+                         "date":  "20240927",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  8064.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007507",
+                         "date":  "20240927",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007533",
+                         "date":  "20240927",
+                         "type":  "Sales",
+                         "party":  "Bell Hotel Pvt Ltd",
+                         "amount":  13260.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074ec",
+                         "date":  "20240928",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  13650.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074ef",
+                         "date":  "20240928",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  5513.00,
+                         "postingCount":  5,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074ee",
+                         "date":  "20240928",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  19950.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074ed",
+                         "date":  "20240928",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  37500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074f0",
+                         "date":  "20240928",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  13650.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074f1",
+                         "date":  "20240928",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  5513.00,
+                         "postingCount":  5,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074f2",
+                         "date":  "20240928",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  19950.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007506",
+                         "date":  "20240928",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  5513.00,
+                         "postingCount":  5,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074f3",
+                         "date":  "20240929",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  44100.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074f4",
+                         "date":  "20240929",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  44100.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074f5",
+                         "date":  "20240929",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  30870.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074f6",
+                         "date":  "20240930",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  29700.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074f7",
+                         "date":  "20240930",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  49500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000074f8",
+                         "date":  "20240930",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  44550.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-00007505",
+                         "date":  "20240930",
+                         "type":  "Sales",
+                         "party":  "AgSundry Parties",
+                         "amount":  49500.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     }
+                 ],
+    "safeSalesData":  false,
+    "existingPreviewBlocked":  true
+}

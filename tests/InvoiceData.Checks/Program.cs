@@ -7,7 +7,7 @@ using TallyWebAPI.Services;
 const string fixture = """
 <ENVELOPE><VOUCHER><DATE>20241101</DATE><VOUCHERNUMBER>661</VOUCHERNUMBER><VOUCHERTYPENAME>Purchase</VOUCHERTYPENAME><GUID>purchase-fixture</GUID><PARTYLEDGERNAME>Supplier Ledger</PARTYLEDGERNAME><PARTYNAME>Actual Supplier</PARTYNAME><PARTYGSTIN>33AGIPS9108F1ZB</PARTYGSTIN><STATENAME>Tamil Nadu</STATENAME><ADDRESS.LIST><ADDRESS>Supplier Street</ADDRESS><ADDRESS>Supplier City</ADDRESS></ADDRESS.LIST><BASICBUYERNAME>Separate Receiver</BASICBUYERNAME><CONSIGNEEMAILINGNAME>Separate Receiver</CONSIGNEEMAILINGNAME><BASICBUYERADDRESS.LIST><BASICBUYERADDRESS>Ship Road</BASICBUYERADDRESS><BASICBUYERADDRESS>Ship City</BASICBUYERADDRESS></BASICBUYERADDRESS.LIST><CONSIGNEEGSTIN>33AFHPB5979B1ZO</CONSIGNEEGSTIN><CONSIGNEESTATENAME>Tamil Nadu</CONSIGNEESTATENAME><REFERENCE>SUP/9</REFERENCE><REFERENCEDATE>20241023</REFERENCEDATE><CMPGSTIN>33AFHPB5979B1ZO</CMPGSTIN><INVENTORYENTRIES.LIST><STOCKITEMNAME>தமிழ்</STOCKITEMNAME><ACTUALQTY>2 kg</ACTUALQTY><RATE>114.02/kg</RATE><DISCOUNT>5</DISCOUNT><AMOUNT>-228.04</AMOUNT></INVENTORYENTRIES.LIST><LEDGERENTRIES.LIST><LEDGERNAME>Supplier Ledger</LEDGERNAME><AMOUNT>228.04</AMOUNT></LEDGERENTRIES.LIST></VOUCHER></ENVELOPE>
 """;
-using var client = new HttpClient(new FixtureHandler(fixture));
+using var client = FixtureClient(new FixtureHandler(fixture));
 var service = new VoucherService(client);
 var detail = await service.GetVoucherDetailAsync("purchase-fixture", "20240401", "20241231", "Fixture Company");
 void Equal(object? actual, object? expected, string field) { if (!Equals(actual,expected)) throw new Exception($"{field}: expected '{expected}', got '{actual}'."); }
@@ -27,7 +27,7 @@ Equal(detail.TotalAmount,"228.04","Original voucher total");
 Equal(detail.Items[0].Amount,"228.04","Original item amount");
 Console.WriteLine("Fixture: party/consignee separation, reference date, address lines, state code, discount and original amounts verified.");
 using var companyHandler = new FixtureHandler("<ENVELOPE><COMPANY NAME=\"Fixture Company\"><GUID>company-guid</GUID><ADDRESS.LIST><ADDRESS>Actual Company Street</ADDRESS><ADDRESS>Actual Company City</ADDRESS></ADDRESS.LIST><STATENAME>Tamil Nadu</STATENAME><EMAIL>contact@example.test</EMAIL><MOBILENUMBERS.LIST><MOBILENUMBERS>123456</MOBILENUMBERS></MOBILENUMBERS.LIST></COMPANY></ENVELOPE>");
-using var companyClient = new HttpClient(companyHandler);
+using var companyClient = FixtureClient(companyHandler);
 var fixtureCompany = await new VoucherService(companyClient).GetInvoiceCompanyAsync("Fixture Company");
 Equal(fixtureCompany!.Address,"Actual Company Street\nActual Company City","Company object postal address");
 Equal(fixtureCompany.Email,"contact@example.test","Company email");
@@ -99,6 +99,9 @@ if (args.Contains("--live"))
     }
     Console.WriteLine("LIVE company: every postal line, state, email and mobile match the selected Company object export.");
 }
+
+// Fixture transport is fully intercepted; no live endpoint is contacted.
+static HttpClient FixtureClient(HttpMessageHandler handler) => new(handler) { BaseAddress = new Uri("http://fixture.invalid/") };
 
 sealed class FixtureHandler(string xml) : HttpMessageHandler
 {

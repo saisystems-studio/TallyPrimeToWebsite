@@ -1,0 +1,15 @@
+{
+  "april103Unchanged": true,
+  "april250Postings": true,
+  "aprilTotal": true,
+  "mayDecember749Active": true,
+  "mayDecember2530Postings": true,
+  "known26CancelledExcluded": true,
+  "aprilDecemberReferenceTotal": true,
+  "activeGuidsUnique": true,
+  "orderedBalancedPostings": true,
+  "noValidationBlockers": true,
+  "sqlUnchanged": true,
+  "repeatedReadOnlyPlanUnchanged": true,
+  "exactManifestCounts": true
+}

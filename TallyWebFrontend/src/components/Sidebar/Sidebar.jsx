@@ -52,6 +52,22 @@ const sections = [
     title: "Reports",
     items: [
       {
+        to: "/reports/purchase-register",
+        label: "Purchase Register",
+        icon: "P",
+      },
+
+      {
+        to: "/reports/inactive-customers",
+        label: "Inactive Customers",
+        icon: "◷",
+      },
+      {
+        to: "/reports/sales-register",
+        label: "Sales Register",
+        icon: "₹",
+      },
+      {
         to: "/reports/stock-summary",
         label: "Stock Summary",
         icon: "▦",
@@ -61,6 +77,11 @@ const sections = [
         to: "/outstanding",
         label: "Outstanding",
         icon: "▧",
+      },
+      {
+        to: "/reports/outstanding-bill-count",
+        label: "Outstanding Bill Count",
+        icon: "▤",
       },
       {
         to: "/payables",

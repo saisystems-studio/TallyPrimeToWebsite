@@ -16,6 +16,10 @@
         public string Narration { get; set; } = "";
 
         public string Guid { get; set; } = "";
+        // Source-only diagnostics; never persisted to the independent register.
+        public bool IsCancelled { get; set; }
+        public string CancellationStatus { get; set; } = "";
+        public string? SourceValidationError { get; set; }
         public List<VoucherPostingDto> Postings { get; set; } = new();
     }
 

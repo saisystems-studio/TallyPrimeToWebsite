@@ -1,0 +1,313 @@
+{
+  "preview": true,
+  "applied": false,
+  "companyId": 1,
+  "companyName": "JAYA JOTHI MALIGAI",
+  "companyTallyGuid": "5bd36bbb-820e-4784-b692-fe9891019a11",
+  "fromDate": "20240501",
+  "toDate": "20241231",
+  "salesVoucherTypes": [
+    "GST Sales",
+    "Sales"
+  ],
+  "sourceVoucherCount": 1626,
+  "salesVoucherCount": 749,
+  "skippedNonSales": 851,
+  "unclassifiedVoucherCount": 0,
+  "sourceSalesVoucherCount": 775,
+  "cancelledSalesVoucherCount": 26,
+  "cancelledVouchers": [
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-0000747a",
+      "voucherNumber": "596",
+      "date": "20240901",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-0000747d",
+      "voucherNumber": "602",
+      "date": "20240902",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-0000747f",
+      "voucherNumber": "605",
+      "date": "20240903",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-00007482",
+      "voucherNumber": "610",
+      "date": "20240904",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-00007483",
+      "voucherNumber": "612",
+      "date": "20240904",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-00007484",
+      "voucherNumber": "615",
+      "date": "20240904",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-000074fe",
+      "voucherNumber": "617",
+      "date": "20240904",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-0000748c",
+      "voucherNumber": "627",
+      "date": "20240906",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-0000748b",
+      "voucherNumber": "630",
+      "date": "20240906",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-0000750e",
+      "voucherNumber": "632",
+      "date": "20240906",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-00007494",
+      "voucherNumber": "634",
+      "date": "20240907",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-00007493",
+      "voucherNumber": "636",
+      "date": "20240907",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-0000748f",
+      "voucherNumber": "640",
+      "date": "20240907",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-00007500",
+      "voucherNumber": "648",
+      "date": "20240908",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-000074a0",
+      "voucherNumber": "662",
+      "date": "20240911",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-000074a7",
+      "voucherNumber": "668",
+      "date": "20240912",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-000074ad",
+      "voucherNumber": "679",
+      "date": "20240914",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-00007511",
+      "voucherNumber": "680",
+      "date": "20240914",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-000074b3",
+      "voucherNumber": "688",
+      "date": "20240916",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-0000750d",
+      "voucherNumber": "696",
+      "date": "20240917",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-00007510",
+      "voucherNumber": "702",
+      "date": "20240918",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-0000750c",
+      "voucherNumber": "714",
+      "date": "20240920",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-00007507",
+      "voucherNumber": "756",
+      "date": "20240927",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-000075a5",
+      "voucherNumber": "783",
+      "date": "20241007",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-000075ac",
+      "voucherNumber": "789",
+      "date": "20241016",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    },
+    {
+      "guid": "5bd36bbb-820e-4784-b692-fe9891019a11-000075b5",
+      "voucherNumber": "798",
+      "date": "20241019",
+      "voucherType": "Sales",
+      "isCancelled": true,
+      "cancellationStatus": "Yes"
+    }
+  ],
+  "invalidActiveVoucherCount": 0,
+  "unbalancedActiveVoucherCount": 0,
+  "ledgerMappingErrorCount": 0,
+  "monthly": [
+    {
+      "month": "202405",
+      "activeSalesVouchers": 117,
+      "cancelledSalesVouchers": 0,
+      "signedPostings": 300,
+      "missingActiveSalesVouchers": 117,
+      "absoluteSalesTotal": 4730804.11
+    },
+    {
+      "month": "202406",
+      "activeSalesVouchers": 116,
+      "cancelledSalesVouchers": 0,
+      "signedPostings": 290,
+      "missingActiveSalesVouchers": 116,
+      "absoluteSalesTotal": 4556603.00
+    },
+    {
+      "month": "202407",
+      "activeSalesVouchers": 151,
+      "cancelledSalesVouchers": 0,
+      "signedPostings": 411,
+      "missingActiveSalesVouchers": 151,
+      "absoluteSalesTotal": 5780057.47
+    },
+    {
+      "month": "202408",
+      "activeSalesVouchers": 107,
+      "cancelledSalesVouchers": 0,
+      "signedPostings": 306,
+      "missingActiveSalesVouchers": 107,
+      "absoluteSalesTotal": 5037213.00
+    },
+    {
+      "month": "202409",
+      "activeSalesVouchers": 156,
+      "cancelledSalesVouchers": 23,
+      "signedPostings": 526,
+      "missingActiveSalesVouchers": 156,
+      "absoluteSalesTotal": 5462724.00
+    },
+    {
+      "month": "202410",
+      "activeSalesVouchers": 41,
+      "cancelledSalesVouchers": 3,
+      "signedPostings": 261,
+      "missingActiveSalesVouchers": 41,
+      "absoluteSalesTotal": 4897427.00
+    },
+    {
+      "month": "202411",
+      "activeSalesVouchers": 38,
+      "cancelledSalesVouchers": 0,
+      "signedPostings": 277,
+      "missingActiveSalesVouchers": 38,
+      "absoluteSalesTotal": 4569127.00
+    },
+    {
+      "month": "202412",
+      "activeSalesVouchers": 23,
+      "cancelledSalesVouchers": 0,
+      "signedPostings": 159,
+      "missingActiveSalesVouchers": 23,
+      "absoluteSalesTotal": 1690993.64
+    }
+  ],
+  "duplicateSourceGuidRows": 0,
+  "crossCompanyGuidMatches": 0,
+  "existingSalesVouchers": 0,
+  "existingSalesRegisterRowsInPeriod": 0,
+  "unexpectedExistingSalesRegisterRows": 0,
+  "distinctPostingLedgerNames": 36,
+  "mappedPostingLedgerNames": 36,
+  "distinctMappedPostingLedgerGuids": 36,
+  "unmappedPostingLedgerNames": [],
+  "headersToAdd": 749,
+  "signedPostingsToAdd": 2530,
+  "absoluteSalesTotal": 36724949.22,
+  "validationErrors": [],
+  "tablesExist": true,
+  "safeToApply": true
+}

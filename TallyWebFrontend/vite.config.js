@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import { readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 
 let outputDirectory
@@ -13,6 +13,7 @@ const serviceWorkerBuildId = {
   },
   closeBundle() {
     const workerPath = path.join(outputDirectory, 'sw.js')
+    if (!existsSync(workerPath)) return
     const worker = readFileSync(workerPath, 'utf8')
     writeFileSync(workerPath, worker.replace("'__BUILD_ID__'", JSON.stringify(new Date().toISOString())))
   },

@@ -49,13 +49,13 @@ foreach (var (opening, dr, cr, expected) in new[] {
     if (LedgerBalanceMath.CalculateClosingBalance(opening, dr, cr) != expected)
         throw new Exception("Signed balance arithmetic failed.");
 
-using var fixtureClient = new HttpClient(new FixtureHandler());
+using var fixtureClient = FixtureClient(new FixtureHandler());
 var report = await new LedgerReportService(fixtureClient).GetLedgerReportAsync(
     "Test Company", "Test Ledger", "20240401", "20241231");
 if (report.TotalDebit != 150m || report.TotalCredit != 20m || report.ClosingBalance != -230m)
     throw new Exception($"All selected-ledger postings must count: got debit={report.TotalDebit}, credit={report.TotalCredit}, closing={report.ClosingBalance}");
 Console.WriteLine("Repeated selected-ledger postings and signed period totals passed.");
-using var extractionClient = new HttpClient(new FixtureHandler());
+using var extractionClient = FixtureClient(new FixtureHandler());
 var vouchers = await new VoucherService(extractionClient).GetVoucherListAsync("20240401", "20240430", "Test Company");
 var postingProperty = typeof(TallyWebAPI.DTOs.VoucherDto).GetProperty("Postings");
 if (postingProperty == null || ((System.Collections.ICollection)postingProperty.GetValue(vouchers.Single())!).Count != 4)
@@ -82,13 +82,16 @@ try {
 } catch (System.Reflection.TargetInvocationException ex) when (ex.InnerException is InvalidOperationException) { }
 if (target.LedgerEntries[0].Amount != before) throw new Exception("Existing posting was overwritten.");
 Console.WriteLine("Company-scoped, idempotent, non-overwriting posting backfill passed.");
-using var errorClient = new HttpClient(new FixtureHandler("<ENVELOPE><LINEERROR>Company is not loaded</LINEERROR></ENVELOPE>"));
+using var errorClient = FixtureClient(new FixtureHandler("<ENVELOPE><LINEERROR>Company is not loaded</LINEERROR></ENVELOPE>"));
 try {
     await new LedgerReportService(errorClient).GetLedgerReportAsync("Test Company", "Test Ledger", "20240401", "20241231");
     Console.Error.WriteLine("FAIL: Tally export errors must not appear as an empty successful report.");
     return 1;
 } catch (InvalidOperationException) { }
 return 0;
+
+// Fixture transport is fully intercepted; no live endpoint is contacted.
+static HttpClient FixtureClient(HttpMessageHandler handler) => new(handler) { BaseAddress = new Uri("http://fixture.invalid/") };
 
 sealed class FixtureHandler(string? overrideResponse = null) : HttpMessageHandler
 {

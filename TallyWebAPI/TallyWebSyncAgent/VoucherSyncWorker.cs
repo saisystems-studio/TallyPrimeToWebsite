@@ -385,6 +385,10 @@ namespace TallyWebSyncAgent
                                         <FETCH>PlaceOfSupply</FETCH>
 
                                         <FETCH>Narration</FETCH>
+                                        <FETCH>AllLedgerEntries.LedgerName</FETCH>
+                                        <FETCH>AllLedgerEntries.Amount</FETCH>
+                                        <FETCH>LedgerEntries.LedgerName</FETCH>
+                                        <FETCH>LedgerEntries.Amount</FETCH>
                                         <FETCH>GUID</FETCH>
 
                                     </COLLECTION>
@@ -406,6 +410,18 @@ namespace TallyWebSyncAgent
             }
 
             xml = CleanXml(xml);
+
+
+            _logger.LogInformation(
+                "Tally voucher XML contains ledger entries: {HasEntries}",
+                xml.Contains("LEDGERENTRIES.LIST",
+                    StringComparison.OrdinalIgnoreCase));
+
+            _logger.LogInformation(
+                "Tally voucher XML contains ledger names: {HasLedgerName}",
+                xml.Contains("<LEDGERNAME>",
+                    StringComparison.OrdinalIgnoreCase));
+
 
             var document =
                 XDocument.Parse(xml);

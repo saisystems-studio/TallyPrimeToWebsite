@@ -272,29 +272,6 @@ export default function StockSummary() {
           <h1>Stock Summary</h1>
           <p>Stock movements and closing valuation</p>
         </div>
-        <div className="ss-export-actions" aria-label="Export full report">
-          <button
-            type="button"
-            disabled={!report || loading}
-            onClick={exportExcel}
-          >
-            Excel
-          </button>
-          <button
-            type="button"
-            disabled={!report || loading}
-            onClick={printReport}
-          >
-            PDF
-          </button>
-          <button
-            type="button"
-            disabled={!report || loading}
-            onClick={printReport}
-          >
-            Print
-          </button>
-        </div>
       </header>
 
       <form className="stock-summary-filter" onSubmit={loadReport}>

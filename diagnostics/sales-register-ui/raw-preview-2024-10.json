@@ -1,0 +1,437 @@
+{
+    "month":  10,
+    "salesVoucherCount":  44,
+    "missingSql":  44,
+    "postingCount":  264,
+    "total":  4897427.00,
+    "distinctPostingLedgers":  23,
+    "errors":  [
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075a5",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075ac",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   },
+                   {
+                       "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075b5",
+                       "issues":  [
+                                      "Invalid posting: ledger=\u0027\u0027, amount=\u0027\u0027",
+                                      "Non-unique/missing SQL mapping \u0027\u0027",
+                                      "Missing/ambiguous party amount"
+                                  ]
+                   }
+               ],
+    "invalidNonSales":  [
+
+                        ],
+    "vouchers":  [
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000759b",
+                         "date":  "20241001",
+                         "type":  "Sales",
+                         "party":  "Anjapar Chettinad Restaurant",
+                         "amount":  26975.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000759c",
+                         "date":  "20241001",
+                         "type":  "Sales",
+                         "party":  "Anjappar Matthuthavani",
+                         "amount":  10449.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000759d",
+                         "date":  "20241001",
+                         "type":  "Sales",
+                         "party":  "Kiruba  Muthiyor  Illam",
+                         "amount":  24550.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000759e",
+                         "date":  "20241003",
+                         "type":  "Sales",
+                         "party":  "Anjapar Chettinad Restaurant",
+                         "amount":  8595.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-0000759f",
+                         "date":  "20241003",
+                         "type":  "Sales",
+                         "party":  "Bell Hotel Pvt Ltd",
+                         "amount":  13360.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075a0",
+                         "date":  "20241005",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  194400.00,
+                         "postingCount":  10,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075a1",
+                         "date":  "20241005",
+                         "type":  "Sales",
+                         "party":  "Anjapar Chettinad Restaurant",
+                         "amount":  12100.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075a2",
+                         "date":  "20241005",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  700.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075a3",
+                         "date":  "20241005",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  154925.00,
+                         "postingCount":  10,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075a4",
+                         "date":  "20241005",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  14275.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075a5",
+                         "date":  "20241007",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075b8",
+                         "date":  "20241007",
+                         "type":  "GST Sales",
+                         "party":  "Gowri Ganga Hotel",
+                         "amount":  33480.00,
+                         "postingCount":  5,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075b9",
+                         "date":  "20241007",
+                         "type":  "GST Sales",
+                         "party":  "Gowri Ganga Hotel",
+                         "amount":  147098.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075a7",
+                         "date":  "20241009",
+                         "type":  "Sales",
+                         "party":  "Bell Hotel Pvt Ltd",
+                         "amount":  13685.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075a8",
+                         "date":  "20241010",
+                         "type":  "Sales",
+                         "party":  "Anjapar Chettinad Restaurant",
+                         "amount":  10845.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075a9",
+                         "date":  "20241012",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  147515.00,
+                         "postingCount":  9,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075aa",
+                         "date":  "20241012",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  14130.00,
+                         "postingCount":  9,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075ab",
+                         "date":  "20241015",
+                         "type":  "Sales",
+                         "party":  "Peter School",
+                         "amount":  64277.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075ba",
+                         "date":  "20241015",
+                         "type":  "GST Sales",
+                         "party":  "Muthugulathoor Kalanjiya Jeevitham",
+                         "amount":  117709.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075ac",
+                         "date":  "20241016",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075ad",
+                         "date":  "20241016",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  7080.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075ae",
+                         "date":  "20241016",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  1856.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075bb",
+                         "date":  "20241016",
+                         "type":  "GST Sales",
+                         "party":  "Gowri Ganga Hotel",
+                         "amount":  10264.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075af",
+                         "date":  "20241017",
+                         "type":  "Sales",
+                         "party":  "Laksihmanan Cettier Hostes",
+                         "amount":  84228.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075b0",
+                         "date":  "20241017",
+                         "type":  "Sales",
+                         "party":  "CSI CCC BOYS HOME",
+                         "amount":  6245.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075b1",
+                         "date":  "20241017",
+                         "type":  "Sales",
+                         "party":  "Cms Childrens Home",
+                         "amount":  11110.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075b2",
+                         "date":  "20241017",
+                         "type":  "Sales",
+                         "party":  "Cms Kiruba  Centre",
+                         "amount":  1530.00,
+                         "postingCount":  5,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075b3",
+                         "date":  "20241017",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  15920.00,
+                         "postingCount":  10,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075b4",
+                         "date":  "20241017",
+                         "type":  "Sales",
+                         "party":  "Bell Hotel Pvt Ltd",
+                         "amount":  14755.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075bc",
+                         "date":  "20241017",
+                         "type":  "GST Sales",
+                         "party":  "Jeevidam LTD",
+                         "amount":  66080.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075bd",
+                         "date":  "20241017",
+                         "type":  "GST Sales",
+                         "party":  "Jeevidam LTD",
+                         "amount":  189158.00,
+                         "postingCount":  5,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075b5",
+                         "date":  "20241019",
+                         "type":  "Sales",
+                         "party":  "",
+                         "amount":  0,
+                         "postingCount":  1,
+                         "postingSum":  0
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075b6",
+                         "date":  "20241019",
+                         "type":  "Sales",
+                         "party":  "Anjapar Chettinad Restaurant",
+                         "amount":  29328.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075b7",
+                         "date":  "20241019",
+                         "type":  "Sales",
+                         "party":  "Mahatma School",
+                         "amount":  172785.00,
+                         "postingCount":  10,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075be",
+                         "date":  "20241019",
+                         "type":  "GST Sales",
+                         "party":  "Gowri Ganga Hotel",
+                         "amount":  99898.00,
+                         "postingCount":  7,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075bf",
+                         "date":  "20241019",
+                         "type":  "GST Sales",
+                         "party":  "Muthugulathoor Kalanjiya Jeevitham",
+                         "amount":  43416.00,
+                         "postingCount":  6,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075c0",
+                         "date":  "20241024",
+                         "type":  "GST Sales",
+                         "party":  "Jeevidam LTD",
+                         "amount":  1138221.00,
+                         "postingCount":  5,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075c1",
+                         "date":  "20241024",
+                         "type":  "GST Sales",
+                         "party":  "Jeevidam LTD",
+                         "amount":  138768.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075c2",
+                         "date":  "20241025",
+                         "type":  "GST Sales",
+                         "party":  "Jeevidam LTD",
+                         "amount":  414068.00,
+                         "postingCount":  5,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075c3",
+                         "date":  "20241026",
+                         "type":  "GST Sales",
+                         "party":  "Jeevidam LTD",
+                         "amount":  1102180.00,
+                         "postingCount":  5,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075c4",
+                         "date":  "20241026",
+                         "type":  "GST Sales",
+                         "party":  "Jeevidam LTD",
+                         "amount":  132160.00,
+                         "postingCount":  4,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075c5",
+                         "date":  "20241026",
+                         "type":  "GST Sales",
+                         "party":  "Jeevidam LTD",
+                         "amount":  191612.00,
+                         "postingCount":  9,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075c6",
+                         "date":  "20241026",
+                         "type":  "GST Sales",
+                         "party":  "Jeevidam LTD",
+                         "amount":  15549.00,
+                         "postingCount":  9,
+                         "postingSum":  0.00
+                     },
+                     {
+                         "guid":  "5bd36bbb-820e-4784-b692-fe9891019a11-000075a6",
+                         "date":  "20241028",
+                         "type":  "Sales",
+                         "party":  "Jeevidam LTD",
+                         "amount":  2148.00,
+                         "postingCount":  2,
+                         "postingSum":  0.00
+                     }
+                 ],
+    "safeSalesData":  false,
+    "existingPreviewBlocked":  true
+}

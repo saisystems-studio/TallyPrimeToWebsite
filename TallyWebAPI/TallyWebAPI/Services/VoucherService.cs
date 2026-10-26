@@ -14,11 +14,12 @@ namespace TallyWebAPI.Services
             _httpClient.Timeout = TimeSpan.FromSeconds(30);
         }
 
-        public async Task<string> GetVouchersAsync(string fromDate, string toDate, string companyName)
+        public async Task<string> GetVouchersAsync(string fromDate, string toDate, string companyName, bool includeCancellation = false)
         {
 
             var safeCompanyName = System.Security.SecurityElement.Escape(companyName) ?? "";
 
+            var cancellationFetch = includeCancellation ? "<FETCH>IsCancelled</FETCH>" : "";
             var xmlRequest = $"""
     <ENVELOPE>
         <HEADER>
@@ -58,6 +59,7 @@ namespace TallyWebAPI.Services
 
                             <FETCH>Narration</FETCH>
                             <FETCH>GUID</FETCH>
+                            {cancellationFetch}
                             <FETCH>AllLedgerEntries.*</FETCH>
                             <FETCH>LedgerEntries.*</FETCH>
 
@@ -76,10 +78,16 @@ namespace TallyWebAPI.Services
 
 
 
+        // Only the independent Sales Register opts into cancellation-aware diagnostics.
+        public Task<List<VoucherDto>> GetSalesRegisterVouchersAsync(string fromDate, string toDate, string companyName)
+            => GetVoucherListAsync(fromDate, toDate, companyName, preserveDuplicateGuids: true, salesRegisterDiagnostics: true);
+
         public async Task<List<VoucherDto>> GetVoucherListAsync(
             string fromDate,
             string toDate,
-            string companyName)
+            string companyName,
+            bool preserveDuplicateGuids = false,
+            bool salesRegisterDiagnostics = false)
         {
             if (!DateTime.TryParseExact(
                     fromDate,
@@ -140,7 +148,7 @@ namespace TallyWebAPI.Services
                 var xml = await GetVouchersAsync(
                     batchFromDate,
                     batchToDate,
-                    companyName
+                    companyName, salesRegisterDiagnostics
                 );
 
                 // Remove invalid XML 1.0 character references
@@ -188,6 +196,17 @@ namespace TallyWebAPI.Services
                         continue;
                     }
 
+                    var cancellationStatus = salesRegisterDiagnostics ? GetValue(voucher, "ISCANCELLED").Trim() : "";
+                    var isCancelled = cancellationStatus.Equals("Yes", StringComparison.OrdinalIgnoreCase);
+                    string? sourceValidationError = null;
+                    var postings = new List<VoucherPostingDto>();
+                    if (salesRegisterDiagnostics && !isCancelled && !cancellationStatus.Equals("No", StringComparison.OrdinalIgnoreCase))
+                        sourceValidationError = "Missing or unrecognized ISCANCELLED status; active status cannot be established.";
+                    if (!isCancelled && sourceValidationError is null)
+                    {
+                        try { postings = ParsePostings(voucher); }
+                        catch (InvalidOperationException ex) when (salesRegisterDiagnostics) { sourceValidationError = ex.Message; }
+                    }
                     result.Add(new VoucherDto
                     {
                         Date = date,
@@ -216,14 +235,17 @@ namespace TallyWebAPI.Services
                             "PLACEOFSUPPLY"
                         ),
 
-                        Amount = GetVoucherAmount(voucher),
+                        Amount = isCancelled ? "" : GetVoucherAmount(voucher),
 
                         Narration = GetValue(
                             voucher,
                             "NARRATION"
                         ),
 
-                        Postings = ParsePostings(voucher),
+                        IsCancelled = isCancelled,
+                        CancellationStatus = cancellationStatus,
+                        SourceValidationError = sourceValidationError,
+                        Postings = postings,
                         Guid = GetValue(
                             voucher,
                             "GUID"
@@ -235,19 +257,23 @@ namespace TallyWebAPI.Services
                 currentStart = currentEnd.AddDays(1);
             }
 
-            // Safety: remove duplicate vouchers if any
-            result = result
-                .GroupBy(v =>
-                    !string.IsNullOrWhiteSpace(v.Guid)
-                        ? v.Guid
-                        : $"{v.Date}|{v.VoucherType}|{v.VoucherNumber}"
-                )
-                .Select(g => g.First())
+            var ordered = result
                 .OrderBy(v => v.Date)
                 .ThenBy(v => v.VoucherNumber)
                 .ToList();
 
-            return result;
+            // Keep legacy callers' de-duplicated result. A backfill preview
+            // opts in to the raw list so duplicate GUIDs are reported instead
+            // of silently hidden before validation.
+            if (preserveDuplicateGuids)
+                return ordered;
+
+            return ordered
+                .GroupBy(v => !string.IsNullOrWhiteSpace(v.Guid)
+                    ? v.Guid
+                    : $"{v.Date}|{v.VoucherType}|{v.VoucherNumber}")
+                .Select(group => group.First())
+                .ToList();
         }
 
         public async Task<string> GetVoucherExportAsync(

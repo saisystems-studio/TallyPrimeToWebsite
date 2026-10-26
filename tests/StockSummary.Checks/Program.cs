@@ -60,7 +60,7 @@ await Check("latest Tally company entry date comes from EndingAt", async () =>
 {
     const string latestXml = "<ENVELOPE><BODY><DATA><COLLECTION><COMPANY NAME=\"JAYA JOTHI MALIGAI\"><NAME>JAYA JOTHI MALIGAI</NAME><STARTINGFROM>20210401</STARTINGFROM><ENDINGAT TYPE=\"Date\">20241231</ENDINGAT><STOCKSUMMARYFROM>20240401</STOCKSUMMARYFROM><STOCKSUMMARYTO>20241231</STOCKSUMMARYTO></COMPANY></COLLECTION></DATA></BODY></ENVELOPE>";
     var handler = new TallyHandler(masters, masters, responseFactory: _ => latestXml);
-    var latest = await new StockSummaryService(new HttpClient(handler))
+    var latest = await new StockSummaryService(FixtureClient(handler))
         .GetLatestVoucherDateAsync("JAYA JOTHI MALIGAI", "20210401");
     Assert(latest == "20241231", "Tally's aggregate date was not returned.");
     var request = handler.Requests.Single();
@@ -78,7 +78,7 @@ await Check("Tally company StartingFrom and EndingAt resolve the actual report r
             return "<ENVELOPE><BODY><DATA><COLLECTION><COMPANY NAME=\"PMP Rice Mill\"><NAME>PMP Rice Mill</NAME><STARTINGFROM>20260401</STARTINGFROM><ENDINGAT>20261002</ENDINGAT><STOCKSUMMARYFROM>20260401</STOCKSUMMARYFROM><STOCKSUMMARYTO>20261002</STOCKSUMMARYTO></COMPANY></COLLECTION></DATA></BODY></ENVELOPE>";
         return "<ENVELOPE><BODY><DATA><COLLECTION /></DATA></BODY></ENVELOPE>";
     });
-    var range = await new StockSummaryService(new HttpClient(handler))
+    var range = await new StockSummaryService(FixtureClient(handler))
         .ResolveRequestedPeriodAsync(null, null, "20210401", "PMP Rice Mill");
     Assert(range == ("20260401", "20261002"), "The current Tally period start and actual latest voucher date must be used.");
 });
@@ -86,7 +86,7 @@ await Check("SQL company GUID must match one unambiguous Tally company before sy
 {
     const string identityXml = "<ENVELOPE><BODY><DATA><COLLECTION><COMPANY NAME=\"Alpha Co\"><GUID>guid-alpha</GUID></COMPANY><COMPANY NAME=\"Beta Co\"><GUID>guid-beta</GUID></COMPANY></COLLECTION></DATA></BODY></ENVELOPE>";
     var handler = new TallyHandler(masters, native, identityXml);
-    var service = new StockSummaryService(new HttpClient(handler));
+    var service = new StockSummaryService(FixtureClient(handler));
     await service.VerifyCompanyIdentityAsync("Alpha Co", "guid-alpha");
     await MustReject(() => service.VerifyCompanyIdentityAsync("Alpha Co", "guid-beta"));
     await MustReject(() => service.VerifyCompanyIdentityAsync("Missing Co", "guid-missing"));
@@ -97,7 +97,7 @@ await Check("SQL company GUID must match one unambiguous Tally company before sy
 await Check("duplicate Tally names are rejected as ambiguous company identities", async () =>
 {
     const string duplicateXml = "<ENVELOPE><BODY><DATA><COLLECTION><COMPANY NAME=\"Same Co\"><GUID>guid-one</GUID></COMPANY><COMPANY NAME=\"Same Co\"><GUID>guid-two</GUID></COMPANY></COLLECTION></DATA></BODY></ENVELOPE>";
-    var service = new StockSummaryService(new HttpClient(new TallyHandler(masters, native, duplicateXml)));
+    var service = new StockSummaryService(FixtureClient(new TallyHandler(masters, native, duplicateXml)));
     await MustReject(() => service.VerifyCompanyIdentityAsync("Same Co", "guid-one"));
 });
 await Check("company switching resolves independent Tally periods", async () =>
@@ -111,7 +111,7 @@ await Check("company switching resolves independent Tally periods", async () =>
                 : "<ENVELOPE><BODY><DATA><COLLECTION><COMPANY NAME=\"Beta Co\"><NAME>Beta Co</NAME><STARTINGFROM>20230701</STARTINGFROM><ENDINGAT>20231215</ENDINGAT><STOCKSUMMARYFROM>20230401</STOCKSUMMARYFROM><STOCKSUMMARYTO>20231215</STOCKSUMMARYTO></COMPANY></COLLECTION></DATA></BODY></ENVELOPE>";
         return "<ENVELOPE><BODY><DATA><COLLECTION /></DATA></BODY></ENVELOPE>";
     });
-    var service = new StockSummaryService(new HttpClient(handler));
+    var service = new StockSummaryService(FixtureClient(handler));
     var alpha = await service.ResolveRequestedPeriodAsync(null, null, "20200101", "Alpha Co");
     var beta = await service.ResolveRequestedPeriodAsync(null, null, "20200101", "Beta Co");
     Assert(alpha == ("20240401", "20241231") && beta == ("20230401", "20231215"),
@@ -127,13 +127,13 @@ await Check("company without vouchers accepts Tally's exact company dates", asyn
             return "<ENVELOPE><BODY><DATA><COLLECTION><COMPANY NAME=\"No Voucher Co\"><NAME>No Voucher Co</NAME><STARTINGFROM>20240401</STARTINGFROM><ENDINGAT>20240401</ENDINGAT><STOCKSUMMARYFROM>20240401</STOCKSUMMARYFROM><STOCKSUMMARYTO>20240401</STOCKSUMMARYTO></COMPANY></COLLECTION></DATA></BODY></ENVELOPE>";
         return "<ENVELOPE><BODY><DATA><COLLECTION /></DATA></BODY></ENVELOPE>";
     });
-    var service = new StockSummaryService(new HttpClient(handler));
+    var service = new StockSummaryService(FixtureClient(handler));
     var range = await service.ResolveRequestedPeriodAsync(null, null, "20200101", "No Voucher Co");
     Assert(range == ("20240401", "20240401"), "A company without voucher activity should use the exact Tally company dates returned.");
     var emptyHandler = new TallyHandler(
         "<ENVELOPE><BODY><DATA><COLLECTION /></DATA></BODY></ENVELOPE>",
         "<ENVELOPE><BODY><DATA><COLLECTION /></DATA></BODY></ENVELOPE>");
-    var emptyReport = await new StockSummaryService(new HttpClient(emptyHandler))
+    var emptyReport = await new StockSummaryService(FixtureClient(emptyHandler))
         .GetStockSummaryAsync("20240401", "20250331", "No Voucher Co");
     Assert(emptyReport.TotalItems == 0 && emptyReport.Groups.Count == 0,
         "A legitimately empty Stock Summary must be represented as zero items without invented groups.");
@@ -143,7 +143,7 @@ await Check("empty dates use the selected company's Tally period", async () =>
     const string periodXml = "<ENVELOPE><BODY><DATA><COLLECTION><COMPANY NAME=\"JAYA JOTHI MALIGAI\"><NAME>JAYA JOTHI MALIGAI</NAME><STARTINGFROM>20210401</STARTINGFROM><ENDINGAT>20241231</ENDINGAT><STOCKSUMMARYFROM>20240401</STOCKSUMMARYFROM><STOCKSUMMARYTO>20241231</STOCKSUMMARYTO></COMPANY></COLLECTION></DATA></BODY></ENVELOPE>";
     var handler = new TallyHandler(masters, native, responseFactory: request =>
         request.Descendants("ID").Single().Value == "WebCompanyAccountingDates" ? periodXml : masters);
-    var service = new StockSummaryService(new HttpClient(handler));
+    var service = new StockSummaryService(FixtureClient(handler));
     var range = await service.ResolveRequestedPeriodAsync(null, null, "20210401", "JAYA JOTHI MALIGAI");
     Assert(range == ("20240401", "20241231"), "Blank dates must use the selected company's Tally StartingFrom and EndingAt dates.");
     Assert(handler.Requests.Count == 1, "Default resolution must use one Tally company dates query.");
@@ -158,18 +158,18 @@ await Check("empty dates use the selected company's Tally period", async () =>
 await Check("explicit and one-date requests retain their existing resolution", async () =>
 {
     var explicitHandler = new TallyHandler(masters, native);
-    var explicitRange = await new StockSummaryService(new HttpClient(explicitHandler))
+    var explicitRange = await new StockSummaryService(FixtureClient(explicitHandler))
         .ResolveRequestedPeriodAsync("20240501", "20240630", "20210401", "JAYA JOTHI MALIGAI");
     Assert(explicitRange == ("20240501", "20240630") && explicitHandler.Requests.Count == 0,
         "Explicit dates must be used exactly without a Tally period lookup.");
 
     var fromHandler = new TallyHandler(masters, native);
-    var fromRange = await new StockSummaryService(new HttpClient(fromHandler))
+    var fromRange = await new StockSummaryService(FixtureClient(fromHandler))
         .ResolveRequestedPeriodAsync("20240501", null, "20210401", "JAYA JOTHI MALIGAI");
     Assert(fromRange == ("20240501", "20241231"), "From-only request must retain Tally EndingAt To behavior.");
 
     var toHandler = new TallyHandler(masters, native);
-    var toRange = await new StockSummaryService(new HttpClient(toHandler))
+    var toRange = await new StockSummaryService(FixtureClient(toHandler))
         .ResolveRequestedPeriodAsync(null, "20240630", "20210401", "JAYA JOTHI MALIGAI");
     Assert(toRange == ("20210401", "20240630") && toHandler.Requests.Count == 0,
         "To-only request must retain Books From behavior.");
@@ -177,7 +177,7 @@ await Check("explicit and one-date requests retain their existing resolution", a
 await Check("native valuation and company/date scoped requests", async () =>
 {
     var handler = new TallyHandler(masters, native);
-    var report = await new StockSummaryService(new HttpClient(handler))
+    var report = await new StockSummaryService(FixtureClient(handler))
         .GetStockSummaryAsync("20240401", "20240430", "A & B");
     Assert(handler.Requests.Any(x => x.Descendants("TYPE").Any(e => e.Value == "Data")), "Must request Tally's native report, not infer valuation from masters.");
     foreach (var request in handler.Requests)
@@ -211,7 +211,7 @@ await Check("native valuation and company/date scoped requests", async () =>
 await Check("blank Tally amounts remain blank even when quantities are non-zero", async () =>
 {
     var withBlank = native.Replace("<DSPDRAMTA>-30.00</DSPDRAMTA>", "<DSPDRAMTA></DSPDRAMTA>");
-    var service = new StockSummaryService(new HttpClient(new TallyHandler(masters, withBlank)));
+    var service = new StockSummaryService(FixtureClient(new TallyHandler(masters, withBlank)));
     var blankReport = await service.GetStockSummaryAsync("20240401", "20240430", "A & B");
     var blankJson = JsonSerializer.SerializeToElement(blankReport, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
     var bulkItem = blankJson.GetProperty("groups")[0].GetProperty("items")[0];
@@ -222,7 +222,7 @@ await Check("blank Tally amounts remain blank even when quantities are non-zero"
         .Replace("<DSPINQTY>1.500 kg</DSPINQTY>", "<DSPINQTY>0 kg</DSPINQTY>")
         .Replace("<DSPCLQTY>3.000 kg</DSPCLQTY>", "<DSPCLQTY>1.500 kg</DSPCLQTY>")
         .Replace("<DSPDRAMTA>-30.00</DSPDRAMTA>", "<DSPDRAMTA></DSPDRAMTA>");
-    var report = await new StockSummaryService(new HttpClient(new TallyHandler(masters, noMovement)))
+    var report = await new StockSummaryService(FixtureClient(new TallyHandler(masters, noMovement)))
         .GetStockSummaryAsync("20240401", "20240430", "A & B");
     var json = JsonSerializer.SerializeToElement(report, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
     var bulk = json.GetProperty("groups")[0].GetProperty("items")[0];
@@ -231,19 +231,19 @@ await Check("blank Tally amounts remain blank even when quantities are non-zero"
 });
 await Check("Tally error is not an empty successful report", async () =>
 {
-    var service = new StockSummaryService(new HttpClient(new TallyHandler(masters, "<ENVELOPE><LINEERROR>Company not found</LINEERROR></ENVELOPE>")));
+    var service = new StockSummaryService(FixtureClient(new TallyHandler(masters, "<ENVELOPE><LINEERROR>Company not found</LINEERROR></ENVELOPE>")));
     await MustReject(() => service.GetStockSummaryAsync("20240401", "20240430", "Other"));
 });
 await Check("missing movement columns cannot silently become zero", async () =>
 {
     var xml = XDocument.Parse(native);
     xml.Descendants("DSPSTKIN").Remove();
-    var service = new StockSummaryService(new HttpClient(new TallyHandler(masters, xml.ToString())));
+    var service = new StockSummaryService(FixtureClient(new TallyHandler(masters, xml.ToString())));
     await MustReject(() => service.GetStockSummaryAsync("20240401", "20240430", "A & B"));
 });
 await Check("unknown report items cannot be silently dropped", async () =>
 {
-    var service = new StockSummaryService(new HttpClient(new TallyHandler(masters, native.Replace("Widget", "Unknown"))));
+    var service = new StockSummaryService(FixtureClient(new TallyHandler(masters, native.Replace("Widget", "Unknown"))));
     await MustReject(() => service.GetStockSummaryAsync("20240401", "20240430", "A & B"));
 });
 await Check("Stock Item master rows absent from the native report are not added", async () =>
@@ -251,7 +251,7 @@ await Check("Stock Item master rows absent from the native report are not added"
     var mastersWithInactive = masters.Replace(
         "</COLLECTION>",
         "<STOCKITEM NAME=\"Jam Bottel\"><PARENT>Goods</PARENT><BASEUNITS>nos</BASEUNITS><GUID>item-jam</GUID></STOCKITEM></COLLECTION>");
-    var report = await new StockSummaryService(new HttpClient(new TallyHandler(mastersWithInactive, native)))
+    var report = await new StockSummaryService(FixtureClient(new TallyHandler(mastersWithInactive, native)))
         .GetStockSummaryAsync("20240401", "20240430", "A & B");
     Assert(report.TotalItems == 2, "Stock Items Master rows must not be treated as Stock Summary report rows.");
     Assert(report.Groups.SelectMany(x => x.Items).All(x => x.StockItemName != "Jam Bottel"),
@@ -260,13 +260,13 @@ await Check("Stock Item master rows absent from the native report are not added"
 await Check("missing parent groups cannot be invented", async () =>
 {
     var incompleteMasters = masters.Replace("<STOCKGROUP NAME=\"Parts\"><PARENT>Goods</PARENT><GUID>group-parts</GUID></STOCKGROUP>", "");
-    var service = new StockSummaryService(new HttpClient(new TallyHandler(incompleteMasters, native)));
+    var service = new StockSummaryService(FixtureClient(new TallyHandler(incompleteMasters, native)));
     await MustReject(() => service.GetStockSummaryAsync("20240401", "20240430", "A & B"));
 });
 await Check("invalid date or missing company causes no Tally request", async () =>
 {
     var handler = new TallyHandler(masters, native);
-    var service = new StockSummaryService(new HttpClient(handler));
+    var service = new StockSummaryService(FixtureClient(handler));
     await MustReject(() => service.GetStockSummaryAsync("20240431", "20240501", "A & B"));
     await MustReject(() => service.GetStockSummaryAsync("20240501", "20240401", "A & B"));
     await MustReject(() => service.GetStockSummaryAsync("20240401", "20240430", ""));
@@ -291,6 +291,9 @@ static async Task MustReject(Func<Task> action)
     try { await action(); } catch (Exception ex) when (ex is ArgumentException or InvalidDataException) { return; }
     throw new Exception("Expected a validation or incomplete-data error.");
 }
+
+// Fixture transport is fully intercepted; no live endpoint is contacted.
+static HttpClient FixtureClient(HttpMessageHandler handler) => new(handler) { BaseAddress = new Uri("http://fixture.invalid/") };
 
 sealed class TallyHandler(string masters, string report, string? companyIdentity = null,
     Func<XDocument, string>? responseFactory = null) : HttpMessageHandler

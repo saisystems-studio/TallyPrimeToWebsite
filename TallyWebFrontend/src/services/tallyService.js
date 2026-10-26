@@ -10,6 +10,19 @@ export async function getCompanies() {
   return await response.text();
 }
 
+export async function getVoucherTypes(companyName) {
+  const response = await apiRequest(`/tally/voucher-types?companyName=${encodeURIComponent(companyName)}`);
+  if (!response.ok) {
+    let detail = "";
+    try {
+      const body = await response.json();
+      detail = body.error || body.message || "";
+    } catch { /* Keep the user-facing error useful for non-JSON responses. */ }
+    throw new Error(detail || `Unable to read voucher type classification from TallyPrime (HTTP ${response.status}).`);
+  }
+  return await response.json();
+}
+
 export async function getCurrentCompany() {
   const response = await apiRequest("/tally/current-company");
 

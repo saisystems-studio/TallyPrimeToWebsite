@@ -53,6 +53,13 @@ namespace TallyWebAPI.Controllers
                     voucherNumber = x.VoucherNumber,
                     voucherType = x.VoucherType,
                     partyName = x.PartyName,
+                    // Keep the signed party posting for report debit/credit
+                    // classification. VoucherEntity.Amount is stored as an
+                    // absolute voucher total and cannot provide this sign.
+                    partyAmount = x.LedgerEntries
+                        .Where(e => e.LedgerName == x.PartyName)
+                        .Select(e => (decimal?)e.Amount)
+                        .Sum(),
                     partyGstin = x.PartyGstin,
                     state = x.State,
                     placeOfSupply = x.PlaceOfSupply,
